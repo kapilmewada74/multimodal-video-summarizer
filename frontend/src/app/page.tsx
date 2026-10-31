@@ -150,9 +150,9 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-[var(--bg-app)] text-[var(--text-main)] transition-colors">
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
-      <main className="flex-1 max-w-[960px] w-full mx-auto px-4 sm:px-8 md:px-10 py-10 sm:py-14">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Clean Hero Section */}
-        <div className="text-center mb-10 no-print">
+        <div className="text-center mb-8 no-print">
           <h1 className="text-3xl sm:text-[48px] font-semibold tracking-[-0.28px] leading-[1.08] mb-3 text-[var(--text-main)]">
             Summarize Any Video in Seconds
           </h1>
@@ -174,7 +174,7 @@ export default function Home() {
 
         {/* Minimal Clean Loading Indicator */}
         {job && (job.status === "processing" || job.status === "queued") && (
-          <div className="flex flex-col items-center justify-center py-10 px-6 sm:px-9 my-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] text-center no-print">
+          <div className="flex flex-col items-center justify-center py-10 px-6 my-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] text-center no-print">
             <div className="w-9 h-9 border-[2.5px] border-[var(--card-border)] border-t-[#0066cc] rounded-full animate-spin mb-4" />
             <h3 className="text-base font-semibold tracking-[-0.2px] text-[var(--text-main)]">Generating summary...</h3>
             <p className="text-sm text-[var(--text-muted)] mt-1 max-w-sm">
