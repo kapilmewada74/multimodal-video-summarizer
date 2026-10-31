@@ -248,7 +248,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
     }
   };
 
-  const handleGenerateQuiz = async () => {
+  const handleGenerateQuiz = async (difficulty: string = "medium", numQuestions: number = 5, forceRefresh: boolean = false) => {
     setIsLoadingQuiz(true);
     try {
       const res = await fetch("/api/generate/quiz", {
@@ -258,6 +258,9 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
           title: result.title,
           summary: result.summary,
           transcript: result.transcript,
+          difficulty,
+          num_questions: numQuestions,
+          force_refresh: forceRefresh,
         }),
       });
 
@@ -265,7 +268,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
       const data = await res.json();
       setQuiz(data.quiz || []);
       setQuizProvider(data.provider || "");
-      onToast(`Interactive Quiz ready! (${data.provider || "AI"})`, "success");
+      onToast(`Quiz ready! (${numQuestions} Qs • ${difficulty.toUpperCase()})`, "success");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error generating quiz";
       onToast(msg, "error");
@@ -394,10 +397,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
         </button>
 
         <button
-          onClick={() => {
-            setActiveTab("quiz");
-            if (quiz.length === 0) handleGenerateQuiz();
-          }}
+          onClick={() => setActiveTab("quiz")}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
             activeTab === "quiz"
               ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
@@ -416,106 +416,10 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
 
       {/* Tab 1: AI Summary Content Pane */}
       {activeTab === "summary" && (
-        <div>
-          {/* Interactive Study Toolkit Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 no-print">
-            {/* Tool 1: Flashcards */}
-            <div
-              onClick={() => {
-                setActiveTab("flashcards");
-                if (flashcards.length === 0) handleGenerateFlashcards();
-              }}
-              className="p-5 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] hover:border-[var(--brand-lime)] transition-all cursor-pointer group shadow-sm flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[var(--brand-lime)]/15 text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)] flex items-center justify-center">
-                    <Layers className="w-5 h-5 text-[#0E0F0C] dark:text-[var(--brand-lime)]" />
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] border border-[var(--card-border)]">
-                    Active Recall
-                  </span>
-                </div>
-                <h4 className="text-sm font-bold text-[var(--text-main)] mb-1 group-hover:text-[var(--brand-lime-hover)] dark:group-hover:text-[var(--brand-lime)] transition-colors">
-                  Interactive Flashcards
-                </h4>
-                <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-4">
-                  Test your memory with 3D flip study cards covering key definitions & principles.
-                </p>
-              </div>
-              <div className="text-xs font-bold text-[var(--text-main)] flex items-center gap-1 group-hover:gap-2 transition-all">
-                <span>{flashcards.length > 0 ? `Review ${flashcards.length} Cards` : "Open Flashcards"}</span>
-                <ArrowRight className="w-3.5 h-3.5 text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)]" />
-              </div>
-            </div>
-
-            {/* Tool 2: Presentation */}
-            <div
-              onClick={() => {
-                setActiveTab("presentation");
-                if (!presentation) handleGeneratePresentation();
-              }}
-              className="p-5 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] hover:border-[var(--brand-lime)] transition-all cursor-pointer group shadow-sm flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[var(--brand-lime)]/15 text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)] flex items-center justify-center">
-                    <PresentationIcon className="w-5 h-5 text-[#0E0F0C] dark:text-[var(--brand-lime)]" />
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] border border-[var(--card-border)]">
-                    16:9 Deck
-                  </span>
-                </div>
-                <h4 className="text-sm font-bold text-[var(--text-main)] mb-1 group-hover:text-[var(--brand-lime-hover)] dark:group-hover:text-[var(--brand-lime)] transition-colors">
-                  Presentation (PPT)
-                </h4>
-                <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-4">
-                  Turn video points into widescreen slides with speaker notes & direct .pptx download.
-                </p>
-              </div>
-              <div className="text-xs font-bold text-[var(--text-main)] flex items-center gap-1 group-hover:gap-2 transition-all">
-                <span>{presentation?.slides ? `View ${presentation.slides.length} Slides` : "Export Presentation"}</span>
-                <ArrowRight className="w-3.5 h-3.5 text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)]" />
-              </div>
-            </div>
-
-            {/* Tool 3: Practice Quiz */}
-            <div
-              onClick={() => {
-                setActiveTab("quiz");
-                if (quiz.length === 0) handleGenerateQuiz();
-              }}
-              className="p-5 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] hover:border-[var(--brand-lime)] transition-all cursor-pointer group shadow-sm flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[var(--brand-lime)]/15 text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)] flex items-center justify-center">
-                    <HelpCircle className="w-5 h-5 text-[#0E0F0C] dark:text-[var(--brand-lime)]" />
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] border border-[var(--card-border)]">
-                    Knowledge Check
-                  </span>
-                </div>
-                <h4 className="text-sm font-bold text-[var(--text-main)] mb-1 group-hover:text-[var(--brand-lime-hover)] dark:group-hover:text-[var(--brand-lime)] transition-colors">
-                  Interactive Practice Quiz
-                </h4>
-                <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-4">
-                  Evaluate your retention with multiple-choice questions & instant answer explanations.
-                </p>
-              </div>
-              <div className="text-xs font-bold text-[var(--text-main)] flex items-center gap-1 group-hover:gap-2 transition-all">
-                <span>{quiz.length > 0 ? `Take ${quiz.length} Questions` : "Start Practice Quiz"}</span>
-                <ArrowRight className="w-3.5 h-3.5 text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)]" />
-              </div>
-            </div>
-          </div>
-
-          {/* Markdown Summary Body */}
-          <div
-            className="markdown-content text-sm sm:text-base leading-relaxed text-[var(--text-main)]"
-            dangerouslySetInnerHTML={{ __html: renderedSummaryHtml }}
-          />
-        </div>
+        <div
+          className="markdown-content text-sm sm:text-base leading-relaxed text-[var(--text-main)]"
+          dangerouslySetInnerHTML={{ __html: renderedSummaryHtml }}
+        />
       )}
 
       {/* Tab 2: Full Transcript Content Pane */}

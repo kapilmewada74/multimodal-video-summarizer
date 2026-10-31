@@ -213,14 +213,27 @@ async def api_generate_presentation(payload: GenerateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class GenerateQuizRequest(BaseModel):
+    title: str
+    summary: str
+    transcript: Optional[str] = ""
+    difficulty: Optional[str] = "medium"
+    num_questions: Optional[int] = 5
+    force_refresh: Optional[bool] = False
+    apiKey: Optional[str] = None
+
+
 @app.post("/api/generate/quiz")
-async def api_generate_quiz(payload: GenerateRequest):
+async def api_generate_quiz(payload: GenerateQuizRequest):
     try:
         data = generators.generate_quiz(
             title=payload.title,
             summary=payload.summary,
             transcript=payload.transcript or "",
-            api_key=payload.apiKey
+            difficulty=payload.difficulty or "medium",
+            num_questions=payload.num_questions or 5,
+            api_key=payload.apiKey,
+            force_refresh=payload.force_refresh or False
         )
         return data
     except Exception as e:

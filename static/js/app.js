@@ -268,6 +268,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let cachedPresentation = null;
   let cachedQuiz = null;
 
+  const summaryExportToolbar = document.getElementById("summary-export-toolbar");
+
   function switchTab(activeBtn, activePane) {
     [tabSummaryView, tabTranscriptView, tabFlashcardsView, tabPresentationView, tabQuizView].forEach(btn => {
       if (btn) btn.classList.remove("active");
@@ -278,6 +280,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (activeBtn) activeBtn.classList.add("active");
     if (activePane) activePane.style.display = "block";
+
+    // Summary export toolbar (PDF, .TXT, Copy) should ONLY be visible on the AI Summary tab!
+    // On Full Transcript, Flashcards, Presentation, and Quiz, do NOT show it.
+    if (summaryExportToolbar) {
+      if (activeBtn === tabSummaryView) {
+        summaryExportToolbar.style.display = "flex";
+      } else {
+        summaryExportToolbar.style.display = "none";
+      }
+    }
   }
 
   if (tabSummaryView) tabSummaryView.addEventListener("click", () => switchTab(tabSummaryView, viewSummaryPane));
@@ -297,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (tabQuizView) {
     tabQuizView.addEventListener("click", () => {
       switchTab(tabQuizView, viewQuizPane);
-      if (!cachedQuiz) loadQuiz();
+      if (!cachedQuiz) renderQuizSetup();
     });
   }
 
@@ -357,25 +369,23 @@ document.addEventListener("DOMContentLoaded", () => {
             <div style="margin: auto 0; font-size: ${isFlipped ? '15px' : '18px'}; font-weight: ${isFlipped ? '500' : '800'}; line-height: 1.6;">
               ${isFlipped ? card.back : card.front}
             </div>
-            <div style="font-size: 11px; color: var(--text-muted);">
-              ${isFlipped ? "Showing Back (Click to flip)" : "Showing Front (Click to flip)"}
-            </div>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px;">
-            <button id="fc-prev-btn" class="btn-secondary" ${cardIdx === 0 ? "disabled" : ""}>← Previous</button>
-            <button id="fc-flip-btn" class="btn-secondary">Flip Card</button>
-            <button id="fc-next-btn" class="btn-secondary" ${cardIdx === cards.length - 1 ? "disabled" : ""}>Next →</button>
+            <button id="fc-prev-btn" class="btn-secondary" ${cardIdx === 0 ? "disabled" : ""} style="width: 38px; height: 38px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;" title="Previous Card">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div style="display: flex; gap: 6px;">
+              ${cards.map((_, i) => `<span style="display: inline-block; width: ${i === cardIdx ? '16px' : '6px'}; height: 6px; border-radius: 3px; background: ${i === cardIdx ? 'var(--brand-lime)' : 'var(--card-border)'}; transition: all 0.2s;"></span>`).join("")}
+            </div>
+            <button id="fc-next-btn" class="btn-secondary" ${cardIdx === cards.length - 1 ? "disabled" : ""} style="width: 38px; height: 38px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;" title="Next Card">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
           </div>
         </div>
       `;
 
       document.getElementById("flashcard-box").addEventListener("click", () => {
-        isFlipped = !isFlipped;
-        renderCurrentCard();
-      });
-
-      document.getElementById("fc-flip-btn").addEventListener("click", () => {
         isFlipped = !isFlipped;
         renderCurrentCard();
       });
@@ -545,13 +555,117 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Quiz Logic ---
-  async function loadQuiz() {
+  let selectedQuizDifficulty = "medium";
+  let selectedQuizCount = 5;
+
+  function renderQuizSetup() {
+    let chosenDiff = selectedQuizDifficulty || "medium";
+    let chosenCount = selectedQuizCount || 5;
+
+    quizContainer.innerHTML = `
+      <div style="max-width: 520px; margin: 0 auto; text-align: center; padding: 28px 20px;">
+        <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(226, 253, 91, 0.15); color: var(--brand-lime); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 14px auto;">❓</div>
+        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">Interactive Practice Quiz</h3>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Choose your desired difficulty and number of questions to test your knowledge.</p>
+
+        <div style="padding: 20px; border-radius: 14px; background: var(--card-surface-elevated); border: 1px solid var(--card-border); text-align: left; margin-bottom: 20px;">
+          <!-- Difficulty Selector -->
+          <div style="margin-bottom: 18px;">
+            <div style="font-size: 12px; font-weight: 800; margin-bottom: 8px;">Select Difficulty:</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <button type="button" class="setup-diff-btn btn-secondary" data-diff="easy" style="padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; ${chosenDiff === "easy" ? "background: var(--brand-lime); color: #0E0F0C; border-color: var(--brand-lime); font-weight: 800;" : ""}">Easy</button>
+              <button type="button" class="setup-diff-btn btn-secondary" data-diff="medium" style="padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; ${chosenDiff === "medium" ? "background: var(--brand-lime); color: #0E0F0C; border-color: var(--brand-lime); font-weight: 800;" : ""}">Medium</button>
+              <button type="button" class="setup-diff-btn btn-secondary" data-diff="hard" style="padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; ${chosenDiff === "hard" ? "background: var(--brand-lime); color: #0E0F0C; border-color: var(--brand-lime); font-weight: 800;" : ""}">Hard</button>
+            </div>
+            <div id="setup-diff-desc" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">
+              ${chosenDiff === "easy" ? "Fundamental definitions and explicit facts from the video." : (chosenDiff === "hard" ? "Deep conceptual analysis, edge cases, and tricky plausible options." : "Conceptual understanding, deduction, and practical relationships.")}
+            </div>
+          </div>
+
+          <!-- Question Count Selector -->
+          <div>
+            <div style="font-size: 12px; font-weight: 800; margin-bottom: 8px;">Number of Questions:</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <button type="button" class="setup-count-btn btn-secondary" data-count="3" style="padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; ${chosenCount === 3 ? "background: var(--brand-lime); color: #0E0F0C; border-color: var(--brand-lime); font-weight: 800;" : ""}">3 Questions</button>
+              <button type="button" class="setup-count-btn btn-secondary" data-count="5" style="padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; ${chosenCount === 5 ? "background: var(--brand-lime); color: #0E0F0C; border-color: var(--brand-lime); font-weight: 800;" : ""}">5 Questions</button>
+              <button type="button" class="setup-count-btn btn-secondary" data-count="10" style="padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; ${chosenCount === 10 ? "background: var(--brand-lime); color: #0E0F0C; border-color: var(--brand-lime); font-weight: 800;" : ""}">10 Questions</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="start-setup-quiz-btn" class="btn-primary" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 800; border-radius: 10px; cursor: pointer;">
+          Start ${chosenCount} Qs Quiz (${chosenDiff.charAt(0).toUpperCase() + chosenDiff.slice(1)}) →
+        </button>
+      </div>
+    `;
+
+    const diffDesc = {
+      easy: "Fundamental definitions and explicit facts from the video.",
+      medium: "Conceptual understanding, deduction, and practical relationships.",
+      hard: "Deep conceptual analysis, edge cases, and tricky plausible options."
+    };
+
+    const startBtn = document.getElementById("start-setup-quiz-btn");
+
+    function updateStartBtnText() {
+      if (startBtn) {
+        startBtn.textContent = `Start ${chosenCount} Qs Quiz (${chosenDiff.charAt(0).toUpperCase() + chosenDiff.slice(1)}) →`;
+      }
+    }
+
+    document.querySelectorAll(".setup-diff-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        document.querySelectorAll(".setup-diff-btn").forEach(b => {
+          b.style.background = "var(--btn-secondary-bg)";
+          b.style.color = "var(--text-main)";
+          b.style.borderColor = "var(--card-border)";
+          b.style.fontWeight = "600";
+        });
+        e.currentTarget.style.background = "var(--brand-lime)";
+        e.currentTarget.style.color = "#0E0F0C";
+        e.currentTarget.style.borderColor = "var(--brand-lime)";
+        e.currentTarget.style.fontWeight = "800";
+        chosenDiff = e.currentTarget.getAttribute("data-diff");
+        const descEl = document.getElementById("setup-diff-desc");
+        if (descEl) descEl.textContent = diffDesc[chosenDiff] || "";
+        updateStartBtnText();
+      });
+    });
+
+    document.querySelectorAll(".setup-count-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        document.querySelectorAll(".setup-count-btn").forEach(b => {
+          b.style.background = "var(--btn-secondary-bg)";
+          b.style.color = "var(--text-main)";
+          b.style.borderColor = "var(--card-border)";
+          b.style.fontWeight = "600";
+        });
+        e.currentTarget.style.background = "var(--brand-lime)";
+        e.currentTarget.style.color = "#0E0F0C";
+        e.currentTarget.style.borderColor = "var(--brand-lime)";
+        e.currentTarget.style.fontWeight = "800";
+        chosenCount = parseInt(e.currentTarget.getAttribute("data-count"), 10) || 5;
+        updateStartBtnText();
+      });
+    });
+
+    if (startBtn) {
+      startBtn.addEventListener("click", () => {
+        loadQuiz(chosenDiff, chosenCount, true);
+      });
+    }
+  }
+
+  async function loadQuiz(difficulty = "medium", numQuestions = 5, forceRefresh = false) {
     if (!currentResult) return;
+    selectedQuizDifficulty = difficulty;
+    selectedQuizCount = numQuestions;
+
     quizContainer.innerHTML = `
       <div style="text-align: center; padding: 48px 20px;">
         <div style="width: 36px; height: 36px; border: 3px solid var(--card-border); border-top-color: var(--brand-lime); border-radius: 50%; margin: 0 auto 14px auto; animation: spin 0.8s linear infinite;"></div>
-        <div style="font-size: 15px; font-weight: 700;">Generating Knowledge Check Quiz...</div>
-        <div style="font-size: 13px; color: var(--text-muted);">Powered by Grok AI with local fallback</div>
+        <div style="font-size: 15px; font-weight: 700;">Generating ${difficulty.toUpperCase()} Quiz (${numQuestions} Questions)...</div>
+        <div style="font-size: 13px; color: var(--text-muted);">Synthesizing conceptual questions with instant feedback</div>
       </div>
     `;
 
@@ -562,19 +676,22 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({
           title: currentResult.title,
           summary: currentResult.summary,
-          transcript: currentResult.transcript
+          transcript: currentResult.transcript,
+          difficulty: difficulty,
+          num_questions: numQuestions,
+          force_refresh: forceRefresh
         })
       });
       const data = await res.json();
       cachedQuiz = data.quiz || [];
-      renderQuiz(cachedQuiz, data.provider);
-      showToast(`Quiz ready! (${data.provider})`, "success");
+      renderQuiz(cachedQuiz, data.provider, difficulty);
+      showToast(`Quiz ready! (${numQuestions} Qs • ${difficulty.toUpperCase()})`, "success");
     } catch (err) {
       quizContainer.innerHTML = `<div style="color: var(--color-danger); text-align: center; padding: 20px;">Failed to generate quiz: ${err.message}</div>`;
     }
   }
 
-  function renderQuiz(questions, provider) {
+  function renderQuiz(questions, provider, difficulty = "medium") {
     if (!questions || questions.length === 0) {
       quizContainer.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--text-muted);">No quiz questions generated.</div>`;
       return;
@@ -591,7 +708,10 @@ document.addEventListener("DOMContentLoaded", () => {
       quizContainer.innerHTML = `
         <div style="max-width: 600px; margin: 0 auto;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 13px;">
-            <span style="font-weight: 700;">Question ${qIdx + 1} of ${questions.length}</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-weight: 700;">Question ${qIdx + 1} of ${questions.length}</span>
+              <span style="font-size: 11px; padding: 2px 8px; border-radius: 9999px; background: var(--btn-secondary-bg); border: 1px solid var(--card-border); text-transform: capitalize;">${difficulty}</span>
+            </div>
             <span style="font-size: 11px; padding: 2px 8px; border-radius: 9999px; background: var(--btn-secondary-bg); border: 1px solid var(--card-border);">${provider || "AI"}</span>
           </div>
 
@@ -668,14 +788,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--brand-lime); color: #0E0F0C; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px auto;">🏆</div>
                 <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;">Quiz Completed!</h3>
                 <div style="font-size: 36px; font-weight: 900; color: var(--brand-lime); margin: 16px 0;">${pct}%</div>
-                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">You answered ${correctCount} of ${questions.length} questions correctly.</p>
-                <button id="quiz-retake-btn" class="btn-primary" style="padding: 10px 24px;">Retake Quiz</button>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">You answered ${correctCount} of ${questions.length} questions correctly (${difficulty}).</p>
+                
+                <div style="display: flex; justify-content: center; gap: 10px;">
+                  <button id="quiz-retake-btn" class="btn-secondary" style="padding: 10px 20px;">Retake Quiz</button>
+                  <button id="quiz-more-btn" class="btn-primary" style="padding: 10px 20px;">Generate More Questions</button>
+                </div>
               </div>
             `;
+
             document.getElementById("quiz-retake-btn").addEventListener("click", () => {
               for (const k in answers) delete answers[k];
               qIdx = 0;
               renderCurrentQuestion();
+            });
+
+            document.getElementById("quiz-more-btn").addEventListener("click", () => {
+              renderQuizSetup();
             });
           }
         });
@@ -685,31 +814,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCurrentQuestion();
   }
 
-  // --- Quick Study Toolkit Card Listeners ---
-  const quickFlashcardsCard = document.getElementById("quick-flashcards-card");
-  const quickPresentationCard = document.getElementById("quick-presentation-card");
-  const quickQuizCard = document.getElementById("quick-quiz-card");
 
-  if (quickFlashcardsCard) {
-    quickFlashcardsCard.addEventListener("click", () => {
-      switchTab(tabFlashcardsView, viewFlashcardsPane);
-      if (!cachedFlashcards) loadFlashcards();
-    });
-  }
-
-  if (quickPresentationCard) {
-    quickPresentationCard.addEventListener("click", () => {
-      switchTab(tabPresentationView, viewPresentationPane);
-      if (!cachedPresentation) loadPresentation();
-    });
-  }
-
-  if (quickQuizCard) {
-    quickQuizCard.addEventListener("click", () => {
-      switchTab(tabQuizView, viewQuizPane);
-      if (!cachedQuiz) loadQuiz();
-    });
-  }
 
   function renderOutputWorkspace(result) {
     if (!result) return;
