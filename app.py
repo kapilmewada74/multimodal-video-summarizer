@@ -11,7 +11,7 @@ load_dotenv()
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from services import (
@@ -240,17 +240,42 @@ async def api_generate_quiz(payload: GenerateQuizRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def cleanup_old_pptx(directory: str):
+    """Automatically cleans up previous temporary presentation PPTX files to save disk storage."""
+    try:
+        if not os.path.exists(directory):
+            return
+        for filename in os.listdir(directory):
+            if filename.startswith("presentation_") and filename.endswith(".pptx"):
+                filepath = os.path.join(directory, filename)
+                try:
+                    if os.path.isfile(filepath):
+                        os.remove(filepath)
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+
+# Run cleanup on server launch
+cleanup_old_pptx(OUTPUT_DIR)
+
+
 @app.post("/api/download/pptx")
 async def api_download_pptx(payload: PptxRequest):
     try:
-        temp_filename = f"presentation_{uuid.uuid4().hex[:8]}.pptx"
-        output_path = os.path.join(OUTPUT_DIR, temp_filename)
-        generators.build_pptx_file(payload.model_dump(), output_path)
+        # Clean up any leftover temporary presentations to save storage
+        cleanup_old_pptx(OUTPUT_DIR)
         
-        return FileResponse(
-            output_path,
-            filename=f"{(payload.title or 'Presentation').replace(' ', '_')}.pptx",
-            media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        # Build PowerPoint file directly in memory without cluttering disk
+        pptx_bytes = generators.build_pptx_file(payload.model_dump())
+        safe_title = (payload.title or 'Presentation').replace(' ', '_').replace('"', '')
+        return Response(
+            content=pptx_bytes,
+            media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            headers={
+                "Content-Disposition": f'attachment; filename="{safe_title}.pptx"'
+            }
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to compile PPTX: {e}")
