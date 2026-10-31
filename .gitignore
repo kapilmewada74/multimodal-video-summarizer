@@ -15,6 +15,7 @@ env/
 
 # Generated output
 output/*.txt
+output/*.json
 
 # Downloaded media
 *.mp4
