@@ -34,152 +34,31 @@ SUMMARY_FILE = "output/summary.txt"
 # ============================================================
 
 SUMMARY_PROMPT = """
-You are an expert educational video summarization AI.
+You are an expert video summarization AI.
 
-Your task is to create a highly accurate and useful summary
-from the provided transcript.
+Your task is to create a highly accurate, clear, and comprehensive summary strictly from the provided transcript.
 
-IMPORTANT INSTRUCTIONS:
+CRITICAL INSTRUCTIONS:
+1. Summarize ONLY information actually present in the transcript. Never invent facts, formulas, code, or concepts.
+2. Remove filler words, conversational chitchat, greetings, and unnecessary repetition.
+3. Preserve key concepts, terminology, steps, and examples directly mentioned by the speaker.
+4. Adapt the structure naturally to the topic of the video (e.g. programming, science, lecture, podcast).
+5. Do NOT invent mathematical formulas or code unless the speaker explicitly discussed them in the transcript.
 
-1. Summarize ONLY information present in the transcript.
-2. Do not invent facts, examples, explanations, or conclusions.
-3. Remove unnecessary repetition, greetings, filler words,
-   and conversational noise.
-4. Preserve the important concepts, explanations, examples,
-   definitions, steps, arguments, and conclusions.
-5. Organize the summary using clear headings and bullet points.
-6. Make the summary easy for a student to understand.
-7. Preserve important technical terminology.
-8. If the speaker explains a process or procedure, preserve
-   the steps in the correct order.
-9. If examples are given, include the important examples.
-10. If comparisons are made, preserve the comparison clearly.
-
-============================================================
-MATHEMATICAL FORMULA AND EQUATION RULE
-============================================================
-
-This is extremely important.
-
-If the transcript contains ANY mathematical content, you MUST
-preserve it in the summary.
-
-This includes:
-
-- Mathematical formulas
-- Equations
-- Algebraic expressions
-- Statistical formulas
-- Machine learning formulas
-- Physics equations
-- Chemical equations
-- Mathematical symbols
-- Variables
-- Functions
-- Calculations
-- Numerical examples
-- Derivations
-- Mathematical relationships
-
-DO NOT remove mathematical formulas just because they are
-difficult to understand.
-
-Whenever possible, write the mathematical expression using
-clear mathematical notation.
-
-For example, if the transcript says:
-
-"mean squared error is equal to one by n times the sum of
-y minus y hat whole square"
-
-write:
-
-MSE = (1/n) Σ(yᵢ - ŷᵢ)²
-
-If the transcript contains an equation and its explanation,
-include BOTH:
-
-Formula:
-[formula]
-
-Meaning:
-[explanation]
-
-If a numerical example is provided, preserve the calculation
-and final answer as well.
-
-Example:
-
-Formula:
-RMSE = √MSE
-
-If MSE = 25:
-
-RMSE = √25 = 5
-
-Do NOT replace mathematical formulas with vague statements
-such as "the speaker explained the MSE formula."
-
-Write the actual formula.
-
-============================================================
-TECHNICAL CONTENT
-============================================================
-
-For programming, AI, machine learning, data science,
-mathematics, cloud computing, or other technical topics:
-
-- Preserve important terminology.
-- Preserve algorithms and their steps.
-- Preserve formulas.
-- Preserve important code concepts.
-- Preserve input/output relationships.
-- Preserve important numerical values.
-- Preserve important definitions.
-
-============================================================
-OUTPUT FORMAT
-============================================================
-
-Create the summary in this structure when applicable:
-
+OUTPUT STRUCTURE:
 # Summary
 
 ## 1. Main Topic
-Explain the main topic briefly.
+Brief explanation of what the video covers.
 
-## 2. Important Concepts
-- Concept 1
-- Concept 2
-- Concept 3
+## 2. Key Concepts & Definitions
+- Bullet points detailing the key concepts, terms, or ideas introduced.
 
 ## 3. Detailed Explanation
-Explain the important ideas from the transcript.
+Clear, structured breakdown of the explanations and arguments presented.
 
-## 4. Mathematical Formulas
-For every important mathematical formula:
-
-Formula:
-...
-
-Explanation:
-...
-
-Example:
-...
-
-## 5. Important Examples
-Include important examples from the transcript.
-
-## 6. Key Takeaways
-- Point 1
-- Point 2
-- Point 3
-
-Do not create sections that are irrelevant to the transcript.
-
-The final summary should be concise but sufficiently detailed
-to be useful for studying.
+## 4. Key Takeaways
+- Practical insights or main conclusions to remember from this video.
 
 TRANSCRIPT:
 
@@ -192,60 +71,30 @@ TRANSCRIPT:
 # ============================================================
 
 FINAL_SUMMARY_PROMPT = """
-You are an expert summarization AI.
+You are an expert video summarization AI.
 
-Below are summaries generated from different sections of
-the same transcript.
+Below are summaries generated from different sections of the transcript. Combine them into ONE coherent, well-structured, final study summary.
 
-Combine them into ONE coherent final summary.
+INSTRUCTIONS:
+1. Deduplicate repeated points across sections.
+2. Maintain logical flow and clear hierarchy.
+3. Faithfully preserve any key definitions, steps, code concepts, or terminology discussed.
+4. Do NOT hallucinate concepts, examples, or formulas not discussed in the original transcript.
 
-IMPORTANT:
-
-- Remove duplicate information.
-- Keep all important concepts.
-- Keep important examples.
-- Keep technical terminology.
-- Keep numerical values.
-- Keep mathematical formulas and equations.
-- NEVER remove a mathematical formula.
-- If a formula appears, write the actual formula.
-- Preserve explanations associated with formulas.
-- Preserve numerical calculations and their answers.
-- Do not introduce information that was not present in the
-  original transcript.
-- Organize the final answer logically.
-- Make it useful for a student revising the topic.
-
-MATHEMATICAL CONTENT:
-
-Whenever mathematical content exists, use:
-
-Formula:
-[actual formula]
-
-Explanation:
-[what the formula means]
-
-Example:
-[calculation, if present]
-
-FINAL OUTPUT:
-
+OUTPUT STRUCTURE:
 # Video Summary
 
 ## Main Topic
+A concise overview of the core subject.
 
-## Important Concepts
+## Key Concepts
+- Bullet points of primary concepts, techniques, or definitions.
 
-## Detailed Explanation
-
-## Mathematical Formulas
-
-## Examples
+## Detailed Breakdown
+Structured sections explaining the topics in depth.
 
 ## Key Takeaways
-
-Only include sections that contain relevant information.
+- Main conclusions or practical insights mentioned.
 
 CHUNK SUMMARIES:
 

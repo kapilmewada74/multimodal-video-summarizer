@@ -139,24 +139,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Processing & Stepper State ---
+  // --- Processing & Loading State ---
   const startSummarizeBtn = document.getElementById("start-summarize-btn");
-  const stepperContainer = document.getElementById("stepper-container");
-  const progressFill = document.getElementById("progress-fill");
-  const progressPercentText = document.getElementById("progress-percent-text");
-  const stepMessageText = document.getElementById("step-message-text");
-  
-  const step1Pill = document.getElementById("step-1-pill");
-  const step2Pill = document.getElementById("step-2-pill");
-  const step3Pill = document.getElementById("step-3-pill");
+  const loadingContainer = document.getElementById("loading-container");
+  const errorContainer = document.getElementById("error-container");
 
   let activePollingTimer = null;
   let activeJobId = null;
 
   if (startSummarizeBtn) {
     startSummarizeBtn.addEventListener("click", async () => {
-      const mode = document.querySelector('input[name="summary-mode"]:checked')?.value || "educational";
-
       if (activeInputMode === "url") {
         const url = (youtubeUrlInput.value || "").trim();
         if (!url) {
@@ -164,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
           youtubeUrlInput.focus();
           return;
         }
-        await initiateJob("/api/summarize/url", { url, mode }, false);
+        await initiateJob("/api/summarize/url", { url }, false);
       } else {
         if (!currentUploadedFile) {
           showToast("Please select a video or audio file to upload.", "error");
@@ -172,7 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         const formData = new FormData();
         formData.append("file", currentUploadedFile);
-        formData.append("mode", mode);
         await initiateJob("/api/summarize/upload", formData, true);
       }
     });
@@ -181,8 +172,9 @@ document.addEventListener("DOMContentLoaded", () => {
   async function initiateJob(endpoint, body, isFormData) {
     startSummarizeBtn.disabled = true;
     startSummarizeBtn.textContent = "Processing...";
-    stepperContainer.style.display = "block";
-    resetStepper();
+    if (loadingContainer) loadingContainer.style.display = "block";
+    if (errorContainer) errorContainer.style.display = "none";
+    if (workspaceContainer) workspaceContainer.style.display = "none";
 
     try {
       const opts = {
@@ -206,32 +198,11 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast(err.message, "error");
       startSummarizeBtn.disabled = false;
       startSummarizeBtn.textContent = "Summarize Video →";
-      stepMessageText.textContent = `Error: ${err.message}`;
-    }
-  }
-
-  function resetStepper() {
-    progressFill.style.width = "5%";
-    progressPercentText.textContent = "5%";
-    stepMessageText.textContent = "Task initialized. Preparing pipeline...";
-    setStepState(step1Pill, "processing");
-    setStepState(step2Pill, "pending");
-    setStepState(step3Pill, "pending");
-  }
-
-  function setStepState(pill, state) {
-    if (!pill) return;
-    pill.classList.remove("processing", "completed", "failed");
-    const dot = pill.querySelector(".pulsing-dot");
-
-    if (state === "processing") {
-      pill.classList.add("processing");
-      if (dot) dot.style.display = "inline-block";
-    } else if (state === "completed") {
-      pill.classList.add("completed");
-      if (dot) dot.style.display = "inline-block";
-    } else {
-      if (dot) dot.style.display = "none";
+      if (loadingContainer) loadingContainer.style.display = "none";
+      if (errorContainer) {
+        errorContainer.style.display = "block";
+        errorContainer.textContent = err.message;
+      }
     }
   }
 
@@ -244,33 +215,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!res.ok) throw new Error("Could not check task status.");
 
         const job = await res.json();
-        const progress = Math.max(5, Math.min(100, job.progress || 5));
-        progressFill.style.width = `${progress}%`;
-        progressPercentText.textContent = `${progress}%`;
-        stepMessageText.textContent = job.message || "Working...";
-
-        // Update step pills
-        if (job.step === 1) {
-          setStepState(step1Pill, "processing");
-          setStepState(step2Pill, "pending");
-          setStepState(step3Pill, "pending");
-        } else if (job.step === 2) {
-          setStepState(step1Pill, "completed");
-          setStepState(step2Pill, "processing");
-          setStepState(step3Pill, "pending");
-        } else if (job.step === 3 && job.status === "processing") {
-          setStepState(step1Pill, "completed");
-          setStepState(step2Pill, "completed");
-          setStepState(step3Pill, "processing");
-        }
 
         if (job.status === "completed") {
           clearInterval(activePollingTimer);
-          setStepState(step1Pill, "completed");
-          setStepState(step2Pill, "completed");
-          setStepState(step3Pill, "completed");
-          progressFill.style.width = "100%";
-          progressPercentText.textContent = "100%";
+          if (loadingContainer) loadingContainer.style.display = "none";
           startSummarizeBtn.disabled = false;
           startSummarizeBtn.textContent = "Summarize Video →";
           showToast("Summarization complete!", "success");
@@ -278,9 +226,13 @@ document.addEventListener("DOMContentLoaded", () => {
           loadHistory();
         } else if (job.status === "failed") {
           clearInterval(activePollingTimer);
+          if (loadingContainer) loadingContainer.style.display = "none";
           startSummarizeBtn.disabled = false;
           startSummarizeBtn.textContent = "Summarize Video →";
-          stepMessageText.innerHTML = `<span style="color: var(--color-danger); font-weight: 600;">Failed: ${job.error || "An error occurred."}</span>`;
+          if (errorContainer) {
+            errorContainer.style.display = "block";
+            errorContainer.textContent = job.error || "An error occurred.";
+          }
           showToast(job.error || "Summarization failed", "error");
         }
       } catch (err) {
@@ -387,9 +339,98 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Export Actions ---
   const copySummaryBtn = document.getElementById("copy-summary-btn");
   const copyTranscriptBtn = document.getElementById("copy-transcript-btn");
-  const downloadMdBtn = document.getElementById("download-md-btn");
-  const downloadTxtBtn = document.getElementById("download-txt-btn");
   const exportPdfBtn = document.getElementById("export-pdf-btn");
+  const downloadTxtSummaryBtn = document.getElementById("download-txt-summary-btn");
+  const exportPdfTranscriptBtn = document.getElementById("export-pdf-transcript-btn");
+  const downloadTxtBtn = document.getElementById("download-txt-btn");
+
+  function printCleanPdf(title, contentHtml) {
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) return;
+
+    doc.open();
+    doc.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <style>
+    @page {
+      margin: 16mm;
+      size: auto;
+    }
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #111111;
+      background: #ffffff;
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+    }
+    .pdf-header {
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #eaeaea;
+    }
+    .pdf-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0E0F0C;
+      margin: 0;
+    }
+    .pdf-body {
+      font-size: 13.5px;
+      color: #222222;
+      line-height: 1.7;
+    }
+    h1, h2, h3, h4 { color: #0E0F0C; font-weight: 700; margin-top: 18px; margin-bottom: 8px; }
+    h1 { font-size: 18px; }
+    h2 { font-size: 15px; }
+    h3 { font-size: 13.5px; }
+    p { margin: 8px 0; }
+    ul, ol { padding-left: 20px; margin: 8px 0; }
+    li { margin: 4px 0; }
+    code { font-family: monospace; background: #f4f4f4; padding: 2px 4px; border-radius: 4px; font-size: 12px; }
+    pre { background: #f4f4f4; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+    .transcript-line { margin-bottom: 10px; font-size: 13.5px; color: #222; }
+  </style>
+</head>
+<body>
+  <div class="pdf-header">
+    <h1 class="pdf-title">${title}</h1>
+  </div>
+  <div class="pdf-body">
+    ${contentHtml}
+  </div>
+</body>
+</html>`);
+    doc.close();
+
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+      }, 1000);
+    }, 250);
+  }
 
   if (copySummaryBtn) {
     copySummaryBtn.addEventListener("click", () => {
@@ -397,6 +438,21 @@ document.addEventListener("DOMContentLoaded", () => {
       navigator.clipboard.writeText(currentResult.summary).then(() => {
         showToast("Summary copied to clipboard!", "success");
       });
+    });
+  }
+
+  if (exportPdfBtn) {
+    exportPdfBtn.addEventListener("click", () => {
+      if (!currentResult || !currentResult.summary) return;
+      printCleanPdf(currentResult.title || "Video Summary", summaryContentEl.innerHTML);
+    });
+  }
+
+  if (downloadTxtSummaryBtn) {
+    downloadTxtSummaryBtn.addEventListener("click", () => {
+      if (!currentResult || !currentResult.summary) return;
+      downloadFile(currentResult.summary, `${sanitizeFilename(currentResult.title)}_summary.txt`, "text/plain");
+      showToast("Downloaded Summary TXT!", "success");
     });
   }
 
@@ -409,11 +465,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (downloadMdBtn) {
-    downloadMdBtn.addEventListener("click", () => {
-      if (!currentResult || !currentResult.summary) return;
-      downloadFile(currentResult.summary, `${sanitizeFilename(currentResult.title)}_summary.md`, "text/markdown");
-      showToast("Downloaded Markdown file!", "success");
+  if (exportPdfTranscriptBtn) {
+    exportPdfTranscriptBtn.addEventListener("click", () => {
+      if (!currentResult || !currentResult.transcript) return;
+      const transcriptHtml = currentResult.transcript
+        .split("\n")
+        .filter(l => l.trim().length > 0)
+        .map(l => `<p class="transcript-line">${l.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`)
+        .join("");
+      printCleanPdf(`${currentResult.title || "Video"} — Full Transcript`, transcriptHtml);
     });
   }
 
@@ -421,13 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
     downloadTxtBtn.addEventListener("click", () => {
       if (!currentResult || !currentResult.transcript) return;
       downloadFile(currentResult.transcript, `${sanitizeFilename(currentResult.title)}_transcript.txt`, "text/plain");
-      showToast("Downloaded Transcript file!", "success");
-    });
-  }
-
-  if (exportPdfBtn) {
-    exportPdfBtn.addEventListener("click", () => {
-      window.print();
+      showToast("Downloaded Transcript TXT!", "success");
     });
   }
 

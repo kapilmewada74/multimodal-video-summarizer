@@ -263,7 +263,7 @@ def _transcribe_and_summarize(job_id: str, audio_path: str, title: str, duration
         res = chunk_chain.invoke({"transcript": chunk})
         summaries.append(res)
 
-    update_job(job_id, step=3, step_name="Synthesizing Final Summary", progress=95, message="Synthesizing final structured summary with formulas...")
+    update_job(job_id, step=3, step_name="Synthesizing Final Summary", progress=95, message="Synthesizing final structured summary...")
     
     if len(summaries) == 1:
         final_summary = summaries[0]

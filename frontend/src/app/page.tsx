@@ -3,11 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Navbar } from "../components/Navbar";
 import { ToolCard } from "../components/ToolCard";
-import { ProgressStepper } from "../components/ProgressStepper";
 import { OutputWorkspace } from "../components/OutputWorkspace";
 import { RecentHistory } from "../components/RecentHistory";
 import { JobState, JobResult, HistoryItem } from "../lib/types";
-import { CheckCircle2, AlertCircle, Info } from "lucide-react";
+import { CheckCircle2, AlertCircle, Info, Loader2 } from "lucide-react";
 
 export default function Home() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -176,14 +175,14 @@ export default function Home() {
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        {/* Clean Hero Section (Without Eyebrow Chip) */}
+        {/* Clean Hero Section */}
         <div className="text-center mb-10 no-print">
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.15] mb-3.5 text-[var(--text-main)]">
             Summarize Any Video in Seconds
           </h1>
 
           <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto leading-relaxed font-normal">
-            Generate structured notes, preserve mathematical formulas, and explore searchable transcripts — powered by local AI without external API fees.
+            Generate structured notes and explore searchable transcripts — powered by local AI without external API fees.
           </p>
         </div>
 
@@ -197,10 +196,21 @@ export default function Home() {
           />
         </div>
 
-        {/* Live Stepper */}
-        {job && job.status !== "completed" && (
-          <div className="no-print">
-            <ProgressStepper job={job} />
+        {/* Minimal Clean Loading Indicator */}
+        {job && (job.status === "processing" || job.status === "queued") && (
+          <div className="flex flex-col items-center justify-center py-12 px-6 my-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl shadow-sm text-center no-print">
+            <div className="w-10 h-10 border-3 border-[var(--card-border)] border-t-[var(--brand-lime)] rounded-full animate-spin mb-4" />
+            <h3 className="text-base font-bold text-[var(--text-main)]">Generating summary...</h3>
+            <p className="text-xs text-[var(--text-muted)] mt-1 max-w-sm">
+              Transcribing audio and synthesizing key takeaways locally.
+            </p>
+          </div>
+        )}
+
+        {/* Failure Alert */}
+        {job && job.status === "failed" && (
+          <div className="p-4 my-6 bg-red-500/10 border border-red-500/20 rounded-xl text-center text-sm font-semibold text-[var(--color-danger)] no-print">
+            {job.error || "An error occurred while generating the summary."}
           </div>
         )}
 
