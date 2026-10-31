@@ -2,6 +2,10 @@ import os
 import subprocess
 import sys
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR:
+    os.chdir(BASE_DIR)
+
 
 # ============================================================
 # CONFIGURATION
