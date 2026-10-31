@@ -66,6 +66,58 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
     onGenerate(difficulty, numQuestions, true);
   };
 
+  // Keyboard navigation & Shortcuts for Quiz
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      // 1. Setup Screen Shortcuts
+      if (!quiz || quiz.length === 0 || showConfig) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleStartCustomQuiz();
+        }
+        return;
+      }
+
+      // 2. Completed Screen Shortcuts
+      if (isCompleted) {
+        if (e.key.toLowerCase() === "r") {
+          e.preventDefault();
+          handleRetake();
+        } else if (e.key.toLowerCase() === "m" || e.key === "Enter") {
+          e.preventDefault();
+          handleGenerateMore();
+        }
+        return;
+      }
+
+      // 3. Question Answering Shortcuts (1..4 or A..D)
+      const key = e.key.toLowerCase();
+      if (["1", "a"].includes(key)) {
+        e.preventDefault();
+        handleSelectOption(0);
+      } else if (["2", "b"].includes(key)) {
+        e.preventDefault();
+        handleSelectOption(1);
+      } else if (["3", "c"].includes(key)) {
+        e.preventDefault();
+        handleSelectOption(2);
+      } else if (["4", "d"].includes(key)) {
+        e.preventDefault();
+        handleSelectOption(3);
+      } else if (e.key === "Enter" || e.code === "Space") {
+        if (selectedAnswers[currentIdx] !== undefined) {
+          e.preventDefault();
+          handleNext();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [quiz, showConfig, isCompleted, currentIdx, selectedAnswers, difficulty, numQuestions]);
+
   // Calculate score
   const totalCorrect = quiz.reduce((acc, q, idx) => {
     return acc + (selectedAnswers[idx] === q.answerIndex ? 1 : 0);
@@ -86,61 +138,77 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
   // Setup / Config Screen (when no quiz or when user clicks "Generate More Questions")
   if (!quiz || quiz.length === 0 || showConfig) {
     return (
-      <div className="max-w-xl mx-auto py-8 text-center animate-in fade-in duration-200">
-        <div className="w-12 h-12 rounded-full bg-[var(--brand-lime)]/15 text-[var(--brand-lime)] flex items-center justify-center mx-auto mb-3">
-          <HelpCircle className="w-6 h-6 text-[#0E0F0C] dark:text-[var(--brand-lime)]" />
+      <div className="max-w-md mx-auto py-6 text-center animate-in fade-in duration-200">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">
+          <HelpCircle className="w-3.5 h-3.5" />
+          <span>Practice Quiz Studio</span>
         </div>
-        <h3 className="text-xl font-black text-[var(--text-main)] mb-1">
-          {quiz.length > 0 ? "Generate More Questions" : "Interactive Practice Quiz"}
+
+        <h3 className="text-2xl font-black text-[var(--text-main)] tracking-tight mb-1">
+          {quiz.length > 0 ? "Customize Quiz" : "Test Your Knowledge"}
         </h3>
-        <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto mb-6">
-          Choose your desired difficulty and number of questions to test your knowledge.
+        <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto mb-6">
+          Configure difficulty and question count to test your understanding.
         </p>
 
-        <div className="p-6 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] text-left mb-6 shadow-sm">
-          {/* Difficulty Selector */}
+        <div className="p-5 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] text-left mb-6 shadow-sm">
+          {/* Difficulty Segmented Controller */}
           <div className="mb-5">
-            <label className="text-xs font-bold text-[var(--text-main)] block mb-2">
-              Select Difficulty
-            </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                Difficulty
+              </span>
+              <span className="text-[11px] font-bold text-[var(--text-main)]">
+                {difficulty === "easy" && "Core Facts"}
+                {difficulty === "medium" && "Standard Recall"}
+                {difficulty === "hard" && "Deep Synthesis"}
+              </span>
+            </div>
+            <div className="grid grid-cols-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-1 gap-1">
               {(["easy", "medium", "hard"] as const).map((diff) => (
                 <button
                   key={diff}
                   type="button"
                   onClick={() => setDifficulty(diff)}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer border ${
+                  className={`py-2 px-3 rounded-lg text-xs font-bold capitalize transition-all cursor-pointer ${
                     difficulty === diff
-                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)] shadow-sm font-black"
-                      : "bg-[var(--card-bg)] text-[var(--text-muted)] border-[var(--card-border)] hover:border-[var(--text-muted)]"
+                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                   }`}
                 >
                   {diff}
                 </button>
               ))}
             </div>
-            <p className="text-[11px] text-[var(--text-muted)] mt-1.5">
+            <p className="text-[11px] text-[var(--text-muted)] mt-2 leading-relaxed">
               {difficulty === "easy" && "Fundamental definitions and explicit facts from the video."}
               {difficulty === "medium" && "Conceptual understanding, deduction, and practical relationships."}
               {difficulty === "hard" && "Deep conceptual analysis, edge cases, and tricky plausible options."}
             </p>
           </div>
 
-          {/* Number of Questions Selector */}
+          {/* Number of Questions Segmented Controller */}
           <div>
-            <label className="text-xs font-bold text-[var(--text-main)] block mb-2">
-              Number of Questions
-            </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                Number of Questions
+              </span>
+              <span className="text-[11px] font-bold text-[var(--text-main)]">
+                {numQuestions === 3 && "~2 mins"}
+                {numQuestions === 5 && "~4 mins"}
+                {numQuestions === 10 && "~8 mins"}
+              </span>
+            </div>
+            <div className="grid grid-cols-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-1 gap-1">
               {[3, 5, 10].map((num) => (
                 <button
                   key={num}
                   type="button"
                   onClick={() => setNumQuestions(num)}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                  className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     numQuestions === num
-                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)] shadow-sm font-black"
-                      : "bg-[var(--card-bg)] text-[var(--text-muted)] border-[var(--card-border)] hover:border-[var(--text-muted)]"
+                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                   }`}
                 >
                   {num} Questions
@@ -154,17 +222,20 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
           {quiz.length > 0 && (
             <button
               onClick={() => setShowConfig(false)}
-              className="px-5 py-2.5 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold transition-all cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold transition-all cursor-pointer"
             >
-              Back to Current Quiz
+              Cancel
             </button>
           )}
           <button
             onClick={handleStartCustomQuiz}
             className="px-6 py-2.5 rounded-xl bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] text-xs font-black transition-all shadow-sm inline-flex items-center gap-2 cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Start {numQuestions} Qs Quiz ({difficulty})</span>
+            <span>Start Practice Quiz</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 font-mono font-bold">
+              {numQuestions} Qs • {difficulty}
+            </span>
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

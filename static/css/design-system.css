@@ -92,11 +92,37 @@ body {
   min-height: 100vh;
 }
 
-/* Focus Ring */
+/* Focus Ring (Buttons, Links, Custom Controls) */
 :focus-visible {
   outline: 2px solid var(--brand-lime);
   outline-offset: 2px;
   border-radius: 6px;
+}
+
+/* Form Inputs: Eliminate awkward offset rings, provide crisp, sleek border highlights */
+input, textarea, select {
+  outline: none !important;
+}
+
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none !important;
+}
+
+input[type="text"], input[type="url"], input[type="search"], textarea {
+  outline: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="text"]:focus, input[type="url"]:focus, input[type="search"]:focus, textarea:focus {
+  outline: none !important;
+  border-color: #0E0F0C !important;
+  box-shadow: 0 0 0 2px rgba(14, 15, 12, 0.08) !important;
+}
+
+html.dark input[type="text"]:focus, html.dark input[type="url"]:focus, html.dark input[type="search"]:focus, html.dark textarea:focus {
+  outline: none !important;
+  border-color: rgba(242, 242, 240, 0.4) !important;
+  box-shadow: 0 0 0 2px rgba(217, 236, 149, 0.18) !important;
 }
 
 /* Custom Scrollbars */
