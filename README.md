@@ -1,6 +1,9 @@
 # multimodal-video-summarizer
 AI-powered multimodal video summarization and RAG assistant that summarizes videos from URLs or uploaded files.
 
+## Documentation & Design
+- **[UI Design System & Architecture Specification](docs/UI_DESIGN_SYSTEM.md)** — Complete UI guidelines, design tokens, component anatomy, and product workflow adapted for market-level usability (iLovePDF utility pattern with dark-first modern aesthetics).
+
 ## Contributing
 
 Contributions are welcome!
