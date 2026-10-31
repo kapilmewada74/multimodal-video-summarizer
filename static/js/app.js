@@ -571,58 +571,72 @@ document.addEventListener("DOMContentLoaded", () => {
     let chosenCount = selectedQuizCount || 5;
 
     quizContainer.innerHTML = `
-      <div style="max-width: 520px; margin: 0 auto; text-align: center; padding: 12px 10px 24px 10px;">
-        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(217, 236, 149, 0.25); color: #0E0F0C; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; margin: 0 auto 16px auto;">?</div>
+      <div style="max-width: 520px; margin: 0 auto; text-align: center; padding: 16px 12px 32px 12px;">
+        <!-- Illustrated Quiz Clipboard Header -->
+        <svg width="120" height="110" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto 10px auto; display: block;">
+          <path d="M25 65C15 50 25 25 50 25C70 15 95 25 100 45C108 65 95 85 75 90C50 95 35 80 25 65Z" fill="#D9EC95" fill-opacity="0.38" />
+          <line x1="18" y1="28" x2="26" y2="22" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" />
+          <line x1="26" y1="36" x2="34" y2="30" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" />
+          <path d="M96 22L97.5 27L102.5 28.5L97.5 30L96 35L94.5 30L89.5 28.5L94.5 27L96 22Z" fill="#15803D" />
+          <rect x="36" y="22" width="48" height="62" rx="7" fill="#FFFFFF" stroke="#1E3A1A" stroke-width="2.5" />
+          <rect x="49" y="17" width="22" height="10" rx="3" fill="#D9EC95" stroke="#1E3A1A" stroke-width="2.2" />
+          <circle cx="60" cy="22" r="2" fill="#1E3A1A" />
+          <path d="M44 38L47 41L53 35" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          <line x1="57" y1="38" x2="74" y2="38" stroke="#1E3A1A" stroke-width="2" stroke-linecap="round" />
+          <path d="M44 51L47 54L53 48" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          <line x1="57" y1="51" x2="74" y2="51" stroke="#1E3A1A" stroke-width="2" stroke-linecap="round" />
+          <path d="M44 64L47 67L53 61" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          <line x1="57" y1="64" x2="74" y2="64" stroke="#1E3A1A" stroke-width="2" stroke-linecap="round" />
+          <g transform="rotate(35 82 48)">
+            <rect x="74" y="24" width="7" height="24" rx="1.5" fill="#FBBF24" stroke="#1E3A1A" stroke-width="1.8" />
+            <rect x="74" y="20" width="7" height="5" rx="1.5" fill="#F87171" stroke="#1E3A1A" stroke-width="1.8" />
+            <rect x="74" y="24" width="7" height="2" fill="#9CA3AF" />
+            <polygon points="74,48 81,48 77.5,55" fill="#FDE68A" stroke="#1E3A1A" stroke-width="1.8" />
+            <polygon points="76.5,52 78.5,52 77.5,55" fill="#1E3A1A" />
+          </g>
+        </svg>
 
-        <h3 style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; color: var(--text-main);">Interactive Practice Quiz</h3>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Choose your desired difficulty and number of questions to test your knowledge.</p>
+        <h3 style="font-size: 32px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 6px; color: var(--text-main);">Quiz</h3>
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 32px;">Test your knowledge with customizable quizzes.</p>
 
-        <div style="background: var(--card-surface-elevated); border: 1px solid var(--card-border); border-radius: 16px; padding: 22px; text-align: left; margin-bottom: 16px;">
-          <!-- Select Difficulty -->
-          <div style="margin-bottom: 18px;">
-            <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--text-main);">Select Difficulty:</div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
-              <button type="button" class="setup-diff-btn" data-diff="easy" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenDiff === "easy" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">Easy</button>
-              <button type="button" class="setup-diff-btn" data-diff="medium" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenDiff === "medium" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">Medium</button>
-              <button type="button" class="setup-diff-btn" data-diff="hard" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenDiff === "hard" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">Hard</button>
+        <div style="max-width: 480px; margin: 0 auto 36px auto;">
+          <!-- Row 1: Difficulty -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 10px; color: var(--text-main); font-size: 15px; font-weight: 600;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Difficulty</span>
             </div>
-            <div id="setup-diff-desc" style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
-              ${chosenDiff === "easy" ? "Fundamental definitions and explicit facts from the video." : (chosenDiff === "hard" ? "Deep conceptual analysis, edge cases, and tricky plausible options." : "Conceptual understanding, deduction, and practical relationships.")}
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="setup-diff-btn" data-diff="easy" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "easy" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Easy</button>
+              <button type="button" class="setup-diff-btn" data-diff="medium" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "medium" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Medium</button>
+              <button type="button" class="setup-diff-btn" data-diff="hard" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "hard" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Hard</button>
             </div>
           </div>
 
-          <!-- Number of Questions -->
-          <div>
-            <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--text-main);">Number of Questions:</div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-              <button type="button" class="setup-count-btn" data-count="3" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenCount === 3 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">3 Questions</button>
-              <button type="button" class="setup-count-btn" data-count="5" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenCount === 5 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">5 Questions</button>
-              <button type="button" class="setup-count-btn" data-count="10" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenCount === 10 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">10 Questions</button>
+          <!-- Row 2: Number of Questions -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 10px; color: var(--text-main); font-size: 15px; font-weight: 600;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>Number of Questions</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="setup-count-btn" data-count="3" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 3 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">3</button>
+              <button type="button" class="setup-count-btn" data-count="5" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 5 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">5</button>
+              <button type="button" class="setup-count-btn" data-count="10" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 10 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">10</button>
             </div>
           </div>
         </div>
 
         <div>
-          <button id="start-setup-quiz-btn" style="width: 100%; max-width: 520px; margin: 0 auto; display: block; padding: 12px 20px; font-size: 14px; font-weight: 800; border-radius: 10px; background: var(--brand-lime); color: #0E0F0C; border: none; cursor: pointer; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.15s ease;">
-            Start ${chosenCount} Qs Quiz (${chosenDiff.charAt(0).toUpperCase() + chosenDiff.slice(1)}) →
+          <button id="start-setup-quiz-btn" style="background: #2E7D32; color: #FFFFFF; font-size: 15px; font-weight: 700; padding: 13px 44px; border-radius: 9999px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(46, 125, 50, 0.25); transition: all 0.2s ease;">
+            <span>Start Quiz</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </div>
       </div>
     `;
 
-    const diffDesc = {
-      easy: "Fundamental definitions and explicit facts from the video.",
-      medium: "Conceptual understanding, deduction, and practical relationships.",
-      hard: "Deep conceptual analysis, edge cases, and tricky plausible options."
-    };
-
     const startBtn = document.getElementById("start-setup-quiz-btn");
-
-    function updateStartBtnText() {
-      if (startBtn) {
-        startBtn.textContent = `Start ${chosenCount} Qs Quiz (${chosenDiff.charAt(0).toUpperCase() + chosenDiff.slice(1)}) →`;
-      }
-    }
 
     document.querySelectorAll(".setup-diff-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
@@ -630,16 +644,13 @@ document.addEventListener("DOMContentLoaded", () => {
           b.style.background = "var(--card-bg)";
           b.style.color = "var(--text-main)";
           b.style.borderColor = "var(--card-border)";
-          b.style.fontWeight = "600";
+          b.style.fontWeight = "500";
         });
         e.currentTarget.style.background = "var(--brand-lime)";
         e.currentTarget.style.color = "#0E0F0C";
         e.currentTarget.style.borderColor = "var(--brand-lime)";
-        e.currentTarget.style.fontWeight = "800";
+        e.currentTarget.style.fontWeight = "700";
         chosenDiff = e.currentTarget.getAttribute("data-diff");
-        const descEl = document.getElementById("setup-diff-desc");
-        if (descEl) descEl.textContent = diffDesc[chosenDiff] || "";
-        updateStartBtnText();
       });
     });
 
@@ -649,14 +660,13 @@ document.addEventListener("DOMContentLoaded", () => {
           b.style.background = "var(--card-bg)";
           b.style.color = "var(--text-main)";
           b.style.borderColor = "var(--card-border)";
-          b.style.fontWeight = "600";
+          b.style.fontWeight = "500";
         });
         e.currentTarget.style.background = "var(--brand-lime)";
         e.currentTarget.style.color = "#0E0F0C";
         e.currentTarget.style.borderColor = "var(--brand-lime)";
-        e.currentTarget.style.fontWeight = "800";
+        e.currentTarget.style.fontWeight = "700";
         chosenCount = parseInt(e.currentTarget.getAttribute("data-count"), 10) || 5;
-        updateStartBtnText();
       });
     });
 
