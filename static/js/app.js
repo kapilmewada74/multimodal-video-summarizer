@@ -3,6 +3,16 @@
  * Tool-first UX with BYAMN Design Tokens & Live Pipeline Stepper
  */
 
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // --- Theme Management ---
   const themeToggleBtn = document.getElementById("theme-toggle-btn");
@@ -351,102 +361,313 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  const DESK_NOTE_THEMES = [
+    {
+      id: "yellow",
+      name: "Yellow",
+      bg: "#FFF8B8",
+      pinBg: "#E59819",
+      accentBtn: "#E5A024",
+      textColor: "#1F1E1B",
+      subtextColor: "#3F3C36",
+    },
+    {
+      id: "pink",
+      name: "Pink",
+      bg: "#FFE4EC",
+      pinBg: "#E15A78",
+      accentBtn: "#DE5473",
+      textColor: "#1F1E1B",
+      subtextColor: "#3F3C36",
+    },
+    {
+      id: "tan",
+      name: "Tan",
+      bg: "#F0E9DA",
+      pinBg: "#8B5E3C",
+      accentBtn: "#845634",
+      textColor: "#1F1E1B",
+      subtextColor: "#3F3C36",
+    },
+    {
+      id: "mint",
+      name: "Mint",
+      bg: "#E1EEE8",
+      pinBg: "#2F7E6B",
+      accentBtn: "#3D8280",
+      textColor: "#1F1E1B",
+      subtextColor: "#3F3C36",
+    },
+    {
+      id: "blue",
+      name: "Blue",
+      bg: "#E0F0F8",
+      pinBg: "#2B78A8",
+      accentBtn: "#2373A4",
+      textColor: "#1F1E1B",
+      subtextColor: "#3F3C36",
+    },
+  ];
+
   function renderFlashcards(cards, provider) {
     if (!cards || cards.length === 0) {
-      flashcardsContainer.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--text-muted);">No flashcards generated.</div>`;
+      flashcardsContainer.innerHTML = `<div style="text-align: center; padding: 24px; color: var(--text-muted);">No flashcards generated.</div>`;
       return;
     }
 
-    let cardIdx = 0;
-    let isFlipped = false;
+    let deck = cards.map((c, i) => ({
+      ...c,
+      colorIndex: c.colorIndex !== undefined ? c.colorIndex : (i % DESK_NOTE_THEMES.length)
+    }));
 
-    function renderCurrentCard() {
-      const card = cards[cardIdx];
+    let activeModalIndex = null;
+
+    function renderDesk() {
       flashcardsContainer.innerHTML = `
-        <div style="max-width: 600px; margin: 0 auto;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px;">
-            <span style="font-weight: 700;">Card ${cardIdx + 1} of ${cards.length}</span>
-            <span style="font-size: 11px; padding: 2px 8px; border-radius: 9999px; background: var(--btn-secondary-bg); border: 1px solid var(--card-border);">${provider || "AI"}</span>
-          </div>
+        <div class="desk-mat">
+          <!-- Desk Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); flex-shrink: 0;">
+                <line x1="12" y1="17" x2="12" y2="22"></line>
+                <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
+              </svg>
+              <h3 style="font-size: 20px; font-weight: 900; letter-spacing: -0.02em; margin: 0; color: var(--text-main);">Desk Sticky Notes</h3>
+              <span style="font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 9999px; background: var(--btn-secondary-bg); color: var(--text-muted); border: 1px solid var(--card-border);">${deck.length} notes</span>
+            </div>
 
-          <!-- 3D Page Paper Turn Scene -->
-          <div class="flashcard-paper-scene" style="margin-bottom: 20px; select: none;">
-            <div id="flashcard-paper-card" class="flashcard-paper-card ${isFlipped ? 'flipped' : ''}">
-              <!-- Front Face (Question) -->
-              <div class="flashcard-paper-face flashcard-paper-front">
-                <div style="display: flex; justify-content: space-between;">
-                  <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; background: var(--btn-secondary-bg); padding: 2px 8px; border-radius: 6px;">${card.tag || "Question"}</span>
-                  <span style="font-size: 11px; color: var(--text-muted);">Click to turn page</span>
-                </div>
-                <div style="margin: auto 0; font-size: 19px; font-weight: 800; line-height: 1.5; padding: 18px 0; color: var(--text-main);">
-                  ${card.front}
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-                  <span>Card ${cardIdx + 1} of ${cards.length}</span>
-                  <span>Turn page →</span>
-                </div>
-                <div class="page-curl"></div>
-              </div>
-
-              <!-- Back Face (Answer) -->
-              <div class="flashcard-paper-face flashcard-paper-back">
-                <div style="display: flex; justify-content: space-between;">
-                  <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; background: var(--btn-secondary-bg); padding: 2px 8px; border-radius: 6px;">${card.tag || "Answer"}</span>
-                  <span style="font-size: 11px; color: var(--text-muted);">Click to flip back</span>
-                </div>
-                <div style="margin: auto 0; font-size: 15px; font-weight: 500; line-height: 1.6; padding: 18px 0; color: var(--text-main);">
-                  ${card.back}
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-                  <span>Answer</span>
-                  <span>← Flip back</span>
-                </div>
-              </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button id="desk-add-btn" class="btn-secondary" style="height: 32px; padding: 4px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Note</span>
+              </button>
+              <button id="desk-regen-btn" class="btn-secondary" style="width: 32px; height: 32px; padding: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;" title="Regenerate Notes">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              </button>
+              <div style="width: 1px; height: 16px; background: var(--card-border); margin: 0 4px;"></div>
+              <button id="desk-scroll-prev" class="btn-secondary" style="width: 32px; height: 32px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;" title="Scroll Left">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button id="desk-scroll-next" class="btn-secondary" style="width: 32px; height: 32px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;" title="Scroll Right">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
             </div>
           </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px;">
-            <button id="fc-prev-btn" class="btn-secondary" ${cardIdx === 0 ? "disabled" : ""} style="width: 38px; height: 38px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;" title="Previous Card">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <div style="display: flex; gap: 6px;">
-              ${cards.map((_, i) => `<span style="display: inline-block; width: ${i === cardIdx ? '16px' : '6px'}; height: 6px; border-radius: 3px; background: ${i === cardIdx ? 'var(--brand-lime)' : 'var(--card-border)'}; transition: all 0.2s;"></span>`).join("")}
+          <!-- Horizontal Carousel Track -->
+          <div id="desk-track" class="desk-notes-track">
+            ${deck.map((card, i) => {
+              const th = DESK_NOTE_THEMES[card.colorIndex ?? (i % DESK_NOTE_THEMES.length)] || DESK_NOTE_THEMES[0];
+              const lines = card.back ? card.back.split(/\n+/).map(l => l.trim()).filter(Boolean) : [];
+              return `
+                <div class="desk-note-card" data-idx="${i}" style="background-color: ${th.bg}; color: ${th.textColor}; min-height: 220px;">
+                  <div>
+                    <!-- 3D Pushpin -->
+                    <div style="margin: 0 auto 10px auto; text-align: center;">
+                      <div class="desk-note-pin-head" style="background-color: ${th.pinBg}; background-image: radial-gradient(circle at 35% 30%, #FFFFFF 0%, ${th.pinBg} 60%, rgba(0,0,0,0.4) 100%);"></div>
+                      <div class="desk-note-pin-shadow"></div>
+                    </div>
+
+                    <!-- Title -->
+                    <h4 style="font-size: 17px; font-weight: 900; line-height: 1.3; margin-bottom: 10px; color: #1F1E1B;">
+                      ${escapeHtml(card.front)}
+                    </h4>
+
+                    <!-- Preview Content -->
+                    <div style="font-size: 13px; color: ${th.subtextColor}; line-height: 1.5; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">
+                      ${lines.length > 1
+                        ? lines.slice(0, 3).map(l => `<div style="display: flex; gap: 6px; margin-bottom: 3px;"><span style="color: rgba(0,0,0,0.5); font-weight: bold;">•</span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(l.replace(/^[-•*]\s*/, ''))}</span></div>`).join('')
+                        : escapeHtml(card.back)
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Expand Icon -->
+                  <div style="display: flex; justify-content: flex-end; padding-top: 10px;">
+                    <button class="desk-expand-btn" data-idx="${i}" style="background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: 6px; color: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;" title="Open Note">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Opened Sticky Note Modal Container -->
+        <div id="desk-modal-slot"></div>
+      `;
+
+      // Event Listeners for Track
+      const track = document.getElementById("desk-track");
+      const prevBtn = document.getElementById("desk-scroll-prev");
+      const nextBtn = document.getElementById("desk-scroll-next");
+
+      if (prevBtn && track) {
+        prevBtn.addEventListener("click", () => track.scrollBy({ left: -320, behavior: "smooth" }));
+      }
+      if (nextBtn && track) {
+        nextBtn.addEventListener("click", () => track.scrollBy({ left: 320, behavior: "smooth" }));
+      }
+
+      const addBtn = document.getElementById("desk-add-btn");
+      if (addBtn) {
+        addBtn.addEventListener("click", () => {
+          const newNote = {
+            front: "New Sticky Note",
+            back: "• Key concept point\n• Important takeaway",
+            tag: "Concept",
+            colorIndex: deck.length % DESK_NOTE_THEMES.length
+          };
+          deck.push(newNote);
+          renderDesk();
+          openModal(deck.length - 1);
+        });
+      }
+
+      const regenBtn = document.getElementById("desk-regen-btn");
+      if (regenBtn) {
+        regenBtn.addEventListener("click", () => loadFlashcards());
+      }
+
+      // Card Clicks
+      document.querySelectorAll(".desk-note-card").forEach(el => {
+        el.addEventListener("click", () => {
+          const idx = parseInt(el.getAttribute("data-idx"));
+          openModal(idx);
+        });
+      });
+
+      document.querySelectorAll(".desk-expand-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const idx = parseInt(btn.getAttribute("data-idx"));
+          openModal(idx);
+        });
+      });
+    }
+
+    function openModal(idx) {
+      activeModalIndex = idx;
+      const card = deck[idx];
+      if (!card) return;
+      const th = DESK_NOTE_THEMES[card.colorIndex ?? (idx % DESK_NOTE_THEMES.length)] || DESK_NOTE_THEMES[0];
+      const slot = document.getElementById("desk-modal-slot");
+      if (!slot) return;
+
+      slot.innerHTML = `
+        <div class="desk-modal-overlay" id="desk-modal-overlay">
+          <div class="desk-modal-card" id="desk-modal-card" style="background-color: ${th.bg}; color: ${th.textColor};">
+            <!-- Header Row: Color Picker Dots & Actions -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <!-- 5 Color Dots -->
+              <div style="display: flex; align-items: center; gap: 10px;">
+                ${DESK_NOTE_THEMES.map((t, cIdx) => {
+                  const isSel = (card.colorIndex ?? (idx % DESK_NOTE_THEMES.length)) === cIdx;
+                  return `
+                    <button class="desk-color-dot" data-cidx="${cIdx}" style="width: 22px; height: 22px; border-radius: 50%; background-color: ${t.bg}; border: ${isSel ? '2px solid #000' : '1px solid rgba(0,0,0,0.15)'}; outline: ${isSel ? '2px solid transparent' : 'none'}; cursor: pointer; transition: transform 0.15s ease;" title="${t.name}"></button>
+                  `;
+                }).join('')}
+              </div>
+
+              <!-- Top Right Buttons -->
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button id="desk-modal-delete" style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.75); border: 1px solid rgba(0,0,0,0.06); color: #DC2626; display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Delete Note">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+                <button id="desk-modal-minimize" style="padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.1); color: #1F1E1B; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                  <span>Minimize</span>
+                </button>
+              </div>
             </div>
-            <button id="fc-next-btn" class="btn-secondary" ${cardIdx === cards.length - 1 ? "disabled" : ""} style="width: 38px; height: 38px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;" title="Next Card">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
+
+            <!-- Title -->
+            <input 
+              id="desk-modal-title" 
+              type="text" 
+              value="${escapeHtml(card.front)}" 
+              style="width: 100%; font-size: 24px; font-weight: 900; background: transparent; border: none; outline: none; color: #1F1E1B; letter-spacing: -0.02em; margin-bottom: 12px;"
+              placeholder="Note Title..."
+            />
+
+            <!-- Divider -->
+            <div style="height: 1px; width: 100%; background: rgba(0,0,0,0.1); margin-bottom: 16px;"></div>
+
+            <!-- Content Area -->
+            <textarea 
+              id="desk-modal-body" 
+              style="width: 100%; min-height: 160px; max-height: 320px; font-size: 15px; line-height: 1.6; background: transparent; border: none; outline: none; color: #2E2C28; resize: none; font-family: inherit;"
+              placeholder="Note content..."
+            >${escapeHtml(card.back)}</textarea>
+
+            <!-- Bottom Row -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 8px;">
+              <span style="font-size: 12px; color: #525252; font-weight: 500;">Changes save automatically</span>
+              <button id="desk-modal-done" style="padding: 8px 22px; border-radius: 12px; background-color: ${th.accentBtn}; color: #FFFFFF; font-size: 13px; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                Done
+              </button>
+            </div>
           </div>
         </div>
       `;
 
-      const paperCard = document.getElementById("flashcard-paper-card");
-      if (paperCard) {
-        paperCard.addEventListener("click", () => {
-          isFlipped = !isFlipped;
-          paperCard.classList.toggle("flipped", isFlipped);
+      // Modal Handlers
+      const overlay = document.getElementById("desk-modal-overlay");
+      const cardEl = document.getElementById("desk-modal-card");
+      const titleInput = document.getElementById("desk-modal-title");
+      const bodyTextarea = document.getElementById("desk-modal-body");
+      const doneBtn = document.getElementById("desk-modal-done");
+      const minBtn = document.getElementById("desk-modal-minimize");
+      const delBtn = document.getElementById("desk-modal-delete");
+
+      const saveCurrent = () => {
+        if (titleInput) card.front = titleInput.value;
+        if (bodyTextarea) card.back = bodyTextarea.value;
+      };
+
+      if (titleInput) {
+        titleInput.addEventListener("input", saveCurrent);
+      }
+      if (bodyTextarea) {
+        bodyTextarea.addEventListener("input", saveCurrent);
+      }
+
+      const closeModal = () => {
+        saveCurrent();
+        slot.innerHTML = "";
+        activeModalIndex = null;
+        renderDesk();
+      };
+
+      if (doneBtn) doneBtn.addEventListener("click", closeModal);
+      if (minBtn) minBtn.addEventListener("click", closeModal);
+      if (overlay) {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) closeModal();
         });
       }
 
-      const prevBtn = document.getElementById("fc-prev-btn");
-      if (prevBtn && cardIdx > 0) {
-        prevBtn.addEventListener("click", () => {
-          cardIdx--;
-          isFlipped = false;
-          renderCurrentCard();
+      if (delBtn) {
+        delBtn.addEventListener("click", () => {
+          deck.splice(idx, 1);
+          slot.innerHTML = "";
+          activeModalIndex = null;
+          renderDesk();
         });
       }
 
-      const nextBtn = document.getElementById("fc-next-btn");
-      if (nextBtn && cardIdx < cards.length - 1) {
-        nextBtn.addEventListener("click", () => {
-          cardIdx++;
-          isFlipped = false;
-          renderCurrentCard();
+      document.querySelectorAll(".desk-color-dot").forEach(btn => {
+        btn.addEventListener("click", () => {
+          saveCurrent();
+          const cIdx = parseInt(btn.getAttribute("data-cidx"));
+          card.colorIndex = cIdx;
+          openModal(idx);
         });
-      }
+      });
     }
 
-    renderCurrentCard();
+    renderDesk();
   }
 
   // --- Presentation Logic ---

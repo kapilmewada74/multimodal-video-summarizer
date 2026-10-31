@@ -412,7 +412,118 @@ html.dark input[type="text"]:focus, html.dark input[type="url"]:focus, html.dark
 /* ============================================================
    PAGE PAPER TURN FLIP EFFECT (FLASHCARDS)
    ============================================================ */
-.flashcard-paper-scene {
+/* ============================================================
+   DESK STICKY NOTES & MODAL EXPANSION
+   ============================================================ */
+.desk-mat {
+  background-color: #EFECE6;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 24px;
+  padding: 24px;
+  transition: background-color 0.2s ease;
+}
+
+html.dark .desk-mat {
+  background-color: #181816;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.desk-notes-track {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 12px 2px 20px 2px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.desk-notes-track::-webkit-scrollbar {
+  display: none;
+}
+
+.desk-note-card {
+  flex: 0 0 calc((100% - 36px) / 3);
+  min-width: 260px;
+  max-width: 340px;
+  scroll-snap-align: start;
+  border-radius: 22px;
+  padding: 20px 20px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (max-width: 900px) {
+  .desk-note-card {
+    flex: 0 0 calc((100% - 18px) / 2);
+  }
+}
+
+@media (max-width: 600px) {
+  .desk-note-card {
+    flex: 0 0 86%;
+  }
+}
+
+.desk-note-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px -4px rgba(0, 0, 0, 0.16);
+}
+
+.desk-note-pin-head {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin: 0 auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.28), inset 0 1px 1.5px rgba(255,255,255,0.7);
+}
+
+.desk-note-pin-shadow {
+  width: 10px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.22);
+  filter: blur(1px);
+  margin: 2px auto 0 auto;
+}
+
+.desk-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: modal-fade-in 0.2s ease-out;
+}
+
+.desk-modal-card {
+  width: 100%;
+  max-width: 540px;
+  border-radius: 30px;
+  padding: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  animation: modal-zoom-in 0.2s ease-out;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-zoom-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
   perspective: 1400px;
   width: 100%;
 }
