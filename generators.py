@@ -304,12 +304,44 @@ Return ONLY a valid JSON object matching this schema:
 }
 """
 
-def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[str] = None) -> Dict[str, Any]:
-    cache_key = get_cache_key("quiz", title, summary)
-    if cache_key in _GENERATION_CACHE:
+def generate_quiz(
+    title: str,
+    summary: str,
+    transcript: str,
+    difficulty: str = "medium",
+    num_questions: int = 5,
+    api_key: Optional[str] = None,
+    force_refresh: bool = False
+) -> Dict[str, Any]:
+    cache_key = get_cache_key("quiz", f"{title}:{difficulty}:{num_questions}", summary)
+    if not force_refresh and cache_key in _GENERATION_CACHE:
         return _GENERATION_CACHE[cache_key]
 
-    prompt = f"TITLE: {title}\n\nSUMMARY:\n{summary}\n\nTRANSCRIPT EXCERPT:\n{transcript[:4000]}"
+    diff_text = {
+        "easy": "EASY (fundamental definitions, direct facts, basic recall)",
+        "medium": "MEDIUM (conceptual understanding, logical deduction, practical context)",
+        "hard": "HARD (subtle edge cases, deep analysis, tricky plausible distractors)"
+    }.get(difficulty.lower(), "MEDIUM")
+
+    quiz_system_prompt = f"""You are an expert exam educator creating interactive test quizzes.
+Based strictly on the provided summary and transcript, generate {num_questions} multiple choice questions.
+TARGET DIFFICULTY: {diff_text}
+Each question must test understanding at this difficulty level, have 4 distinct plausible options, indicate the correct option index (0 to 3), and provide a concise, high-value explanation.
+
+Return ONLY a valid JSON object matching this schema:
+{{
+  "quiz": [
+    {{
+      "question": "Clear question text?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answerIndex": 0,
+      "explanation": "Concise explanation why the correct option is right."
+    }}
+  ]
+}}
+"""
+
+    prompt = f"TITLE: {title}\nDIFFICULTY: {difficulty}\n\nSUMMARY:\n{summary}\n\nTRANSCRIPT EXCERPT:\n{transcript[:4000]}"
     grok_key = _clean_xai_key(api_key)
     
     # 1. Try Grok (xAI) API
@@ -323,7 +355,7 @@ def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[s
             payload = {
                 "model": "grok-2-mini",
                 "messages": [
-                    {"role": "system", "content": QUIZ_SYSTEM_PROMPT},
+                    {"role": "system", "content": quiz_system_prompt},
                     {"role": "user", "content": prompt}
                 ],
                 "temperature": 0.2
@@ -335,6 +367,7 @@ def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[s
                     raw_text = resp_json["choices"][0]["message"]["content"]
                     data = _parse_json_safely(raw_text, "quiz")
                     data["provider"] = "Grok API (grok-2-mini)"
+                    data["difficulty"] = difficulty
                     _GENERATION_CACHE[cache_key] = data
                     return data
                 else:
@@ -343,11 +376,12 @@ def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[s
             logger.warning(f"Grok API call failed: {e}. Engaging Gemini fallback.")
 
     # 2. Try Gemini API as Intelligent Quiz Fallback
-    res = _call_gemini_rest(prompt, QUIZ_SYSTEM_PROMPT)
+    res = _call_gemini_rest(prompt, quiz_system_prompt)
     if res:
         raw_text, used_model = res
         data = _parse_json_safely(raw_text, "quiz")
         data["provider"] = f"Gemini API ({used_model})"
+        data["difficulty"] = difficulty
         _GENERATION_CACHE[cache_key] = data
         return data
 
@@ -363,9 +397,10 @@ def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[s
             ("human", "{human_input}")
         ])
         chain = chat_prompt | llm | StrOutputParser()
-        raw = chain.invoke({"sys": QUIZ_SYSTEM_PROMPT, "human_input": prompt})
+        raw = chain.invoke({"sys": quiz_system_prompt, "human_input": prompt})
         data = _parse_json_safely(raw, "quiz")
         data["provider"] = "Local Engine (Qwen2.5)"
+        data["difficulty"] = difficulty
         _GENERATION_CACHE[cache_key] = data
         return data
     except Exception as e:
@@ -385,7 +420,8 @@ def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[s
                     "explanation": f"The primary subject of this video presentation is {title}."
                 }
             ],
-            "provider": "Local Engine (Rule-based Fallback)"
+            "provider": "Local Engine (Rule-based Fallback)",
+            "difficulty": difficulty
         }
         _GENERATION_CACHE[cache_key] = res_data
         return res_data

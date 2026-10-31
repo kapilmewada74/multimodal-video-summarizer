@@ -67,6 +67,7 @@ def get_llm():
                 tokenizer=tokenizer,
                 max_new_tokens=1500,
                 temperature=0.2,
+                repetition_penalty=1.1,
                 do_sample=True,
                 return_full_text=False
             )
@@ -225,7 +226,7 @@ def _transcribe_and_summarize(job_id: str, audio_path: str, title: str, duration
     update_job(job_id, step=2, step_name="Whisper Transcription", progress=45, message="Transcribing speech with OpenAI Whisper (local)...")
     whisper_model = get_whisper_model()
 
-    transcribe_res = whisper_model.transcribe(audio_path, fp16=False)
+    transcribe_res = whisper_model.transcribe(audio_path, fp16=False, language="en")
     transcript = transcribe_res.get("text", "").strip()
 
     if not transcript:

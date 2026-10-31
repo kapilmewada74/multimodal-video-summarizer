@@ -172,21 +172,18 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
             </div>
           )}
         </div>
-
-        <div className="text-center text-[10px] text-[var(--text-muted)] font-medium">
-          {isFlipped ? "Showing Answer (Click or press Space to flip back)" : "Showing Question (Click or press Space to reveal answer)"}
-        </div>
       </div>
 
       {/* Navigation Controls */}
-      <div className="flex items-center justify-between mt-5 gap-2">
+      <div className="flex items-center justify-between mt-5 gap-3">
         <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className="px-4 py-2.5 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+          aria-label="Previous card"
+          title="Previous (Left Arrow)"
+          className="w-10 h-10 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] flex items-center justify-center disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer transition-all border border-[var(--card-border)] shadow-sm"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Previous</span>
+          <ChevronLeft className="w-5 h-5" />
         </button>
 
         {/* Indicator Dots */}
@@ -198,10 +195,10 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
                 setIsFlipped(false);
                 setCurrentIndex(idx);
               }}
-              className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
+              className={`h-2 rounded-full transition-all cursor-pointer ${
                 idx === currentIndex
-                  ? "bg-[var(--brand-lime)] w-4"
-                  : "bg-[var(--card-border)] hover:bg-[var(--text-muted)]"
+                  ? "bg-[var(--brand-lime)] w-5"
+                  : "bg-[var(--card-border)] hover:bg-[var(--text-muted)] w-2"
               }`}
               title={`Card ${idx + 1}`}
             />
@@ -211,10 +208,11 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
         <button
           onClick={handleNext}
           disabled={currentIndex === deck.length - 1}
-          className="px-4 py-2.5 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+          aria-label="Next card"
+          title="Next (Right Arrow)"
+          className="w-10 h-10 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] flex items-center justify-center disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer transition-all border border-[var(--card-border)] shadow-sm"
         >
-          <span>Next</span>
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
     </div>
