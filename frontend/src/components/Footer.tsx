@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Play, Shield, Terminal, ArrowUpRight } from "lucide-react";
+import { Shield, Terminal, ArrowUpRight } from "lucide-react";
+import { Logo } from "./Logo";
 
 export function Footer() {
   return (
@@ -11,9 +12,7 @@ export function Footer() {
           {/* Brand Info */}
           <div className="md:col-span-1 space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[var(--brand-lime)] flex items-center justify-center text-black shadow-xs">
-                <Play className="w-3.5 h-3.5 fill-black stroke-black" />
-              </div>
+              <Logo size={26} />
               <span className="font-extrabold text-sm tracking-tight text-[var(--text-main)]">
                 SUMMARIZE<span className="text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)]">.AI</span>
               </span>
