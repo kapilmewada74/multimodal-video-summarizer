@@ -49,7 +49,7 @@
         Summarize Any Video in Seconds
       </h1>
       <p style="font-size: 16px; color: var(--text-muted); max-width: 620px; margin: 0 auto; line-height: 1.6;">
-        Generate structured study notes and explore searchable transcripts — completely local, private, and unlimited.
+        Generate structured study notes, complete transcripts, flashcards, slide presentations, and interactive quizzes from any video.
       </p>
     </header>
 
@@ -138,14 +138,13 @@
     <div id="workspace-container" class="card-container" style="display: none; padding: 28px; margin-bottom: 40px;">
       
       <!-- Video Metadata Header -->
-      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--card-border); padding-bottom: 18px;">
-        <div>
-          <h2 id="video-title-heading" style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">Video Summary</h2>
-          <div style="font-size: 12px; color: var(--color-success); font-weight: 700;">Status: Ready</div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--card-border); padding-bottom: 18px; min-height: 42px;">
+        <div style="flex: 1; min-width: 0;">
+          <h2 id="video-title-heading" style="font-size: 20px; font-weight: 800; margin: 0; color: var(--text-main); word-break: break-word;">Video Summary</h2>
         </div>
 
         <!-- Export Toolbar (AI Summary only) -->
-        <div id="summary-export-toolbar" style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <div id="summary-export-toolbar" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
           <button id="copy-summary-btn" class="btn-secondary" title="Copy to Clipboard">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             Copy Summary

@@ -285,46 +285,41 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   return (
     <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 shadow-xl mb-8 print-content transition-colors">
       {/* Title & Actions Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--card-border)] pb-5 mb-6 no-print">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-black mb-1.5 text-[var(--text-main)]">
+      <div className="flex items-center justify-between gap-4 border-b border-[var(--card-border)] pb-5 mb-6 no-print min-h-[42px]">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-xl sm:text-2xl font-black text-[var(--text-main)] truncate sm:whitespace-normal">
             {result.title || "Video Summary"}
           </h2>
-          <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-medium">
-            <span>Status: <strong className="text-[var(--color-success)]">Ready</strong></span>
+        </div>
+
+        {/* Export Toolbar (at rightmost part of video summary title) */}
+        {activeTab === "summary" && (
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleCopySummary}
+              className="px-3.5 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              {copiedSummary ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>Copy Summary</span>
+            </button>
+
+            <button
+              onClick={() => printCleanPdf(result.title || "Video Summary", renderedSummaryHtml)}
+              className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>PDF</span>
+            </button>
+
+            <button
+              onClick={() => handleDownloadFile(result.summary, `${safeFilename}_summary.txt`, "text/plain")}
+              className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>.TXT</span>
+            </button>
           </div>
-        </div>
-
-        {/* Export Toolbar */}
-        <div className="flex flex-wrap items-center gap-2">
-          {activeTab === "summary" && (
-            <>
-              <button
-                onClick={handleCopySummary}
-                className="px-3.5 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-              >
-                {copiedSummary ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>Copy Summary</span>
-              </button>
-
-              <button
-                onClick={() => printCleanPdf(result.title || "Video Summary", renderedSummaryHtml)}
-                className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span>PDF</span>
-              </button>
-
-              <button
-                onClick={() => handleDownloadFile(result.summary, `${safeFilename}_summary.txt`, "text/plain")}
-                className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>.TXT</span>
-              </button>
-            </>
-          )}
-        </div>
+        )}
       </div>
 
       {/* 5 High Contrast Navigation Tabs */}
