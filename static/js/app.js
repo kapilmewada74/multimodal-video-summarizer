@@ -365,47 +365,41 @@ document.addEventListener("DOMContentLoaded", () => {
       flashcardsContainer.innerHTML = `
         <div style="max-width: 600px; margin: 0 auto;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px;">
-            <span style="font-weight: 600;">Card ${cardIdx + 1} of ${cards.length}</span>
+            <span style="font-weight: 700;">Card ${cardIdx + 1} of ${cards.length}</span>
             <span style="font-size: 11px; padding: 2px 8px; border-radius: 9999px; background: var(--btn-secondary-bg); border: 1px solid var(--card-border);">${provider || "AI"}</span>
           </div>
-          
-          <div class="paper-turn-perspective" style="width: 100%; min-height: 280px; cursor: pointer; user-select: none;">
-            <div id="flashcard-card" class="paper-turn-card ${isFlipped ? "flipped" : ""}">
-              <!-- Front Page -->
-              <div class="paper-turn-face paper-turn-front" style="padding: 32px 28px; background: var(--card-bg); border: 1px solid var(--card-border); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; position: relative;">
-                <div style="position: absolute; top: 0; right: 0; bottom: 0; width: 40px; background: linear-gradient(to left, rgba(0,0,0,0.04), transparent); pointer-events: none;"></div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: var(--btn-secondary-bg); padding: 3px 10px; border-radius: 9999px; border: 1px solid var(--card-border);">${card.tag || "Question"}</span>
-                  <span style="font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-                    Click to turn page
-                  </span>
+
+          <!-- 3D Page Paper Turn Scene -->
+          <div class="flashcard-paper-scene" style="margin-bottom: 20px; select: none;">
+            <div id="flashcard-paper-card" class="flashcard-paper-card ${isFlipped ? 'flipped' : ''}">
+              <!-- Front Face (Question) -->
+              <div class="flashcard-paper-face flashcard-paper-front">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; background: var(--btn-secondary-bg); padding: 2px 8px; border-radius: 6px;">${card.tag || "Question"}</span>
+                  <span style="font-size: 11px; color: var(--text-muted);">Click to turn page</span>
                 </div>
-                <div style="margin: auto 0; text-align: center; padding: 20px 0;">
-                  <h3 style="font-size: 20px; font-weight: 600; line-height: 1.4; color: var(--text-main);">${card.front}</h3>
+                <div style="margin: auto 0; font-size: 19px; font-weight: 800; line-height: 1.5; padding: 18px 0; color: var(--text-main);">
+                  ${card.front}
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-                  <span>Question</span>
-                  <span style="opacity: 0.7;">Turn page →</span>
+                  <span>Card ${cardIdx + 1} of ${cards.length}</span>
+                  <span>Turn page →</span>
                 </div>
+                <div class="page-curl"></div>
               </div>
 
-              <!-- Back Page -->
-              <div class="paper-turn-face paper-turn-back" style="padding: 32px 28px; background: var(--card-bg); border: 1px solid rgba(0, 102, 204, 0.4); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; position: relative;">
-                <div style="position: absolute; top: 0; left: 0; bottom: 0; width: 40px; background: linear-gradient(to right, rgba(0,0,0,0.04), transparent); pointer-events: none;"></div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(0, 102, 204, 0.1); color: #0066cc; padding: 3px 10px; border-radius: 9999px; border: 1px solid rgba(0, 102, 204, 0.2);">Answer</span>
-                  <span style="font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-                    Click to turn back
-                  </span>
+              <!-- Back Face (Answer) -->
+              <div class="flashcard-paper-face flashcard-paper-back">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; background: var(--btn-secondary-bg); padding: 2px 8px; border-radius: 6px;">${card.tag || "Answer"}</span>
+                  <span style="font-size: 11px; color: var(--text-muted);">Click to flip back</span>
                 </div>
-                <div style="margin: auto 0; text-align: center; padding: 20px 0;">
-                  <p style="font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--text-main);">${card.back}</p>
+                <div style="margin: auto 0; font-size: 15px; font-weight: 500; line-height: 1.6; padding: 18px 0; color: var(--text-main);">
+                  ${card.back}
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-                  <span style="opacity: 0.7;">← Turn back</span>
                   <span>Answer</span>
+                  <span>← Flip back</span>
                 </div>
               </div>
             </div>
@@ -425,15 +419,11 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      const cardEl = document.getElementById("flashcard-card");
-      if (cardEl) {
-        cardEl.parentElement.addEventListener("click", () => {
+      const paperCard = document.getElementById("flashcard-paper-card");
+      if (paperCard) {
+        paperCard.addEventListener("click", () => {
           isFlipped = !isFlipped;
-          if (isFlipped) {
-            cardEl.classList.add("flipped");
-          } else {
-            cardEl.classList.remove("flipped");
-          }
+          paperCard.classList.toggle("flipped", isFlipped);
         });
       }
 
@@ -635,8 +625,8 @@ document.addEventListener("DOMContentLoaded", () => {
           </g>
         </svg>
 
-        <h3 style="font-size: 32px; font-weight: 600; letter-spacing: -0.28px; margin-bottom: 6px; color: var(--text-main);">Quiz</h3>
-        <p style="font-size: 17px; color: var(--text-muted); margin-bottom: 32px; font-weight: 400; line-height: 1.47; letter-spacing: -0.374px;">Test your knowledge with customizable quizzes.</p>
+        <h3 style="font-size: 32px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 6px; color: var(--text-main);">Quiz</h3>
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 32px;">Test your knowledge with customizable quizzes.</p>
 
         <div style="max-width: 480px; margin: 0 auto 36px auto;">
           <!-- Row 1: Difficulty -->
@@ -646,9 +636,9 @@ document.addEventListener("DOMContentLoaded", () => {
               <span>Difficulty</span>
             </div>
             <div style="display: flex; gap: 8px;">
-              <button type="button" class="setup-diff-btn" data-diff="easy" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "easy" ? "background: #0066cc; color: #ffffff; font-weight: 600; border: 1px solid #0066cc;" : "background: var(--card-bg); color: var(--text-main); font-weight: 400; border: 1px solid var(--card-border);"}">Easy</button>
-              <button type="button" class="setup-diff-btn" data-diff="medium" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "medium" ? "background: #0066cc; color: #ffffff; font-weight: 600; border: 1px solid #0066cc;" : "background: var(--card-bg); color: var(--text-main); font-weight: 400; border: 1px solid var(--card-border);"}">Medium</button>
-              <button type="button" class="setup-diff-btn" data-diff="hard" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "hard" ? "background: #0066cc; color: #ffffff; font-weight: 600; border: 1px solid #0066cc;" : "background: var(--card-bg); color: var(--text-main); font-weight: 400; border: 1px solid var(--card-border);"}">Hard</button>
+              <button type="button" class="setup-diff-btn" data-diff="easy" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "easy" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Easy</button>
+              <button type="button" class="setup-diff-btn" data-diff="medium" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "medium" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Medium</button>
+              <button type="button" class="setup-diff-btn" data-diff="hard" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "hard" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Hard</button>
             </div>
           </div>
 
@@ -659,15 +649,15 @@ document.addEventListener("DOMContentLoaded", () => {
               <span>Number of Questions</span>
             </div>
             <div style="display: flex; gap: 8px;">
-              <button type="button" class="setup-count-btn" data-count="3" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 3 ? "background: #0066cc; color: #ffffff; font-weight: 600; border: 1px solid #0066cc;" : "background: var(--card-bg); color: var(--text-main); font-weight: 400; border: 1px solid var(--card-border);"}">3</button>
-              <button type="button" class="setup-count-btn" data-count="5" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 5 ? "background: #0066cc; color: #ffffff; font-weight: 600; border: 1px solid #0066cc;" : "background: var(--card-bg); color: var(--text-main); font-weight: 400; border: 1px solid var(--card-border);"}">5</button>
-              <button type="button" class="setup-count-btn" data-count="10" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 10 ? "background: #0066cc; color: #ffffff; font-weight: 600; border: 1px solid #0066cc;" : "background: var(--card-bg); color: var(--text-main); font-weight: 400; border: 1px solid var(--card-border);"}">10</button>
+              <button type="button" class="setup-count-btn" data-count="3" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 3 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">3</button>
+              <button type="button" class="setup-count-btn" data-count="5" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 5 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">5</button>
+              <button type="button" class="setup-count-btn" data-count="10" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 10 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">10</button>
             </div>
           </div>
         </div>
 
         <div>
-          <button id="start-setup-quiz-btn" style="background: #0066cc; color: #FFFFFF; font-size: 16px; font-weight: 400; padding: 12px 36px; border-radius: 9999px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: none; transition: all 0.15s ease;">
+          <button id="start-setup-quiz-btn" style="background: #2E7D32; color: #FFFFFF; font-size: 15px; font-weight: 700; padding: 13px 44px; border-radius: 9999px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(46, 125, 50, 0.25); transition: all 0.2s ease;">
             <span>Start Quiz</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
@@ -683,12 +673,12 @@ document.addEventListener("DOMContentLoaded", () => {
           b.style.background = "var(--card-bg)";
           b.style.color = "var(--text-main)";
           b.style.borderColor = "var(--card-border)";
-          b.style.fontWeight = "400";
+          b.style.fontWeight = "500";
         });
-        e.currentTarget.style.background = "#0066cc";
-        e.currentTarget.style.color = "#ffffff";
-        e.currentTarget.style.borderColor = "#0066cc";
-        e.currentTarget.style.fontWeight = "600";
+        e.currentTarget.style.background = "var(--brand-lime)";
+        e.currentTarget.style.color = "#0E0F0C";
+        e.currentTarget.style.borderColor = "var(--brand-lime)";
+        e.currentTarget.style.fontWeight = "700";
         chosenDiff = e.currentTarget.getAttribute("data-diff");
       });
     });
@@ -699,12 +689,12 @@ document.addEventListener("DOMContentLoaded", () => {
           b.style.background = "var(--card-bg)";
           b.style.color = "var(--text-main)";
           b.style.borderColor = "var(--card-border)";
-          b.style.fontWeight = "400";
+          b.style.fontWeight = "500";
         });
-        e.currentTarget.style.background = "#0066cc";
-        e.currentTarget.style.color = "#ffffff";
-        e.currentTarget.style.borderColor = "#0066cc";
-        e.currentTarget.style.fontWeight = "600";
+        e.currentTarget.style.background = "var(--brand-lime)";
+        e.currentTarget.style.color = "#0E0F0C";
+        e.currentTarget.style.borderColor = "var(--brand-lime)";
+        e.currentTarget.style.fontWeight = "700";
         chosenCount = parseInt(e.currentTarget.getAttribute("data-count"), 10) || 5;
       });
     });
@@ -810,18 +800,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             ${hasAnswered ? `
               <div style="margin-top: 16px; padding: 12px 14px; border-radius: 8px; background: var(--btn-secondary-bg); font-size: 12px; line-height: 1.5; color: var(--text-muted);">
-                <strong style="color: var(--text-main); display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                  ${userChoice === q.answerIndex ? '<span style="color: var(--color-success); display: inline-flex; align-items: center; gap: 4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Correct!</span>' : '<span style="color: var(--color-danger); display: inline-flex; align-items: center; gap: 4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Incorrect.</span>'}
-                </strong> 
-                <span>${q.explanation}</span>
+                <strong style="color: ${userChoice === q.answerIndex ? 'var(--color-success)' : 'var(--color-danger)'}; display: inline-flex; align-items: center; gap: 4px;">
+                  ${userChoice === q.answerIndex ? `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Correct!</span>
+                  ` : `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <span>Incorrect</span>
+                  `}
+                </strong> ${q.explanation}
               </div>
             ` : ""}
           </div>
 
           ${hasAnswered ? `
             <div style="display: flex; justify-content: flex-end;">
-              <button id="quiz-next-btn" class="btn-primary" style="padding: 8px 18px;">
-                ${qIdx < questions.length - 1 ? "Next Question →" : "View Results →"}
+              <button id="quiz-next-btn" class="btn-primary" style="padding: 9px 20px;">
+                ${qIdx < questions.length - 1 ? "Next Question →" : "View Results"}
               </button>
             </div>
           ` : ""}
@@ -848,16 +843,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const pct = Math.round((correctCount / questions.length) * 100);
             quizContainer.innerHTML = `
               <div style="max-width: 500px; margin: 0 auto; text-align: center; padding: 32px 20px;">
-                <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(0, 102, 204, 0.1); color: #0066cc; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--brand-lime); color: #0E0F0C; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
                 </div>
-                <h3 style="font-size: 24px; font-weight: 600; letter-spacing: -0.28px; margin-bottom: 6px;">Quiz Completed</h3>
-                <div style="font-size: 40px; font-weight: 600; color: #0066cc; margin: 14px 0;">${pct}%</div>
-                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px; font-weight: 400;">You answered ${correctCount} of ${questions.length} questions correctly (${difficulty}).</p>
+                <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;">Quiz Completed!</h3>
+                <div style="font-size: 36px; font-weight: 900; color: var(--brand-lime); margin: 16px 0;">${pct}%</div>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">You answered ${correctCount} of ${questions.length} questions correctly (${difficulty}).</p>
                 
                 <div style="display: flex; justify-content: center; gap: 10px;">
-                  <button id="quiz-retake-btn" class="btn-secondary" style="padding: 10px 22px; border-radius: 9999px;">Retake Quiz</button>
-                  <button id="quiz-more-btn" class="btn-primary" style="padding: 10px 24px; border-radius: 9999px;">Generate More Questions</button>
+                  <button id="quiz-retake-btn" class="btn-secondary" style="padding: 10px 20px;">Retake Quiz</button>
+                  <button id="quiz-more-btn" class="btn-primary" style="padding: 10px 20px;">Generate More Questions</button>
                 </div>
               </div>
             `;
@@ -1068,7 +1063,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(l => l.trim().length > 0)
         .map(l => `<p class="transcript-line">${l.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`)
         .join("");
-      printCleanPdf(`${currentResult.title || "Video"} — Transcript`, transcriptHtml);
+      printCleanPdf(`${currentResult.title || "Video"} — Full Transcript`, transcriptHtml);
     });
   }
 

@@ -56,16 +56,16 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
   };
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 mb-8 transition-colors">
-      {/* Pill Tab Switcher */}
+    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 sm:p-7 shadow-lg mb-8 transition-colors">
+      {/* High-Contrast Tab Switcher */}
       <div className="flex gap-2 border-b border-[var(--card-border)] pb-3 mb-6">
         <button
           type="button"
           onClick={() => setActiveTab("url")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all cursor-pointer active:scale-95 ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all cursor-pointer active:scale-95 ${
             activeTab === "url"
-              ? "bg-[#0066cc] text-white font-semibold"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)] font-normal"
+              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-xs"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
           }`}
         >
           <Link2 className="w-4 h-4" />
@@ -75,10 +75,10 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
         <button
           type="button"
           onClick={() => setActiveTab("upload")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all cursor-pointer active:scale-95 ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all cursor-pointer active:scale-95 ${
             activeTab === "upload"
-              ? "bg-[#0066cc] text-white font-semibold"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)] font-normal"
+              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-xs"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
           }`}
         >
           <UploadCloud className="w-4 h-4" />
@@ -90,7 +90,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
         {/* URL Input Tab */}
         {activeTab === "url" ? (
           <div>
-            <label className="block text-xs font-semibold text-[var(--text-muted)] tracking-[-0.12px] uppercase mb-2">
+            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2.5">
               Paste YouTube Video Link
             </label>
             <div className="flex gap-2.5">
@@ -106,13 +106,13 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
                 }}
                 placeholder="https://www.youtube.com/watch?v=..."
                 disabled={isProcessing}
-                className="flex-1 h-[44px] px-5 text-base rounded-full bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#0071e3] focus:ring-2 focus:ring-[#0071e3]/20 transition-all"
+                className="flex-1 h-11 px-5 text-sm rounded-full bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-lime)] focus:ring-2 focus:ring-[var(--brand-lime)]/20 transition-all shadow-xs"
               />
               <button
                 type="button"
                 onClick={handlePaste}
                 disabled={isProcessing}
-                className="h-[44px] px-5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] border border-[var(--card-border)] text-[var(--btn-secondary-text)] text-sm font-normal flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                className="h-11 px-5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] border border-[var(--card-border)] text-[var(--btn-secondary-text)] text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shrink-0"
                 title="Paste from clipboard"
               >
                 <Clipboard className="w-4 h-4" />
@@ -123,7 +123,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
         ) : (
           /* File Upload Dropzone */
           <div>
-            <label className="block text-xs font-semibold text-[var(--text-muted)] tracking-[-0.12px] uppercase mb-2">
+            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">
               Drop Media File
             </label>
             <input
@@ -153,30 +153,30 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
                     handleFileChange(e.dataTransfer.files[0]);
                   }
                 }}
-                className={`border border-dashed rounded-[18px] p-8 text-center cursor-pointer transition-all ${
+                className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
                   isDragging
-                    ? "border-[#0066cc] bg-[#0066cc]/5"
-                    : "border-[var(--input-border)] hover:border-[#0066cc] bg-[var(--input-bg)]"
+                    ? "border-[var(--brand-lime)] bg-[rgba(217,236,149,0.1)]"
+                    : "border-[var(--input-border)] hover:border-[var(--brand-lime)] bg-[var(--input-bg)]"
                 }`}
               >
-                <div className="w-11 h-11 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center mx-auto mb-3">
-                  <UploadCloud className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-full bg-[rgba(217,236,149,0.2)] text-[#0E0F0C] dark:text-[var(--brand-lime)] flex items-center justify-center mx-auto mb-3">
+                  <UploadCloud className="w-6 h-6" />
                 </div>
-                <div className="text-sm font-semibold text-[var(--text-main)] mb-1">Click to upload or drag & drop</div>
+                <div className="text-sm font-bold text-[var(--text-main)] mb-1">Click to upload or drag & drop</div>
                 <div className="text-xs text-[var(--text-muted)]">Supports MP4, MOV, MKV, MP3, WAV, M4A</div>
               </div>
             ) : (
-              <div className="flex items-center justify-between p-3.5 bg-[var(--card-elevated)] border border-[var(--card-border)] rounded-[11px]">
+              <div className="flex items-center justify-between p-3.5 bg-[var(--card-elevated)] border border-[var(--card-border)] rounded-xl">
                 <div className="flex items-center gap-3">
-                  <FileVideo className="w-5 h-5 text-[#0066cc]" />
-                  <span className="text-sm font-normal truncate max-w-[280px] sm:max-w-[400px] text-[var(--text-main)]">
+                  <FileVideo className="w-5 h-5 text-[var(--brand-lime)]" />
+                  <span className="text-sm font-semibold truncate max-w-[280px] sm:max-w-[400px] text-[var(--text-main)]">
                     {selectedFile.name} ({(selectedFile.size / (1024 * 1024)).toFixed(1)} MB)
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setSelectedFile(null)}
-                  className="p-1.5 rounded-full hover:bg-red-500/10 text-[var(--color-danger)] transition-colors cursor-pointer active:scale-95"
+                  className="p-1 rounded-lg hover:bg-[rgba(255,107,107,0.15)] text-[var(--color-danger)] transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -190,10 +190,10 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
           <button
             type="submit"
             disabled={isProcessing}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#0066cc] hover:bg-[#0071e3] text-white font-normal text-base flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-7 py-3 rounded-full bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] active:scale-95 text-[#0E0F0C] font-black text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(217,236,149,0.35)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <span>{isProcessing ? "Processing..." : "Summarize Video"}</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 stroke-[2.5]" />
           </button>
         </div>
       </form>
