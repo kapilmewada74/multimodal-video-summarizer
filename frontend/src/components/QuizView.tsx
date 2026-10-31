@@ -138,77 +138,62 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
   // Setup / Config Screen (when no quiz or when user clicks "Generate More Questions")
   if (!quiz || quiz.length === 0 || showConfig) {
     return (
-      <div className="max-w-md mx-auto py-6 text-center animate-in fade-in duration-200">
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">
-          <HelpCircle className="w-3.5 h-3.5" />
-          <span>Practice Quiz Studio</span>
+      <div className="max-w-xl mx-auto py-6 text-center animate-in fade-in duration-200">
+        <div className="w-12 h-12 rounded-full bg-[var(--brand-lime)]/20 dark:bg-[var(--brand-lime)]/15 text-[#0E0F0C] dark:text-[var(--brand-lime)] flex items-center justify-center mx-auto mb-4 font-black text-2xl">
+          ?
         </div>
 
-        <h3 className="text-2xl font-black text-[var(--text-main)] tracking-tight mb-1">
-          {quiz.length > 0 ? "Customize Quiz" : "Test Your Knowledge"}
+        <h3 className="text-2xl font-black text-[var(--text-main)] mb-1">
+          Interactive Practice Quiz
         </h3>
         <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto mb-6">
-          Configure difficulty and question count to test your understanding.
+          Choose your desired difficulty and number of questions to test your knowledge.
         </p>
 
-        <div className="p-5 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] text-left mb-6 shadow-sm">
-          {/* Difficulty Segmented Controller */}
-          <div className="mb-5">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                Difficulty
-              </span>
-              <span className="text-[11px] font-bold text-[var(--text-main)]">
-                {difficulty === "easy" && "Core Facts"}
-                {difficulty === "medium" && "Standard Recall"}
-                {difficulty === "hard" && "Deep Synthesis"}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-1 gap-1">
+        <div className="max-w-[500px] mx-auto p-6 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] text-left mb-4 shadow-sm">
+          {/* Difficulty Selector */}
+          <div className="mb-2">
+            <label className="text-xs font-bold text-[var(--text-main)] block mb-2.5">
+              Select Difficulty:
+            </label>
+            <div className="grid grid-cols-3 gap-2.5 mb-2.5">
               {(["easy", "medium", "hard"] as const).map((diff) => (
                 <button
                   key={diff}
                   type="button"
                   onClick={() => setDifficulty(diff)}
-                  className={`py-2 px-3 rounded-lg text-xs font-bold capitalize transition-all cursor-pointer ${
+                  className={`py-2.5 px-3 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer text-center border ${
                     difficulty === diff
-                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)] shadow-sm font-black"
+                      : "bg-[var(--card-bg)] text-[var(--text-main)] border-[var(--card-border)] hover:border-[var(--text-muted)]"
                   }`}
                 >
                   {diff}
                 </button>
               ))}
             </div>
-            <p className="text-[11px] text-[var(--text-muted)] mt-2 leading-relaxed">
+            <p className="text-[11px] text-[var(--text-muted)] mb-5 leading-relaxed">
               {difficulty === "easy" && "Fundamental definitions and explicit facts from the video."}
               {difficulty === "medium" && "Conceptual understanding, deduction, and practical relationships."}
               {difficulty === "hard" && "Deep conceptual analysis, edge cases, and tricky plausible options."}
             </p>
           </div>
 
-          {/* Number of Questions Segmented Controller */}
+          {/* Number of Questions Selector */}
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                Number of Questions
-              </span>
-              <span className="text-[11px] font-bold text-[var(--text-main)]">
-                {numQuestions === 3 && "~2 mins"}
-                {numQuestions === 5 && "~4 mins"}
-                {numQuestions === 10 && "~8 mins"}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-1 gap-1">
+            <label className="text-xs font-bold text-[var(--text-main)] block mb-2.5">
+              Number of Questions:
+            </label>
+            <div className="grid grid-cols-3 gap-2.5">
               {[3, 5, 10].map((num) => (
                 <button
                   key={num}
                   type="button"
                   onClick={() => setNumQuestions(num)}
-                  className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer text-center border ${
                     numQuestions === num
-                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)] shadow-sm font-black"
+                      : "bg-[var(--card-bg)] text-[var(--text-main)] border-[var(--card-border)] hover:border-[var(--text-muted)]"
                   }`}
                 >
                   {num} Questions
@@ -218,25 +203,21 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-3">
+        <div className="max-w-[500px] mx-auto">
+          <button
+            onClick={handleStartCustomQuiz}
+            className="w-full py-3 px-5 rounded-xl bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] text-sm font-black transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>Start {numQuestions} Qs Quiz ({difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}) →</span>
+          </button>
           {quiz.length > 0 && (
             <button
               onClick={() => setShowConfig(false)}
-              className="px-4 py-2.5 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold transition-all cursor-pointer"
+              className="mt-3 text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer block mx-auto"
             >
-              Cancel
+              Back to Current Quiz
             </button>
           )}
-          <button
-            onClick={handleStartCustomQuiz}
-            className="px-6 py-2.5 rounded-xl bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] text-xs font-black transition-all shadow-sm inline-flex items-center gap-2 cursor-pointer"
-          >
-            <span>Start Practice Quiz</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 font-mono font-bold">
-              {numQuestions} Qs • {difficulty}
-            </span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
         </div>
       </div>
     );

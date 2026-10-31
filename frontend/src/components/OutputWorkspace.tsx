@@ -8,7 +8,6 @@ import {
   Copy,
   Download,
   Printer,
-  Search,
   FileText,
   Check,
   Layers,
@@ -29,7 +28,6 @@ interface OutputWorkspaceProps {
 
 export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   const [activeTab, setActiveTab] = useState<"summary" | "transcript" | "flashcards" | "presentation" | "quiz">("summary");
-  const [transcriptSearch, setTranscriptSearch] = useState("");
   const [copiedSummary, setCopiedSummary] = useState(false);
   const [copiedTranscript, setCopiedTranscript] = useState(false);
 
@@ -277,12 +275,10 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
     }
   };
 
-  const filteredTranscriptLines = useMemo(() => {
+  const transcriptLines = useMemo(() => {
     if (!result.transcript) return [];
-    const lines = result.transcript.split("\n").filter((l) => l.trim().length > 0);
-    if (!transcriptSearch.trim()) return lines;
-    return lines.filter((l) => l.toLowerCase().includes(transcriptSearch.toLowerCase()));
-  }, [result.transcript, transcriptSearch]);
+    return result.transcript.split("\n").filter((l) => l.trim().length > 0);
+  }, [result.transcript]);
 
   const safeFilename = (result.title || "video").toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 40);
 
@@ -425,18 +421,8 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
       {/* Tab 2: Full Transcript Content Pane */}
       {activeTab === "transcript" && (
         <div>
-          {/* Transcript Search Toolbar */}
-          <div className="flex flex-wrap items-center gap-2 mb-4 no-print">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-              <input
-                type="text"
-                value={transcriptSearch}
-                onChange={(e) => setTranscriptSearch(e.target.value)}
-                placeholder="Search words in transcript..."
-                className="w-full pl-9 pr-4 py-2 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-xs text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-lime)]"
-              />
-            </div>
+          {/* Transcript Export Toolbar */}
+          <div className="flex flex-wrap items-center justify-end gap-2 mb-4 no-print">
             <button
               onClick={handleCopyTranscript}
               className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
@@ -467,16 +453,14 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
           </div>
 
           <div className="max-h-[480px] overflow-y-auto space-y-2.5 pr-2">
-            {filteredTranscriptLines.length > 0 ? (
-              filteredTranscriptLines.map((line, idx) => (
+            {transcriptLines.length > 0 ? (
+              transcriptLines.map((line, idx) => (
                 <p key={idx} className="text-sm leading-relaxed text-[var(--text-main)]">
                   {line}
                 </p>
               ))
             ) : (
-              <p className="text-xs text-[var(--text-muted)] py-4">
-                No matching lines found for &quot;{transcriptSearch}&quot;.
-              </p>
+              <p className="text-xs text-[var(--text-muted)] py-4">No transcript available.</p>
             )}
           </div>
         </div>

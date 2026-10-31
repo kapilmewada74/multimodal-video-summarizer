@@ -254,7 +254,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const videoTitleHeading = document.getElementById("video-title-heading");
   const summaryContentEl = document.getElementById("summary-content");
   const transcriptContentEl = document.getElementById("transcript-content");
-  const transcriptSearchInput = document.getElementById("transcript-search-input");
 
   const tabSummaryView = document.getElementById("tab-summary-view");
   const tabTranscriptView = document.getElementById("tab-transcript-view");
@@ -572,51 +571,40 @@ document.addEventListener("DOMContentLoaded", () => {
     let chosenCount = selectedQuizCount || 5;
 
     quizContainer.innerHTML = `
-      <div style="max-width: 500px; margin: 0 auto; text-align: center; padding: 16px 12px 28px 12px;">
-        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 9999px; background: var(--btn-secondary-bg); border: 1px solid var(--card-border); font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span>Practice Quiz Studio</span>
-        </div>
+      <div style="max-width: 520px; margin: 0 auto; text-align: center; padding: 12px 10px 24px 10px;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(217, 236, 149, 0.25); color: #0E0F0C; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; margin: 0 auto 16px auto;">?</div>
 
-        <h3 style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px;">Test Your Knowledge</h3>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Configure difficulty and question count to test your understanding.</p>
+        <h3 style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; color: var(--text-main);">Interactive Practice Quiz</h3>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Choose your desired difficulty and number of questions to test your knowledge.</p>
 
-        <div style="background: var(--card-surface-elevated); border: 1px solid var(--card-border); border-radius: 16px; padding: 22px; text-align: left; margin-bottom: 22px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
-          <!-- Difficulty Selector -->
-          <div style="margin-bottom: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted);">Difficulty</span>
-              <span id="setup-diff-tag" style="font-size: 11px; font-weight: 700; color: var(--text-main);">${chosenDiff === "easy" ? "Core Facts" : (chosenDiff === "hard" ? "Deep Synthesis" : "Standard Recall")}</span>
+        <div style="background: var(--card-surface-elevated); border: 1px solid var(--card-border); border-radius: 16px; padding: 22px; text-align: left; margin-bottom: 16px;">
+          <!-- Select Difficulty -->
+          <div style="margin-bottom: 18px;">
+            <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--text-main);">Select Difficulty:</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+              <button type="button" class="setup-diff-btn" data-diff="easy" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenDiff === "easy" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">Easy</button>
+              <button type="button" class="setup-diff-btn" data-diff="medium" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenDiff === "medium" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">Medium</button>
+              <button type="button" class="setup-diff-btn" data-diff="hard" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenDiff === "hard" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">Hard</button>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 4px; gap: 4px;">
-              <button type="button" class="setup-diff-btn" data-diff="easy" style="padding: 9px 8px; font-size: 12px; font-weight: ${chosenDiff === "easy" ? "800" : "600"}; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; ${chosenDiff === "easy" ? "background: var(--brand-lime); color: #0E0F0C; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" : "background: transparent; color: var(--text-muted);"}">Easy</button>
-              <button type="button" class="setup-diff-btn" data-diff="medium" style="padding: 9px 8px; font-size: 12px; font-weight: ${chosenDiff === "medium" ? "800" : "600"}; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; ${chosenDiff === "medium" ? "background: var(--brand-lime); color: #0E0F0C; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" : "background: transparent; color: var(--text-muted);"}">Medium</button>
-              <button type="button" class="setup-diff-btn" data-diff="hard" style="padding: 9px 8px; font-size: 12px; font-weight: ${chosenDiff === "hard" ? "800" : "600"}; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; ${chosenDiff === "hard" ? "background: var(--brand-lime); color: #0E0F0C; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" : "background: transparent; color: var(--text-muted);"}">Hard</button>
-            </div>
-            <div id="setup-diff-desc" style="font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.4;">
+            <div id="setup-diff-desc" style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
               ${chosenDiff === "easy" ? "Fundamental definitions and explicit facts from the video." : (chosenDiff === "hard" ? "Deep conceptual analysis, edge cases, and tricky plausible options." : "Conceptual understanding, deduction, and practical relationships.")}
             </div>
           </div>
 
-          <!-- Question Count Selector -->
+          <!-- Number of Questions -->
           <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted);">Number of Questions</span>
-              <span id="setup-count-tag" style="font-size: 11px; font-weight: 700; color: var(--text-main);">${chosenCount === 3 ? "~2 mins" : (chosenCount === 10 ? "~8 mins" : "~4 mins")}</span>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 4px; gap: 4px;">
-              <button type="button" class="setup-count-btn" data-count="3" style="padding: 9px 8px; font-size: 12px; font-weight: ${chosenCount === 3 ? "800" : "600"}; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; ${chosenCount === 3 ? "background: var(--brand-lime); color: #0E0F0C; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" : "background: transparent; color: var(--text-muted);"}">3 Questions</button>
-              <button type="button" class="setup-count-btn" data-count="5" style="padding: 9px 8px; font-size: 12px; font-weight: ${chosenCount === 5 ? "800" : "600"}; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; ${chosenCount === 5 ? "background: var(--brand-lime); color: #0E0F0C; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" : "background: transparent; color: var(--text-muted);"}">5 Questions</button>
-              <button type="button" class="setup-count-btn" data-count="10" style="padding: 9px 8px; font-size: 12px; font-weight: ${chosenCount === 10 ? "800" : "600"}; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; ${chosenCount === 10 ? "background: var(--brand-lime); color: #0E0F0C; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" : "background: transparent; color: var(--text-muted);"}">10 Questions</button>
+            <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--text-main);">Number of Questions:</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+              <button type="button" class="setup-count-btn" data-count="3" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenCount === 3 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">3 Questions</button>
+              <button type="button" class="setup-count-btn" data-count="5" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenCount === 5 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">5 Questions</button>
+              <button type="button" class="setup-count-btn" data-count="10" style="padding: 10px; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; ${chosenCount === 10 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 600; border: 1px solid var(--card-border);"}">10 Questions</button>
             </div>
           </div>
         </div>
 
         <div>
-          <button id="start-setup-quiz-btn" class="btn-primary" style="padding: 12px 28px; font-size: 13px; font-weight: 800; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.08); transition: all 0.2s ease;">
-            <span>Start Practice Quiz</span>
-            <span id="start-btn-badge" style="font-size: 11px; padding: 2px 8px; border-radius: 9999px; background: rgba(0, 0, 0, 0.12); font-weight: 700;">${chosenCount} Qs • ${chosenDiff.charAt(0).toUpperCase() + chosenDiff.slice(1)}</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          <button id="start-setup-quiz-btn" style="width: 100%; max-width: 520px; margin: 0 auto; display: block; padding: 12px 20px; font-size: 14px; font-weight: 800; border-radius: 10px; background: var(--brand-lime); color: #0E0F0C; border: none; cursor: pointer; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.15s ease;">
+            Start ${chosenCount} Qs Quiz (${chosenDiff.charAt(0).toUpperCase() + chosenDiff.slice(1)}) →
           </button>
         </div>
       </div>
@@ -628,44 +616,29 @@ document.addEventListener("DOMContentLoaded", () => {
       hard: "Deep conceptual analysis, edge cases, and tricky plausible options."
     };
 
-    const diffTags = {
-      easy: "Core Facts",
-      medium: "Standard Recall",
-      hard: "Deep Synthesis"
-    };
-
-    const countTags = {
-      3: "~2 mins",
-      5: "~4 mins",
-      10: "~8 mins"
-    };
-
     const startBtn = document.getElementById("start-setup-quiz-btn");
-    const badgeEl = document.getElementById("start-btn-badge");
 
     function updateStartBtnText() {
-      if (badgeEl) {
-        badgeEl.textContent = `${chosenCount} Qs • ${chosenDiff.charAt(0).toUpperCase() + chosenDiff.slice(1)}`;
+      if (startBtn) {
+        startBtn.textContent = `Start ${chosenCount} Qs Quiz (${chosenDiff.charAt(0).toUpperCase() + chosenDiff.slice(1)}) →`;
       }
     }
 
     document.querySelectorAll(".setup-diff-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
         document.querySelectorAll(".setup-diff-btn").forEach(b => {
-          b.style.background = "transparent";
-          b.style.color = "var(--text-muted)";
-          b.style.boxShadow = "none";
+          b.style.background = "var(--card-bg)";
+          b.style.color = "var(--text-main)";
+          b.style.borderColor = "var(--card-border)";
           b.style.fontWeight = "600";
         });
         e.currentTarget.style.background = "var(--brand-lime)";
         e.currentTarget.style.color = "#0E0F0C";
-        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+        e.currentTarget.style.borderColor = "var(--brand-lime)";
         e.currentTarget.style.fontWeight = "800";
         chosenDiff = e.currentTarget.getAttribute("data-diff");
         const descEl = document.getElementById("setup-diff-desc");
         if (descEl) descEl.textContent = diffDesc[chosenDiff] || "";
-        const tagEl = document.getElementById("setup-diff-tag");
-        if (tagEl) tagEl.textContent = diffTags[chosenDiff] || "";
         updateStartBtnText();
       });
     });
@@ -673,18 +646,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".setup-count-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
         document.querySelectorAll(".setup-count-btn").forEach(b => {
-          b.style.background = "transparent";
-          b.style.color = "var(--text-muted)";
-          b.style.boxShadow = "none";
+          b.style.background = "var(--card-bg)";
+          b.style.color = "var(--text-main)";
+          b.style.borderColor = "var(--card-border)";
           b.style.fontWeight = "600";
         });
         e.currentTarget.style.background = "var(--brand-lime)";
         e.currentTarget.style.color = "#0E0F0C";
-        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+        e.currentTarget.style.borderColor = "var(--brand-lime)";
         e.currentTarget.style.fontWeight = "800";
         chosenCount = parseInt(e.currentTarget.getAttribute("data-count"), 10) || 5;
-        const tagEl = document.getElementById("setup-count-tag");
-        if (tagEl) tagEl.textContent = countTags[chosenCount] || "";
         updateStartBtnText();
       });
     });
@@ -888,7 +859,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTranscript(result.transcript || "");
   }
 
-  function renderTranscript(text, filter = "") {
+  function renderTranscript(text) {
     transcriptContentEl.innerHTML = "";
     if (!text) {
       transcriptContentEl.textContent = "No transcript available.";
@@ -896,28 +867,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const lines = text.split("\n").filter(l => l.trim().length > 0);
-    const filtered = filter ? lines.filter(l => l.toLowerCase().includes(filter.toLowerCase())) : lines;
-
-    if (filtered.length === 0) {
-      transcriptContentEl.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">No matching segments found for "${filter}".</div>`;
-      return;
-    }
-
-    filtered.forEach((line) => {
+    lines.forEach((line) => {
       const p = document.createElement("p");
       p.style.marginBottom = "10px";
       p.style.lineHeight = "1.7";
       p.style.fontSize = "14px";
       p.textContent = line;
       transcriptContentEl.appendChild(p);
-    });
-  }
-
-  if (transcriptSearchInput) {
-    transcriptSearchInput.addEventListener("input", (e) => {
-      if (currentResult) {
-        renderTranscript(currentResult.transcript, e.target.value);
-      }
     });
   }
 
