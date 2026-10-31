@@ -16,6 +16,8 @@ env/
 # Generated output
 output/*.txt
 output/*.json
+output/*.pptx
+*.pptx
 
 # Downloaded media
 downloads/

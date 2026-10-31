@@ -89,6 +89,41 @@ def run_tests():
     assert isinstance(history, list)
     print(f"✓ History API returned {len(history)} items")
 
+    # 6. Test Generative Extensions (Flashcards, PPT, Quiz, PPTX)
+    print("\n[Test 6] Generative Endpoints (Flashcards, Presentation, Quiz, PPTX)...")
+    sample_payload = {
+        "title": "Python Object Oriented Programming",
+        "summary": "Classes are templates for objects. Instances have unique attributes defined in __init__.",
+        "transcript": "In this tutorial we learn how to create classes in Python."
+    }
+
+    # 6a. Flashcards
+    res_fc = requests.post(f"{BASE_URL}/api/generate/flashcards", json=sample_payload, timeout=15)
+    assert res_fc.status_code == 200
+    assert "flashcards" in res_fc.json()
+    print("✓ Flashcards generation endpoint operational!")
+
+    # 6b. Presentation Outline
+    res_ppt = requests.post(f"{BASE_URL}/api/generate/presentation", json=sample_payload, timeout=15)
+    assert res_ppt.status_code == 200
+    assert "slides" in res_ppt.json()
+    print("✓ Presentation generation endpoint operational!")
+
+    # 6c. Quiz
+    res_quiz = requests.post(f"{BASE_URL}/api/generate/quiz", json=sample_payload, timeout=15)
+    assert res_quiz.status_code == 200
+    assert "quiz" in res_quiz.json()
+    print("✓ Quiz generation endpoint operational!")
+
+    # 6d. PPTX file download
+    res_pptx = requests.post(f"{BASE_URL}/api/download/pptx", json={
+        "title": "Python OOP Slides",
+        "slides": [{"title": "Classes", "bullets": ["Blueprint for objects"], "notes": "Speaker notes."}]
+    }, timeout=10)
+    assert res_pptx.status_code == 200
+    assert len(res_pptx.content) > 1000
+    print(f"✓ Real PowerPoint (.pptx) download compiled ({len(res_pptx.content)} bytes)!")
+
     print("\n" + "=" * 60)
     print("ALL CORE UNIT & INTEGRATION TESTS PASSED!")
     print("=" * 60)

@@ -2,7 +2,7 @@ import os
 import uuid
 import shutil
 import threading
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
@@ -20,8 +20,10 @@ from services import (
     run_pipeline_for_upload,
     get_history,
     DOWNLOAD_DIR,
+    OUTPUT_DIR,
     BASE_DIR
 )
+import generators
 
 app = FastAPI(
     title="Multimodal Video Summarizer",
@@ -165,6 +167,76 @@ async def job_status(job_id: str):
 @app.get("/api/history")
 async def history():
     return get_history()
+
+
+class GenerateRequest(BaseModel):
+    title: str
+    summary: str
+    transcript: Optional[str] = ""
+    apiKey: Optional[str] = None
+
+
+class PptxRequest(BaseModel):
+    title: str
+    slides: List[Dict[str, Any]]
+
+
+@app.post("/api/generate/flashcards")
+async def api_generate_flashcards(payload: GenerateRequest):
+    try:
+        data = generators.generate_flashcards(
+            title=payload.title,
+            summary=payload.summary,
+            transcript=payload.transcript or "",
+            api_key=payload.apiKey
+        )
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/generate/presentation")
+async def api_generate_presentation(payload: GenerateRequest):
+    try:
+        data = generators.generate_presentation(
+            title=payload.title,
+            summary=payload.summary,
+            transcript=payload.transcript or "",
+            api_key=payload.apiKey
+        )
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/generate/quiz")
+async def api_generate_quiz(payload: GenerateRequest):
+    try:
+        data = generators.generate_quiz(
+            title=payload.title,
+            summary=payload.summary,
+            transcript=payload.transcript or "",
+            api_key=payload.apiKey
+        )
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/download/pptx")
+async def api_download_pptx(payload: PptxRequest):
+    try:
+        temp_filename = f"presentation_{uuid.uuid4().hex[:8]}.pptx"
+        output_path = os.path.join(OUTPUT_DIR, temp_filename)
+        generators.build_pptx_file(payload.model_dump(), output_path)
+        
+        return FileResponse(
+            output_path,
+            filename=f"{(payload.title or 'Presentation').replace(' ', '_')}.pptx",
+            media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to compile PPTX: {e}")
 
 
 if __name__ == "__main__":
