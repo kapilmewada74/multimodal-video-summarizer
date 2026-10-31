@@ -1,4 +1,10 @@
 import os
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR:
+    os.chdir(BASE_DIR)
 
 from dotenv import load_dotenv
 
@@ -6,7 +12,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface import (
-    HuggingFaceEndpoint,
+    HuggingFacePipeline,
     ChatHuggingFace
 )
 
@@ -316,28 +322,30 @@ def load_transcript():
 def create_llm():
 
     print("\n" + "=" * 70)
-    print("STEP 2: LOADING QWEN3-14B")
+    print("STEP 2: LOADING LOCAL OPEN-SOURCE LLM (Qwen2.5)")
     print("=" * 70)
 
-    token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+    model_id = "Qwen/Qwen2.5-0.5B-Instruct"
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    model = AutoModelForCausalLM.from_pretrained(model_id).to(device)
 
-    if not token:
-        raise ValueError(
-            "HUGGINGFACEHUB_API_TOKEN not found in .env file."
-        )
-
-    endpoint = HuggingFaceEndpoint(
-        repo_id="Qwen/Qwen3-14B",
-        huggingfacehub_api_token=token,
-        max_new_tokens=3000,
+    pipe = pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=1500,
         temperature=0.2,
+        do_sample=True,
+        return_full_text=False
     )
 
+    hf_pipe = HuggingFacePipeline(pipeline=pipe)
     llm = ChatHuggingFace(
-        llm=endpoint
+        llm=hf_pipe
     )
 
-    print("\n✓ Qwen3-14B loaded successfully")
+    print(f"\n✓ Local LLM ({model_id}) loaded successfully on {device}")
 
     return llm
 
