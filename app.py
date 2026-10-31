@@ -4,6 +4,10 @@ import shutil
 import threading
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+# Load server environment variables (.env)
+load_dotenv()
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.staticfiles import StaticFiles

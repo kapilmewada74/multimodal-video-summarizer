@@ -186,6 +186,42 @@
 
       <!-- View 1: Summary Pane -->
       <div id="view-summary-pane">
+        <!-- Interactive Study Toolkit Cards Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px;">
+          <!-- Card 1: Flashcards -->
+          <div id="quick-flashcards-card" style="padding: 16px; border-radius: 14px; background: var(--card-surface-elevated); border: 1px solid var(--card-border); cursor: pointer; transition: all 0.2s ease;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 20px;">🃏</span>
+              <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 12px; background: var(--btn-secondary-bg); color: var(--text-muted); border: 1px solid var(--card-border);">Active Recall</span>
+            </div>
+            <div style="font-size: 14px; font-weight: 800; margin-bottom: 4px;">Study Flashcards</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Flip cards for definitions, formulas & concepts.</div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--brand-lime);">Open Flashcards →</div>
+          </div>
+
+          <!-- Card 2: Presentation -->
+          <div id="quick-presentation-card" style="padding: 16px; border-radius: 14px; background: var(--card-surface-elevated); border: 1px solid var(--card-border); cursor: pointer; transition: all 0.2s ease;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 20px;">📊</span>
+              <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 12px; background: var(--btn-secondary-bg); color: var(--text-muted); border: 1px solid var(--card-border);">16:9 Deck</span>
+            </div>
+            <div style="font-size: 14px; font-weight: 800; margin-bottom: 4px;">Slide Presentation</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Keynote slides with speaker notes & PPTX export.</div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--brand-lime);">View Slides & PPTX →</div>
+          </div>
+
+          <!-- Card 3: Quiz -->
+          <div id="quick-quiz-card" style="padding: 16px; border-radius: 14px; background: var(--card-surface-elevated); border: 1px solid var(--card-border); cursor: pointer; transition: all 0.2s ease;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 20px;">❓</span>
+              <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 12px; background: var(--btn-secondary-bg); color: var(--text-muted); border: 1px solid var(--card-border);">Knowledge Test</span>
+            </div>
+            <div style="font-size: 14px; font-weight: 800; margin-bottom: 4px;">Practice Quiz</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">5 test questions with instant answer explanations.</div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--brand-lime);">Start Quiz →</div>
+          </div>
+        </div>
+
         <div id="summary-content" class="markdown-body" style="min-height: 200px;"></div>
       </div>
 
@@ -230,42 +266,7 @@
 
   </main>
 
-  <!-- ============================================================
-       API SETTINGS MODAL
-       ============================================================ -->
-  <div id="api-settings-modal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; width: 100%; max-width: 500px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 12px;">
-        <h3 style="font-size: 16px; font-weight: 800;">API Management & Keys</h3>
-        <button id="close-settings-btn" class="btn-secondary" style="padding: 4px 8px; font-size: 14px;">✕</button>
-      </div>
 
-      <div style="font-size: 12px; color: var(--text-muted); background: var(--btn-secondary-bg); padding: 10px 14px; border-radius: 10px; margin-bottom: 16px; border: 1px solid var(--card-border);">
-        <strong style="color: var(--text-main);">Automatic Local Fallback:</strong> If no keys are provided, the system automatically uses your local Qwen2.5 engine.
-      </div>
-
-      <div style="margin-bottom: 14px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-          <label style="font-size: 12px; font-weight: 700;">Gemini API Key (for PPT & Flashcards)</label>
-          <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size: 11px; color: var(--brand-lime); text-decoration: underline;">Get Free Key ↗</a>
-        </div>
-        <input type="password" id="gemini-key-input" placeholder="AIzaSy..." style="width: 100%; padding: 10px 14px; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-main); font-size: 13px;" />
-      </div>
-
-      <div style="margin-bottom: 20px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-          <label style="font-size: 12px; font-weight: 700;">Grok (xAI) API Key (for Quiz)</label>
-          <a href="https://console.x.ai/" target="_blank" style="font-size: 11px; color: var(--brand-lime); text-decoration: underline;">xAI Console ↗</a>
-        </div>
-        <input type="password" id="grok-key-input" placeholder="xai-..." style="width: 100%; padding: 10px 14px; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-main); font-size: 13px;" />
-      </div>
-
-      <div style="display: flex; justify-content: flex-end; gap: 8px;">
-        <button id="cancel-settings-btn" class="btn-secondary" style="padding: 8px 16px;">Cancel</button>
-        <button id="save-settings-btn" class="btn-primary" style="padding: 8px 18px;">Save Keys</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Sonner-style Toast Container -->
   <div id="toast-container" class="toast-container"></div>

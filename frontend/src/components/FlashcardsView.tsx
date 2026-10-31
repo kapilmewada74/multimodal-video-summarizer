@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Sparkles, ChevronLeft, ChevronRight, RotateCcw, Shuffle, RefreshCw, CheckCircle2 } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Sparkles, ChevronLeft, ChevronRight, RotateCcw, Shuffle, RefreshCw } from "lucide-react";
 
 export interface Flashcard {
   front: string;
@@ -22,15 +22,60 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
   const [deck, setDeck] = useState<Flashcard[]>(cards);
 
   // Sync if cards update
-  React.useEffect(() => {
+  useEffect(() => {
     setDeck(cards);
     setCurrentIndex(0);
     setIsFlipped(false);
   }, [cards]);
 
+  const handleNext = useCallback(() => {
+    if (deck.length === 0) return;
+    setIsFlipped(false);
+    setCurrentIndex((prev) => (prev + 1) % deck.length);
+  }, [deck.length]);
+
+  const handlePrev = useCallback(() => {
+    if (deck.length === 0) return;
+    setIsFlipped(false);
+    setCurrentIndex((prev) => (prev - 1 + deck.length) % deck.length);
+  }, [deck.length]);
+
+  const handleFlip = useCallback(() => {
+    setIsFlipped((prev) => !prev);
+  }, []);
+
+  const handleShuffle = () => {
+    const shuffled = [...deck].sort(() => Math.random() - 0.5);
+    setDeck(shuffled);
+    setCurrentIndex(0);
+    setIsFlipped(false);
+  };
+
+  // Keyboard navigation: Spacebar to flip, Left/Right arrows to navigate
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (deck.length === 0) return;
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        handleFlip();
+      } else if (e.code === "ArrowRight") {
+        e.preventDefault();
+        handleNext();
+      } else if (e.code === "ArrowLeft") {
+        e.preventDefault();
+        handlePrev();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [deck.length, handleFlip, handleNext, handlePrev]);
+
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="w-10 h-10 border-3 border-[var(--card-border)] border-t-[var(--brand-lime)] rounded-full animate-spin mb-4" />
         <h4 className="text-sm font-bold text-[var(--text-main)]">Generating Study Flashcards...</h4>
         <p className="text-xs text-[var(--text-muted)] mt-1">Extracting core concepts from summary and transcript</p>
@@ -46,7 +91,7 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
         </div>
         <h4 className="text-base font-bold text-[var(--text-main)] mb-1">Interactive Flashcards</h4>
         <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto mb-5 leading-relaxed">
-          Transform your video notes and transcript into active-recall flashcards powered by Gemini AI with local fallback.
+          Transform your video notes and transcript into active-recall flashcards powered by AI.
         </p>
         <button
           onClick={onGenerate}
@@ -60,32 +105,16 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
   }
 
   const currentCard = deck[currentIndex] || deck[0];
-
-  const handleNext = () => {
-    setIsFlipped(false);
-    setCurrentIndex((prev) => (prev + 1) % deck.length);
-  };
-
-  const handlePrev = () => {
-    setIsFlipped(false);
-    setCurrentIndex((prev) => (prev - 1 + deck.length) % deck.length);
-  };
-
-  const handleShuffle = () => {
-    const shuffled = [...deck].sort(() => Math.random() - 0.5);
-    setDeck(shuffled);
-    setCurrentIndex(0);
-    setIsFlipped(false);
-  };
+  const progressPercent = Math.round(((currentIndex + 1) / deck.length) * 100);
 
   return (
     <div className="max-w-2xl mx-auto py-2">
       {/* Top Meta Bar */}
-      <div className="flex items-center justify-between mb-4 text-xs">
+      <div className="flex items-center justify-between mb-3 text-xs">
         <div className="flex items-center gap-2 text-[var(--text-muted)]">
           <span className="font-bold text-[var(--text-main)]">Card {currentIndex + 1} of {deck.length}</span>
           {provider && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)]">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] font-medium">
               {provider}
             </span>
           )}
@@ -94,9 +123,10 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
           <button
             onClick={handleShuffle}
             title="Shuffle Deck"
-            className="p-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] transition-colors cursor-pointer"
+            className="px-2.5 py-1 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] transition-colors cursor-pointer text-xs font-bold flex items-center gap-1"
           >
             <Shuffle className="w-3.5 h-3.5" />
+            <span>Shuffle</span>
           </button>
           <button
             onClick={onGenerate}
@@ -108,24 +138,32 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
         </div>
       </div>
 
+      {/* Progress Bar */}
+      <div className="w-full h-1 bg-[var(--card-border)] rounded-full mb-5 overflow-hidden">
+        <div
+          className="h-full bg-[var(--brand-lime)] transition-all duration-300"
+          style={{ width: `${progressPercent}%` }}
+        />
+      </div>
+
       {/* 3D Flip Card */}
       <div
-        onClick={() => setIsFlipped(!isFlipped)}
-        className="w-full min-h-[260px] p-8 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] shadow-md flex flex-col justify-between cursor-pointer transition-all hover:border-[var(--brand-lime)]/50 select-none group"
+        onClick={handleFlip}
+        className="w-full min-h-[280px] p-8 sm:p-10 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] shadow-md flex flex-col justify-between cursor-pointer transition-all hover:border-[var(--brand-lime)]/50 select-none group"
       >
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[var(--btn-secondary-bg)] text-[var(--text-muted)]">
+          <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] border border-[var(--card-border)]">
             {currentCard.tag || (isFlipped ? "Answer" : "Question")}
           </span>
           <span className="text-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-main)] transition-colors flex items-center gap-1 font-medium">
             <RotateCcw className="w-3 h-3" />
-            <span>Click to flip</span>
+            <span>Click or Space to flip</span>
           </span>
         </div>
 
         <div className="my-auto py-6 text-center">
           {!isFlipped ? (
-            <h3 className="text-lg sm:text-xl font-black text-[var(--text-main)] leading-snug">
+            <h3 className="text-lg sm:text-2xl font-black text-[var(--text-main)] leading-snug">
               {currentCard.front}
             </h3>
           ) : (
@@ -136,32 +174,44 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
         </div>
 
         <div className="text-center text-[10px] text-[var(--text-muted)] font-medium">
-          {isFlipped ? "Showing Explanation (Click to flip back)" : "Showing Concept (Click to reveal answer)"}
+          {isFlipped ? "Showing Answer (Click or press Space to flip back)" : "Showing Question (Click or press Space to reveal answer)"}
         </div>
       </div>
 
       {/* Navigation Controls */}
-      <div className="flex items-center justify-between mt-5">
+      <div className="flex items-center justify-between mt-5 gap-2">
         <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className="px-4 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+          className="px-4 py-2.5 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Previous</span>
         </button>
 
-        <button
-          onClick={() => setIsFlipped(!isFlipped)}
-          className="px-4 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold transition-all cursor-pointer"
-        >
-          Flip Card
-        </button>
+        {/* Indicator Dots */}
+        <div className="flex items-center gap-1.5 max-w-[200px] overflow-x-auto py-1">
+          {deck.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setIsFlipped(false);
+                setCurrentIndex(idx);
+              }}
+              className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
+                idx === currentIndex
+                  ? "bg-[var(--brand-lime)] w-4"
+                  : "bg-[var(--card-border)] hover:bg-[var(--text-muted)]"
+              }`}
+              title={`Card ${idx + 1}`}
+            />
+          ))}
+        </div>
 
         <button
           onClick={handleNext}
           disabled={currentIndex === deck.length - 1}
-          className="px-4 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+          className="px-4 py-2.5 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
         >
           <span>Next</span>
           <ChevronRight className="w-4 h-4" />

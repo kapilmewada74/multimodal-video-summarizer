@@ -313,15 +313,13 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     try {
-      const apiKey = localStorage.getItem("GEMINI_API_KEY") || undefined;
       const res = await fetch("/api/generate/flashcards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: currentResult.title,
           summary: currentResult.summary,
-          transcript: currentResult.transcript,
-          apiKey
+          transcript: currentResult.transcript
         })
       });
       const data = await res.json();
@@ -416,15 +414,13 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     try {
-      const apiKey = localStorage.getItem("GEMINI_API_KEY") || undefined;
       const res = await fetch("/api/generate/presentation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: currentResult.title,
           summary: currentResult.summary,
-          transcript: currentResult.transcript,
-          apiKey
+          transcript: currentResult.transcript
         })
       });
       const data = await res.json();
@@ -560,15 +556,13 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     try {
-      const apiKey = localStorage.getItem("GROK_API_KEY") || undefined;
       const res = await fetch("/api/generate/quiz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: currentResult.title,
           summary: currentResult.summary,
-          transcript: currentResult.transcript,
-          apiKey
+          transcript: currentResult.transcript
         })
       });
       const data = await res.json();
@@ -691,42 +685,29 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCurrentQuestion();
   }
 
-  // --- API Settings Modal Logic ---
-  const openSettingsBtn = document.getElementById("open-settings-btn");
-  const apiSettingsModal = document.getElementById("api-settings-modal");
-  const closeSettingsBtn = document.getElementById("close-settings-btn");
-  const cancelSettingsBtn = document.getElementById("cancel-settings-btn");
-  const saveSettingsBtn = document.getElementById("save-settings-btn");
-  const geminiKeyInput = document.getElementById("gemini-key-input");
-  const grokKeyInput = document.getElementById("grok-key-input");
+  // --- Quick Study Toolkit Card Listeners ---
+  const quickFlashcardsCard = document.getElementById("quick-flashcards-card");
+  const quickPresentationCard = document.getElementById("quick-presentation-card");
+  const quickQuizCard = document.getElementById("quick-quiz-card");
 
-  function openSettings() {
-    if (!apiSettingsModal) return;
-    if (geminiKeyInput) geminiKeyInput.value = localStorage.getItem("GEMINI_API_KEY") || "";
-    if (grokKeyInput) grokKeyInput.value = localStorage.getItem("GROK_API_KEY") || "";
-    apiSettingsModal.style.display = "flex";
+  if (quickFlashcardsCard) {
+    quickFlashcardsCard.addEventListener("click", () => {
+      switchTab(tabFlashcardsView, viewFlashcardsPane);
+      if (!cachedFlashcards) loadFlashcards();
+    });
   }
 
-  function closeSettings() {
-    if (apiSettingsModal) apiSettingsModal.style.display = "none";
+  if (quickPresentationCard) {
+    quickPresentationCard.addEventListener("click", () => {
+      switchTab(tabPresentationView, viewPresentationPane);
+      if (!cachedPresentation) loadPresentation();
+    });
   }
 
-  if (openSettingsBtn) openSettingsBtn.addEventListener("click", openSettings);
-  if (closeSettingsBtn) closeSettingsBtn.addEventListener("click", closeSettings);
-  if (cancelSettingsBtn) cancelSettingsBtn.addEventListener("click", closeSettings);
-
-  if (saveSettingsBtn) {
-    saveSettingsBtn.addEventListener("click", () => {
-      const gKey = (geminiKeyInput.value || "").trim();
-      const xKey = (grokKeyInput.value || "").trim();
-      if (gKey) localStorage.setItem("GEMINI_API_KEY", gKey);
-      else localStorage.removeItem("GEMINI_API_KEY");
-
-      if (xKey) localStorage.setItem("GROK_API_KEY", xKey);
-      else localStorage.removeItem("GROK_API_KEY");
-
-      showToast("API keys saved!", "success");
-      closeSettings();
+  if (quickQuizCard) {
+    quickQuizCard.addEventListener("click", () => {
+      switchTab(tabQuizView, viewQuizPane);
+      if (!cachedQuiz) loadQuiz();
     });
   }
 
