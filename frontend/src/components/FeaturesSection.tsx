@@ -1,7 +1,19 @@
 "use client";
 
 import React from "react";
-import { ArrowUpRight, Link2, Cpu, Download, ArrowRight } from "lucide-react";
+import ScrollStack, { ScrollStackItem } from "./ScrollStack";
+import {
+  Clock,
+  Shield,
+  Terminal,
+  HelpCircle,
+  CheckCircle2,
+  Monitor,
+  Download,
+  Link2,
+  Cpu,
+  ArrowRight,
+} from "lucide-react";
 
 export function FeaturesSection() {
   const steps = [
@@ -28,199 +40,243 @@ export function FeaturesSection() {
   return (
     <section className="mt-20 sm:mt-28 space-y-24 no-print" id="features">
       {/* ============================================================
-           WORK YOUR WAY (Exact 3-Card Showcase from Reference Image)
+           WORK YOUR WAY: REACT BITS SCROLL STACK (3 Pinned Cards)
            ============================================================ */}
       <div>
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
           <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-[var(--text-main)]">
             Work your way
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[var(--text-muted)] max-w-lg mx-auto">
-            Batch process, review active-recall notes, and export presentation decks locally with zero limits.
+            Scroll to experience our 3 core study superpowers in an interactive card stack.
           </p>
         </div>
 
-        {/* 3 Tall Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7">
-          {/* Card 1: Desktop Offline */}
-          <div className="group rounded-[26px] bg-[var(--card-bg)] border border-[var(--card-border)] overflow-hidden flex flex-col hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300">
-            {/* Top Mockup Banner */}
-            <div className="h-[210px] sm:h-[230px] bg-[#FCEEE8] dark:bg-[#221C18] pt-6 px-5 flex items-end justify-center overflow-hidden transition-colors">
-              {/* Desktop App Window Mockup */}
-              <div className="w-full max-w-[270px] bg-white dark:bg-[#181916] rounded-t-xl shadow-lg border border-black/5 dark:border-white/10 p-3 pb-6 flex flex-col transition-transform group-hover:scale-[1.02] duration-300">
-                {/* Window Title Bar */}
-                <div className="flex items-center gap-1.5 pb-2.5 mb-2.5 border-b border-black/5 dark:border-white/10">
-                  <span className="w-2 h-2 rounded-full bg-[#FF5F56]" />
-                  <span className="w-2 h-2 rounded-full bg-[#FFBD2E]" />
-                  <span className="w-2 h-2 rounded-full bg-[#27C93F]" />
-                  <span className="ml-auto text-[9px] font-mono text-black/30 dark:text-white/30">desktop-app</span>
-                </div>
-
-                <div className="flex gap-2.5">
-                  {/* Mini Sidebar */}
-                  <div className="w-16 space-y-1.5 text-[9px] font-medium text-black/50 dark:text-white/50">
-                    <div className="px-1.5 py-0.5 rounded text-black/40 dark:text-white/40">Recent</div>
-                    <div className="px-1.5 py-0.5 rounded bg-[#FFEAE4] dark:bg-white/10 text-[#DE5442] dark:text-[#FFA090] font-bold">Tools</div>
-                    <div className="px-1.5 py-0.5 rounded text-black/40 dark:text-white/40">History</div>
-                    <div className="px-1.5 py-0.5 rounded text-black/40 dark:text-white/40">Settings</div>
-                  </div>
-
-                  {/* Document Body */}
-                  <div className="flex-1 space-y-1.5 pl-1">
-                    <div className="text-[10px] font-extrabold text-[#1F1E1B] dark:text-[#EAE6DE] leading-tight">
-                      Exclusivity <span className="bg-[#FFE885] dark:bg-[#B3931E] px-1 rounded text-black">agreement</span>
+        {/* ScrollStack Container with exact React Bits configuration */}
+        <div style={{ height: 600 }} className="w-full relative">
+          <ScrollStack
+            itemDistance={40}
+            itemStackDistance={22}
+            stackPosition="12%"
+            itemScale={0.05}
+            baseScale={0.8}
+            dimAmount={0.25}
+            blurAmount={0}
+            tiltAmount={0}
+            rotationAmount={0}
+            smoothScroll={true}
+            snap={false}
+          >
+            {/* ---------------- Card 1: Local Multimodal AI (Dark) ---------------- */}
+            <ScrollStackItem itemClassName="h-[360px] sm:h-[380px] bg-[#0C0D0A] text-white border border-white/10 rounded-[28px] overflow-hidden p-6 sm:p-9 flex flex-col justify-between">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center h-full">
+                {/* Left: Laptop Screen Mockup */}
+                <div className="hidden md:flex md:col-span-5 items-center justify-center">
+                  <div className="w-full max-w-[280px] bg-[#161714] rounded-t-xl border border-white/10 shadow-2xl p-3 pb-5">
+                    <div className="flex items-center gap-1.5 pb-2 mb-2.5 border-b border-white/10">
+                      <span className="w-2 h-2 rounded-full bg-[#FF5F56]" />
+                      <span className="w-2 h-2 rounded-full bg-[#FFBD2E]" />
+                      <span className="w-2 h-2 rounded-full bg-[#27C93F]" />
+                      <span className="ml-auto text-[8px] font-mono text-white/40">local-pipeline</span>
                     </div>
-                    <div className="w-full h-1 bg-black/10 dark:bg-white/10 rounded" />
-                    <div className="w-3/4 h-1 bg-black/10 dark:bg-white/10 rounded" />
-                    <div className="w-5/6 h-1 bg-black/10 dark:bg-white/10 rounded" />
-                    <div className="pt-1 flex items-center gap-1 text-[8px] text-[#15803D] font-bold">
-                      <span className="w-2.5 h-2.5 rounded border border-[#15803D] flex items-center justify-center text-[7px]">✓</span>
-                      <span>Verified Offline</span>
+                    <div className="space-y-2">
+                      <div className="text-[10px] font-black text-white/90">
+                        Multimodal Lecture Notes
+                      </div>
+                      <div className="h-12 bg-black/40 rounded p-2 text-[8px] text-white/70 leading-relaxed font-mono">
+                        02:15 • Whisper audio transcription synced. Key takeaway synthesized locally.
+                      </div>
+                      <div className="flex items-center gap-1 text-[8px] text-[var(--brand-lime)] font-bold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-lime)] animate-pulse" />
+                        <span>100% Private • Local Inference</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Bottom Content */}
-            <div className="p-6 sm:p-7 flex flex-col justify-between flex-1">
-              <div>
-                <h3 className="text-xl font-extrabold text-[var(--text-main)] tracking-tight">
-                  Work offline with Desktop
-                </h3>
-                <p className="mt-2.5 text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
-                  Batch edit and manage documents locally, with no internet and no limits.
-                </p>
-              </div>
+                {/* Right: Copy & CTAs */}
+                <div className="md:col-span-7 flex flex-col justify-between h-full py-1">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug mb-3">
+                      2.0 Multimodal AI: Structured Summaries & Local Transcription
+                    </h3>
+                    <p className="text-xs sm:text-sm text-white/70 leading-relaxed mb-4 max-w-lg">
+                      Condense hours of lectures and recordings into crisp, executive-level summaries with timestamps and key takeaways — completely local and private.
+                    </p>
 
-              <div className="pt-6 flex justify-end">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] group-hover:text-[var(--text-main)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
-                  <ArrowUpRight className="w-5 h-5" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Mobile on the Go */}
-          <div className="group rounded-[26px] bg-[var(--card-bg)] border border-[var(--card-border)] overflow-hidden flex flex-col hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300">
-            {/* Top Mockup Banner */}
-            <div className="h-[210px] sm:h-[230px] bg-[#FCEEE8] dark:bg-[#221C18] pt-6 px-5 flex items-end justify-center overflow-hidden transition-colors">
-              {/* Phone Device Mockup */}
-              <div className="w-[180px] bg-white dark:bg-[#181916] rounded-t-2xl shadow-lg border border-black/5 dark:border-white/10 p-2.5 pb-6 flex flex-col transition-transform group-hover:scale-[1.02] duration-300">
-                {/* Mobile Status Bar */}
-                <div className="flex items-center justify-between text-[8px] font-bold text-black/60 dark:text-white/60 px-1 mb-2">
-                  <span>9:41</span>
-                  <div className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-black/40 dark:bg-white/40" />
-                    <span className="w-2.5 h-1.5 border border-black/40 dark:border-white/40 rounded-xs" />
-                  </div>
-                </div>
-
-                {/* Mobile Screen Content */}
-                <div className="flex gap-1.5">
-                  <div className="flex-1 space-y-1.5">
-                    <div className="border border-dashed border-[#0284C7] p-1 rounded bg-[#E0F2FE]/50 text-[9px] font-black text-[#0369A1] leading-tight">
-                      Modern architecture
-                    </div>
-                    <div className="h-10 bg-[#EFECE6] dark:bg-white/10 rounded overflow-hidden flex items-center justify-center text-[8px] text-black/40 dark:text-white/40">
-                      [Architecture.jpg]
-                    </div>
-                    <div className="w-3/4 h-1.5 bg-[#FFE885] rounded" />
-                  </div>
-
-                  {/* Vertical Tool Dock */}
-                  <div className="w-5 py-1 rounded bg-[#F4F4F1] dark:bg-white/5 border border-black/5 dark:border-white/10 flex flex-col items-center gap-1.5 text-[8px] font-bold text-black/60 dark:text-white/60">
-                    <span className="text-[#DE5442]">A</span>
-                    <span>Tt</span>
-                    <span className="w-2 h-2 rounded-full bg-[#DE5442]" />
-                    <span>✎</span>
-                    <span>⚲</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Content */}
-            <div className="p-6 sm:p-7 flex flex-col justify-between flex-1">
-              <div>
-                <h3 className="text-xl font-extrabold text-[var(--text-main)] tracking-tight">
-                  On-the-go with Mobile
-                </h3>
-                <p className="mt-2.5 text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
-                  Your favorite tools, right in your pocket. Keep working on your projects anytime, anywhere.
-                </p>
-              </div>
-
-              <div className="pt-6 flex justify-end">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-[#E11D48] dark:text-[#FF6B6B] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
-                  <ArrowUpRight className="w-5 h-5 font-bold" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Built for Business */}
-          <div className="group rounded-[26px] bg-[var(--card-bg)] border border-[var(--card-border)] overflow-hidden flex flex-col hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300">
-            {/* Top Mockup Banner */}
-            <div className="h-[210px] sm:h-[230px] bg-[#FCEEE8] dark:bg-[#221C18] pt-6 px-5 flex items-end justify-center overflow-hidden transition-colors">
-              {/* Team Avatars & Code Window Mockup */}
-              <div className="w-full max-w-[270px] relative flex flex-col items-center">
-                {/* Team Avatars Bar */}
-                <div className="flex items-center gap-1.5 mb-2 self-start pl-1">
-                  <div className="w-5 h-5 rounded-full bg-[#38BDF8] flex items-center justify-center text-[8px] font-black text-white shadow-2xs">JS</div>
-                  <div className="w-5 h-5 rounded-full bg-[#FB923C] flex items-center justify-center text-[8px] font-black text-white shadow-2xs">AK</div>
-                  <div className="w-5 h-5 rounded-full bg-[#E11D48] flex items-center justify-center text-[10px] font-black text-white shadow-2xs">+</div>
-                </div>
-
-                <div className="w-full flex gap-2">
-                  {/* Invoice Document with Signature */}
-                  <div className="w-[110px] bg-white dark:bg-[#181916] rounded-t-xl p-2.5 shadow-md border border-black/5 dark:border-white/10">
-                    <div className="text-[9px] font-black tracking-wider text-[#38BDF8] mb-1">INVOICE</div>
-                    <div className="w-full h-1 bg-black/10 dark:bg-white/10 rounded mb-1" />
-                    <div className="w-2/3 h-1 bg-black/10 dark:bg-white/10 rounded mb-3" />
-                    {/* Handwritten signature mark */}
-                    <div className="font-serif italic text-sm text-[#1F1E1B] dark:text-[#EAE6DE] opacity-70 border-t border-black/5 pt-1">
-                      Qu...
+                    {/* Value Badges */}
+                    <div className="flex flex-wrap gap-2 text-xs font-semibold text-white/80 mb-5">
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/10">
+                        <Clock className="w-3.5 h-3.5 text-[var(--brand-lime)]" />
+                        <span>Fast Inference</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/10">
+                        <Shield className="w-3.5 h-3.5 text-[#8ED081]" />
+                        <span>100% Private</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/10">
+                        <Terminal className="w-3.5 h-3.5 text-white/70" />
+                        <span>Whisper AI</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Dark API Terminal Mockup */}
-                  <div className="flex-1 bg-[#1F2428] rounded-t-xl p-2.5 text-[8px] font-mono text-[#E1E4E8] shadow-md border border-black/20">
-                    <div className="text-white/40 mb-1">/* API */</div>
-                    <div className="text-[#79B8FF]">&#123;</div>
-                    <div className="pl-2">
-                      <span className="text-[#B392F0]">&quot;id&quot;</span>: <span className="text-[#9ECBFF]">&quot;db601c95&quot;</span>,
+                  {/* Price & Action Button */}
+                  <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                    <div>
+                      <span className="text-[11px] text-white/50 block">Pricing</span>
+                      <span className="text-sm font-black text-white">Free & Unlimited</span>
                     </div>
-                    <div className="pl-2">
-                      <span className="text-[#B392F0]">&quot;name&quot;</span>: <span className="text-[#9ECBFF]">&quot;export&quot;</span>,
-                    </div>
-                    <div className="pl-2">
-                      <span className="text-[#B392F0]">&quot;props&quot;</span>: &lt;payload&gt;
-                    </div>
-                    <div className="text-[#79B8FF]">&#125;</div>
+                    <a
+                      href="#app-top"
+                      className="px-5 py-2 rounded-full bg-white hover:bg-neutral-200 text-black font-extrabold text-xs transition-all shadow-sm cursor-pointer"
+                    >
+                      Summarize Video →
+                    </a>
                   </div>
                 </div>
               </div>
-            </div>
+            </ScrollStackItem>
 
-            {/* Bottom Content */}
-            <div className="p-6 sm:p-7 flex flex-col justify-between flex-1">
-              <div>
-                <h3 className="text-xl font-extrabold text-[var(--text-main)] tracking-tight">
-                  Built for business
-                </h3>
-                <p className="mt-2.5 text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
-                  Automate document management, onboard teams easily, and scale with flexible plans.
-                </p>
-              </div>
+            {/* ---------------- Card 2: Active-Recall Desk Notes (Terracotta) ---------------- */}
+            <ScrollStackItem itemClassName="h-[360px] sm:h-[380px] bg-[#DE5428] text-white border border-black/10 rounded-[28px] overflow-hidden p-6 sm:p-9 flex flex-col justify-between">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center h-full">
+                {/* Left: Copy & CTAs */}
+                <div className="md:col-span-7 flex flex-col justify-between h-full py-1">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug mb-3">
+                      Active-Recall Study Suite: 3D Desk Notes & Quizzes
+                    </h3>
+                    <p className="text-xs sm:text-sm text-white/90 leading-relaxed mb-4 max-w-lg">
+                      Turn lecture concepts into tactile 3D sticky notes with paper-flip physics and adaptive practice quizzes scaled from Easy to Hard.
+                    </p>
 
-              <div className="pt-6 flex justify-end">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] group-hover:text-[var(--text-main)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
-                  <ArrowUpRight className="w-5 h-5" />
+                    {/* Value Badges */}
+                    <div className="flex flex-wrap gap-2 text-xs font-semibold text-white mb-5">
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/20 border border-white/20">
+                        <span className="w-2 h-2 rounded-full bg-[#FFF8B8]" />
+                        <span>3D Sticky Notes</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/20 border border-white/20">
+                        <HelpCircle className="w-3.5 h-3.5 text-white" />
+                        <span>Adaptive Quizzes</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/20 border border-white/20">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                        <span>Instant Explanations</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Price & Action Button */}
+                  <div className="flex items-center justify-between pt-2 border-t border-white/20">
+                    <div>
+                      <span className="text-[11px] text-white/70 block">Retention</span>
+                      <span className="text-sm font-black text-white">Active Recall</span>
+                    </div>
+                    <a
+                      href="#app-top"
+                      className="px-5 py-2 rounded-full bg-white hover:bg-neutral-100 text-[#DE5428] font-extrabold text-xs transition-all shadow-sm cursor-pointer"
+                    >
+                      Practice Flashcards →
+                    </a>
+                  </div>
+                </div>
+
+                {/* Right: Desk Sticky Notes Graphic */}
+                <div className="hidden md:flex md:col-span-5 items-center justify-center">
+                  <div className="relative w-full max-w-[280px] h-[190px] flex items-center justify-center">
+                    {/* Pink Note in Back */}
+                    <div className="absolute top-2 right-4 w-36 h-36 bg-[#FFE4EC] text-[#1F1E1B] rounded-2xl p-3 shadow-lg rotate-6">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#E15A78] mx-auto mb-2 shadow-xs" />
+                      <div className="text-[9px] font-black leading-tight">Key Formulas</div>
+                      <div className="text-[8px] text-black/60 mt-1">J(θ) = 1/2m Σ(h-y)²</div>
+                    </div>
+
+                    {/* Yellow Note in Front */}
+                    <div className="absolute bottom-2 left-4 w-40 h-40 bg-[#FFF8B8] text-[#1F1E1B] rounded-2xl p-3.5 shadow-xl -rotate-3 z-10">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#E59819] mx-auto mb-2 shadow-xs" />
+                      <div className="text-[10px] font-black leading-tight">Machine Learning</div>
+                      <div className="text-[8px] text-black/70 mt-1.5 space-y-1">
+                        <div>• Linear Regression</div>
+                        <div>• Gradient Descent</div>
+                      </div>
+                      <div className="text-[7px] text-black/40 mt-3 text-right">↗ Expand</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </ScrollStackItem>
+
+            {/* ---------------- Card 3: Keynote Slide Presentations (Graphite/Lime) ---------------- */}
+            <ScrollStackItem itemClassName="h-[360px] sm:h-[380px] bg-[#161814] text-white border border-[var(--brand-lime)]/20 rounded-[28px] overflow-hidden p-6 sm:p-9 flex flex-col justify-between">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center h-full">
+                {/* Left: 16:9 Keynote Slide Mockup */}
+                <div className="hidden md:flex md:col-span-5 items-center justify-center">
+                  <div className="w-full max-w-[280px] aspect-[16/10] bg-[#1F221B] rounded-xl border border-[var(--brand-lime)]/30 p-3 shadow-2xl flex flex-col justify-between">
+                    <div className="flex items-center justify-between text-[8px] text-[var(--brand-lime)] font-mono">
+                      <span>SLIDE 01 / 06</span>
+                      <span className="px-1.5 py-0.5 rounded bg-[var(--brand-lime)]/10 text-[var(--brand-lime)] font-bold">16:9 Widescreen</span>
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-black text-white">Executive Keynote Overview</div>
+                      <div className="h-1 w-8 bg-[var(--brand-lime)] rounded my-1.5" />
+                      <div className="text-[8px] text-white/60 space-y-0.5">
+                        <div>• Core Takeaways & Strategic Summary</div>
+                        <div>• Speaker Notes Included in Deck</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-[7px] text-white/40 pt-1 border-t border-white/10">
+                      <span>PowerPoint Presentation</span>
+                      <span className="text-[var(--brand-lime)] font-bold">.PPTX</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Copy & CTAs */}
+                <div className="md:col-span-7 flex flex-col justify-between h-full py-1">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug mb-3">
+                      Keynote Slide Decks & Native PowerPoint Exports
+                    </h3>
+                    <p className="text-xs sm:text-sm text-white/70 leading-relaxed mb-4 max-w-lg">
+                      Generate presentation-ready 16:9 widescreen slides with presenter speaker notes and direct .pptx, printable PDF, and raw text downloads.
+                    </p>
+
+                    {/* Value Badges */}
+                    <div className="flex flex-wrap gap-2 text-xs font-semibold text-white/80 mb-5">
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/10">
+                        <Monitor className="w-3.5 h-3.5 text-[var(--brand-lime)]" />
+                        <span>16:9 Widescreen</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/10">
+                        <Download className="w-3.5 h-3.5 text-[var(--brand-lime)]" />
+                        <span>Native .PPTX</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/10">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#8ED081]" />
+                        <span>Speaker Notes</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Price & Action Button */}
+                  <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                    <div>
+                      <span className="text-[11px] text-white/50 block">Formats</span>
+                      <span className="text-sm font-black text-white">.pptx • .pdf • .txt</span>
+                    </div>
+                    <a
+                      href="#app-top"
+                      className="px-5 py-2 rounded-full bg-[var(--brand-lime)] hover:bg-[#C8DE65] text-[#0E0F0C] font-extrabold text-xs transition-all shadow-sm cursor-pointer"
+                    >
+                      Create Slide Deck →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </ScrollStackItem>
+          </ScrollStack>
         </div>
       </div>
 
