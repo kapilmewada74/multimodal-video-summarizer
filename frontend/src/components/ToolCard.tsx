@@ -56,7 +56,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
   };
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 sm:p-7 mb-8 transition-colors">
+    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 sm:px-9 sm:py-8 mb-8 transition-colors">
       {/* Pill Tab Switcher */}
       <div className="flex gap-2 border-b border-[var(--card-border)] pb-3 mb-6">
         <button

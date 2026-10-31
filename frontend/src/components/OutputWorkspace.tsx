@@ -283,7 +283,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   const safeFilename = (result.title || "video").toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 40);
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 sm:p-8 mb-8 print-content transition-colors">
+    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 sm:px-9 sm:py-8 mb-8 print-content transition-colors">
       {/* Title & Actions Bar */}
       <div className="flex items-center justify-between gap-4 border-b border-[var(--card-border)] pb-5 mb-6 no-print min-h-[42px]">
         <div className="flex-1 min-w-0">
