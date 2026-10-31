@@ -190,7 +190,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
           <button
             type="submit"
             disabled={isProcessing}
-            className="w-full sm:w-auto px-7 py-3 rounded-full bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] active:scale-95 text-[#0E0F0C] font-black text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(217,236,149,0.35)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full sm:w-auto px-7 py-3 rounded-full bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] active:scale-95 text-[#0E0F0C] font-black text-sm flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <span>{isProcessing ? "Processing..." : "Summarize Video"}</span>
             <ArrowRight className="w-4 h-4 stroke-[2.5]" />
