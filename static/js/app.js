@@ -1446,4 +1446,24 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // --- Landing Page ScrollStack Controller ---
+  const stackTrack = document.getElementById("static-stack-track");
+  const stackPrev = document.getElementById("static-stack-prev");
+  const stackNext = document.getElementById("static-stack-next");
+  const stackLabel = document.getElementById("static-stack-label");
+
+  if (stackTrack && stackPrev && stackNext) {
+    stackPrev.addEventListener("click", () => {
+      stackTrack.scrollBy({ top: -380, behavior: "smooth" });
+    });
+    stackNext.addEventListener("click", () => {
+      stackTrack.scrollBy({ top: 380, behavior: "smooth" });
+    });
+    stackTrack.addEventListener("scroll", () => {
+      const st = stackTrack.scrollTop;
+      const idx = st < 180 ? 1 : st < 540 ? 2 : 3;
+      if (stackLabel) stackLabel.textContent = `Card ${idx} of 3`;
+    });
+  }
 });

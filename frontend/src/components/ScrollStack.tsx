@@ -361,6 +361,7 @@ const ScrollStack = ({
   return (
     <div
       ref={rootRef}
+      data-scroll-stack-root=""
       className={`relative w-full ${useWindowScroll ? '' : 'h-full overflow-x-hidden overflow-y-auto'} ${className}`.trim()}
     >
       <div ref={innerRef} className="relative px-[clamp(1rem,6%,5rem)]">
