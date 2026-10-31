@@ -146,31 +146,68 @@ export function FlashcardsView({ cards, provider, isLoading, onGenerate }: Flash
         />
       </div>
 
-      {/* 3D Flip Card */}
-      <div
-        onClick={handleFlip}
-        className="w-full min-h-[280px] p-8 sm:p-10 rounded-[18px] bg-[var(--card-bg)] border border-[var(--card-border)] flex flex-col justify-between cursor-pointer transition-all hover:border-[#0066cc] select-none group"
-      >
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] border border-[var(--card-border)]">
-            {currentCard.tag || (isFlipped ? "Answer" : "Question")}
-          </span>
-          <span className="text-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-main)] transition-colors flex items-center gap-1 font-normal">
-            <RotateCcw className="w-3 h-3" />
-            <span>Click or Space to flip</span>
-          </span>
-        </div>
+      {/* 3D Page Paper Turn Flashcard */}
+      <div className="paper-turn-perspective w-full min-h-[290px] cursor-pointer select-none group" onClick={handleFlip}>
+        <div className={`paper-turn-card ${isFlipped ? "flipped" : ""}`}>
+          {/* Front Page */}
+          <div className="paper-turn-face paper-turn-front p-8 sm:p-10 bg-[var(--card-bg)] border border-[var(--card-border)] flex flex-col justify-between hover:border-[#0066cc] transition-colors shadow-sm overflow-hidden">
+            {/* Paper page turn crease on edge */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black/[0.04] dark:from-white/[0.04] to-transparent rounded-r-[18px]" />
 
-        <div className="my-auto py-6 text-center">
-          {!isFlipped ? (
-            <h3 className="text-xl sm:text-2xl font-semibold text-[var(--text-main)] tracking-[-0.28px] leading-snug">
-              {currentCard.front}
-            </h3>
-          ) : (
-            <div className="text-base sm:text-[17px] text-[var(--text-main)] leading-[1.47] tracking-[-0.374px] font-normal">
-              {currentCard.back}
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] border border-[var(--card-border)]">
+                {currentCard.tag || "Question"}
+              </span>
+              <span className="text-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-main)] transition-colors flex items-center gap-1 font-normal">
+                <RotateCcw className="w-3 h-3" />
+                <span>Click or Space to turn page</span>
+              </span>
             </div>
-          )}
+
+            <div className="my-auto py-6 text-center">
+              <h3 className="text-xl sm:text-2xl font-semibold text-[var(--text-main)] tracking-[-0.28px] leading-snug">
+                {currentCard.front}
+              </h3>
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] text-[var(--text-muted)] font-normal">
+              <span>Card {currentIndex + 1} of {deck.length}</span>
+              <span className="flex items-center gap-1 opacity-70">
+                <span>Turn page</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
+          </div>
+
+          {/* Back Page */}
+          <div className="paper-turn-face paper-turn-back p-8 sm:p-10 bg-[var(--card-bg)] border border-[#0066cc]/40 flex flex-col justify-between shadow-sm overflow-hidden">
+            {/* Paper page turn crease on opposite edge */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black/[0.04] dark:from-white/[0.04] to-transparent rounded-l-[18px]" />
+
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#0066cc]/10 text-[#0066cc] border border-[#0066cc]/20">
+                Answer
+              </span>
+              <span className="text-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-main)] transition-colors flex items-center gap-1 font-normal">
+                <RotateCcw className="w-3 h-3" />
+                <span>Click to turn back</span>
+              </span>
+            </div>
+
+            <div className="my-auto py-6 text-center">
+              <div className="text-base sm:text-[17px] text-[var(--text-main)] leading-[1.47] tracking-[-0.374px] font-normal">
+                {currentCard.back}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] text-[var(--text-muted)] font-normal">
+              <span className="flex items-center gap-1 opacity-70">
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Turn back</span>
+              </span>
+              <span>Explanation</span>
+            </div>
+          </div>
         </div>
       </div>
 

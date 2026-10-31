@@ -150,7 +150,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-[var(--bg-app)] text-[var(--text-main)] transition-colors">
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-2.5 sm:px-4 py-8 sm:py-12">
         {/* Clean Hero Section */}
         <div className="text-center mb-8 no-print">
           <h1 className="text-3xl sm:text-[48px] font-semibold tracking-[-0.28px] leading-[1.08] mb-3 text-[var(--text-main)]">
