@@ -223,7 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
           startSummarizeBtn.textContent = "Summarize Video →";
           showToast("Summarization complete!", "success");
           renderOutputWorkspace(job.result);
-          loadHistory();
         } else if (job.status === "failed") {
           clearInterval(activePollingTimer);
           if (loadingContainer) loadingContainer.style.display = "none";
@@ -500,65 +499,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function sanitizeFilename(title) {
     return (title || "video").toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 40);
   }
-
-  // --- Recent History Drawer ---
-  const historyListEl = document.getElementById("history-list");
-
-  async function loadHistory() {
-    if (!historyListEl) return;
-    try {
-      const res = await fetch("/api/history");
-      if (!res.ok) return;
-      const history = await res.json();
-      historyListEl.innerHTML = "";
-
-      if (!history || history.length === 0) {
-        historyListEl.innerHTML = `<div style="color: var(--text-muted); font-size: 13px;">No past summaries recorded yet.</div>`;
-        return;
-      }
-
-      history.forEach(item => {
-        const itemEl = document.createElement("div");
-        itemEl.className = "card-elevated";
-        itemEl.style.padding = "10px 14px";
-        itemEl.style.marginBottom = "8px";
-        itemEl.style.display = "flex";
-        itemEl.style.alignItems = "center";
-        itemEl.style.justifyContent = "space-between";
-        itemEl.style.cursor = "pointer";
-        itemEl.style.transition = "border-color 0.2s ease";
-
-        const titleSpan = document.createElement("div");
-        titleSpan.style.fontSize = "13px";
-        titleSpan.style.fontWeight = "600";
-        titleSpan.style.whiteSpace = "nowrap";
-        titleSpan.style.overflow = "hidden";
-        titleSpan.style.textOverflow = "ellipsis";
-        titleSpan.style.maxWidth = "70%";
-        titleSpan.textContent = item.title || "Video";
-
-        const loadBtn = document.createElement("button");
-        loadBtn.className = "btn-secondary";
-        loadBtn.style.padding = "4px 10px";
-        loadBtn.style.fontSize = "12px";
-        loadBtn.textContent = "View";
-
-        itemEl.appendChild(titleSpan);
-        itemEl.appendChild(loadBtn);
-
-        itemEl.addEventListener("click", () => {
-          renderOutputWorkspace(item);
-          showToast(`Loaded: ${item.title}`, "info");
-        });
-
-        historyListEl.appendChild(itemEl);
-      });
-    } catch (e) {
-      console.error("Could not load history:", e);
-    }
-  }
-
-  loadHistory();
 
   // --- Toast System ---
   const toastContainer = document.getElementById("toast-container");
