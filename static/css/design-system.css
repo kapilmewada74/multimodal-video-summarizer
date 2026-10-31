@@ -473,6 +473,12 @@ body {
   animation: toast-slide 0.25s ease-out;
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes toast-slide {
   from {
     transform: translateY(16px);
