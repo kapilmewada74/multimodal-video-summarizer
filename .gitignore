@@ -18,6 +18,8 @@ output/*.txt
 output/*.json
 
 # Downloaded media
+downloads/
+audio/
 *.mp4
 *.mp3
 *.wav
