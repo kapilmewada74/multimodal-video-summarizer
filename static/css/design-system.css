@@ -1,0 +1,500 @@
+/* ============================================================
+   BYAMN DESIGN SYSTEM TOKENS & UTILITIES
+   Adapted for Multimodal Video Summarizer
+   ============================================================ */
+
+:root {
+  /* Core Invariant Brand Colors */
+  --brand-lime: #D9EC95;
+  --brand-lime-hover: #C8DE65;
+  --brand-black: #0E0F0C;
+  --brand-ivory: #F2F2F0;
+
+  /* Semantic Status Colors */
+  --color-success: #15803D;
+  --color-warning: #D97706;
+  --color-danger: #E11D48;
+
+  /* Theme-aware Surface Tokens (Light mode default fallbacks) */
+  --bg-app: #F2F2F0;
+  --text-main: #0E0F0C;
+  --text-muted: rgba(14, 15, 12, 0.6);
+  --card-bg: #FFFFFF;
+  --card-border: rgba(14, 15, 12, 0.1);
+  --card-surface-elevated: #F8F8F6;
+  --input-bg: #FFFFFF;
+  --input-border: rgba(14, 15, 12, 0.15);
+  --btn-secondary-bg: #EAEAE7;
+  --btn-secondary-text: #0E0F0C;
+  --ring-focus: rgba(217, 236, 149, 0.8);
+  --radius-base: 10px;
+}
+
+/* Dark Mode (Default for AI Video Summarizer) */
+html.dark, :root {
+  --color-success: #8ED081;
+  --color-warning: #F4C95D;
+  --color-danger: #FF6B6B;
+
+  --bg-app: #0E0F0C;
+  --text-main: #F2F2F0;
+  --text-muted: rgba(242, 242, 240, 0.6);
+  --card-bg: #141512;
+  --card-border: rgba(242, 242, 240, 0.1);
+  --card-surface-elevated: #1B1D18;
+  --input-bg: #181916;
+  --input-border: rgba(242, 242, 240, 0.12);
+  --btn-secondary-bg: rgba(242, 242, 240, 0.08);
+  --btn-secondary-text: #F2F2F0;
+  --ring-focus: var(--brand-lime);
+}
+
+html.light {
+  --color-success: #15803D;
+  --color-warning: #D97706;
+  --color-danger: #E11D48;
+
+  --bg-app: #F2F2F0;
+  --text-main: #0E0F0C;
+  --text-muted: rgba(14, 15, 12, 0.6);
+  --card-bg: #FFFFFF;
+  --card-border: rgba(14, 15, 12, 0.1);
+  --card-surface-elevated: #F8F8F6;
+  --input-bg: #FFFFFF;
+  --input-border: rgba(14, 15, 12, 0.15);
+  --btn-secondary-bg: #EAEAE7;
+  --btn-secondary-text: #0E0F0C;
+}
+
+/* ============================================================
+   GLOBAL STYLES & RESET
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Focus Ring */
+:focus-visible {
+  outline: 2px solid var(--brand-lime);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brand-lime);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-lime-hover);
+}
+
+/* ============================================================
+   CARD ANATOMY & LAYOUT
+   ============================================================ */
+
+.card-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-elevated {
+  background-color: var(--card-surface-elevated);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+}
+
+/* Eyebrow Pattern */
+.eyebrow-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background-color: rgba(217, 236, 149, 0.12);
+  border: 1px solid rgba(217, 236, 149, 0.25);
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--brand-lime);
+}
+
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--brand-lime);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--brand-lime);
+  color: var(--brand-black);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 20px rgba(217, 236, 149, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--brand-lime-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 0 25px rgba(217, 236, 149, 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(242, 242, 240, 0.15);
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: var(--btn-secondary-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-icon:hover {
+  background-color: rgba(242, 242, 240, 0.15);
+}
+
+/* ============================================================
+   STATUS BADGES & PULSING DOTS
+   ============================================================ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.processing {
+  background-color: rgba(244, 201, 93, 0.15);
+  color: var(--color-warning);
+  border: 1px solid rgba(244, 201, 93, 0.3);
+}
+
+.status-badge.completed {
+  background-color: rgba(142, 208, 129, 0.15);
+  color: var(--color-success);
+  border: 1px solid rgba(142, 208, 129, 0.3);
+}
+
+.status-badge.failed {
+  background-color: rgba(255, 107, 107, 0.15);
+  color: var(--color-danger);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.pulsing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: pulse-dot 1.4s infinite ease-in-out;
+}
+
+.status-badge.processing .pulsing-dot {
+  background-color: var(--color-warning);
+}
+
+.status-badge.completed .pulsing-dot {
+  background-color: var(--color-success);
+}
+
+.status-badge.failed .pulsing-dot {
+  background-color: var(--color-danger);
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.7);
+  }
+}
+
+/* ============================================================
+   SHIMMER PROGRESS BAR
+   ============================================================ */
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(242, 242, 240, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--brand-lime);
+  border-radius: 9999px;
+  transition: width 0.4s ease-out;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 14px rgba(217, 236, 149, 0.5);
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2.2s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================================
+   TABS & WORKSPACE
+   ============================================================ */
+
+.tab-nav {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+  background-color: rgba(242, 242, 240, 0.05);
+}
+
+.tab-btn.active {
+  color: var(--brand-lime);
+  background-color: rgba(217, 236, 149, 0.12);
+  border-bottom: 2px solid var(--brand-lime);
+}
+
+/* ============================================================
+   MARKDOWN & FORMULA RENDERING STYLES
+   ============================================================ */
+
+.markdown-body {
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.markdown-body h1 {
+  font-size: 24px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 8px;
+}
+
+.markdown-body h2 {
+  font-size: 19px;
+  color: var(--brand-lime);
+}
+
+.markdown-body h3 {
+  font-size: 16px;
+}
+
+.markdown-body p {
+  margin-bottom: 1em;
+}
+
+.markdown-body ul, .markdown-body ol {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.markdown-body li {
+  margin-bottom: 0.4em;
+}
+
+.markdown-body blockquote {
+  border-left: 3px solid var(--brand-lime);
+  padding: 8px 16px;
+  background-color: rgba(217, 236, 149, 0.05);
+  border-radius: 0 8px 8px 0;
+  margin: 1em 0;
+  color: var(--text-muted);
+}
+
+.markdown-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  background-color: rgba(242, 242, 240, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--brand-lime);
+}
+
+/* KaTeX Formula Box */
+.katex-display {
+  background-color: var(--card-surface-elevated);
+  border: 1px solid var(--card-border);
+  padding: 14px 18px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 14px 0 !important;
+}
+
+/* ============================================================
+   TOAST NOTIFICATION (SONNER STYLE)
+   ============================================================ */
+
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  color: var(--text-main);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: toast-slide 0.25s ease-out;
+}
+
+@keyframes toast-slide {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Print Optimization for PDF Export */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  nav, .card-container:not(#workspace-container), .tab-nav, .btn-primary, .btn-secondary, .toast-container {
+    display: none !important;
+  }
+  #workspace-container {
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+  }
+}
