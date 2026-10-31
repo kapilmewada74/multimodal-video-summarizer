@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { HelpCircle, Check, X, RefreshCw, Trophy, Sparkles, ChevronRight, Sliders, RotateCcw, Zap, ArrowRight } from "lucide-react";
+import { HelpCircle, Check, X, CheckCircle2, XCircle, RefreshCw, Trophy, Sparkles, ChevronRight, Sliders, RotateCcw, Zap, ArrowRight } from "lucide-react";
 
 export interface QuizQuestion {
   question: string;
@@ -380,8 +380,18 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
         {/* Answer Explanation Box */}
         {hasAnswered && (
           <div className="mt-5 p-4 rounded-[11px] bg-[var(--card-surface-elevated)] border border-[var(--card-border)] text-xs text-[var(--text-muted)] animate-in fade-in duration-150">
-            <div className="font-semibold text-[var(--text-main)] mb-1">
-              {userChoice === q.answerIndex ? "✅ Correct" : "❌ Incorrect"}
+            <div className="font-semibold text-[var(--text-main)] mb-1 flex items-center gap-1.5">
+              {userChoice === q.answerIndex ? (
+                <>
+                  <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
+                  <span className="text-[var(--color-success)]">Correct</span>
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-4 h-4 text-[var(--color-danger)]" />
+                  <span className="text-[var(--color-danger)]">Incorrect</span>
+                </>
+              )}
             </div>
             <p className="leading-relaxed font-normal">{q.explanation}</p>
           </div>

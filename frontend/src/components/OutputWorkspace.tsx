@@ -9,6 +9,7 @@ import {
   Download,
   Printer,
   FileText,
+  AlignLeft,
   Check,
   Layers,
   Presentation as PresentationIcon,
@@ -333,7 +334,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
           }`}
         >
           <FileText className="w-4 h-4" />
-          <span>AI Summary</span>
+          <span>Summary</span>
         </button>
 
         <button
@@ -344,7 +345,8 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
               : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)] font-normal"
           }`}
         >
-          <span>Full Transcript</span>
+          <AlignLeft className="w-4 h-4" />
+          <span>Transcript</span>
         </button>
 
         <button
@@ -405,7 +407,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
         </button>
       </div>
 
-      {/* Tab 1: AI Summary Content Pane */}
+      {/* Tab 1: Summary Content Pane */}
       {activeTab === "summary" && (
         <div
           className="markdown-content text-sm sm:text-base leading-relaxed text-[var(--text-main)]"
@@ -413,7 +415,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
         />
       )}
 
-      {/* Tab 2: Full Transcript Content Pane */}
+      {/* Tab 2: Transcript Content Pane */}
       {activeTab === "transcript" && (
         <div>
           {/* Transcript Export Toolbar */}
@@ -432,7 +434,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
                   .filter((l) => l.trim().length > 0)
                   .map((l) => `<p class="transcript-line">${l.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`)
                   .join("");
-                printCleanPdf(`${result.title || "Video"} — Full Transcript`, transcriptHtml);
+                printCleanPdf(`${result.title || "Video"} — Transcript`, transcriptHtml);
               }}
               className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-normal flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
             >
