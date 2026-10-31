@@ -123,15 +123,18 @@ def run_pipeline_for_url(job_id: str, url: str, mode: str = "educational"):
         
         output_template = os.path.join(DOWNLOAD_DIR, f"yt_{job_id}.%(ext)s")
         ydl_opts = {
-            "format": (
-                "bestvideo[height<=144]+bestaudio/"
-                "best[height<=144]/"
-                "bestaudio/best"
-            ),
+            "format": "bestaudio/bestvideo[height<=144]+bestaudio/best[height<=144]/best",
             "outtmpl": output_template,
-            "merge_output_format": "mp4",
             "noplaylist": True,
             "quiet": True,
+            "extractor_args": {
+                "youtube": {
+                    "player_client": ["android", "ios"]
+                }
+            },
+            "http_headers": {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+            }
         }
 
         video_title = "YouTube Video"
@@ -142,17 +145,27 @@ def run_pipeline_for_url(job_id: str, url: str, mode: str = "educational"):
             video_duration = info.get("duration", 0)
             filename = ydl.prepare_filename(info)
 
-        possible_files = [
+        candidates = [
+            filename,
             os.path.splitext(filename)[0] + ".mp4",
-            filename
+            os.path.splitext(filename)[0] + ".m4a",
+            os.path.splitext(filename)[0] + ".webm",
+            os.path.splitext(filename)[0] + ".opus",
         ]
-        for f in possible_files:
+        for f in candidates:
             if os.path.exists(f):
                 video_path = f
                 break
 
+        if not video_path and os.path.exists(DOWNLOAD_DIR):
+            prefix = f"yt_{job_id}."
+            for fname in os.listdir(DOWNLOAD_DIR):
+                if fname.startswith(prefix):
+                    video_path = os.path.join(DOWNLOAD_DIR, fname)
+                    break
+
         if not video_path:
-            raise FileNotFoundError("Downloaded YouTube video could not be located.")
+            raise FileNotFoundError("Downloaded YouTube media could not be located.")
 
         update_job(job_id, step=1, step_name="Extracting Audio", progress=30, message="Extracting 16kHz audio stream...", video_title=video_title, duration=video_duration)
         
