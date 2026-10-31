@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Sun, Moon, Play } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
+import { Logo } from "./Logo";
 
 interface NavbarProps {
   theme: "dark" | "light";
@@ -13,11 +14,9 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
     <nav className="h-14 sticky top-0 z-50 bg-[var(--card-bg)]/90 backdrop-blur-md border-b border-[var(--card-border)] px-4 sm:px-8 flex items-center justify-between transition-colors">
       {/* Brand Logo & Name */}
       <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-lg bg-[var(--brand-lime)] flex items-center justify-center">
-          <Play className="w-4 h-4 text-[#0E0F0C] fill-[#0E0F0C]" />
-        </div>
+        <Logo size={30} />
         <span className="font-extrabold text-base tracking-tight uppercase text-[var(--text-main)]">
-          SUMMARIZE<span className="text-[var(--text-main)] opacity-70">.AI</span>
+          SUMMARIZE<span className="text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)]">.AI</span>
         </span>
       </div>
 
