@@ -283,11 +283,11 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   const safeFilename = (result.title || "video").toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 40);
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 shadow-xl mb-8 print-content transition-colors">
+    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 sm:p-8 mb-8 print-content transition-colors">
       {/* Title & Actions Bar */}
       <div className="flex items-center justify-between gap-4 border-b border-[var(--card-border)] pb-5 mb-6 no-print min-h-[42px]">
         <div className="flex-1 min-w-0">
-          <h2 className="text-xl sm:text-2xl font-black text-[var(--text-main)] truncate sm:whitespace-normal">
+          <h2 className="text-xl sm:text-2xl font-semibold tracking-[-0.28px] text-[var(--text-main)] truncate sm:whitespace-normal">
             {result.title || "Video Summary"}
           </h2>
         </div>
@@ -297,7 +297,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handleCopySummary}
-              className="px-3.5 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-normal flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
             >
               {copiedSummary ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
               <span>Copy Summary</span>
@@ -305,7 +305,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
 
             <button
               onClick={() => printCleanPdf(result.title || "Video Summary", renderedSummaryHtml)}
-              className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-normal flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>PDF</span>
@@ -313,7 +313,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
 
             <button
               onClick={() => handleDownloadFile(result.summary, `${safeFilename}_summary.txt`, "text/plain")}
-              className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-normal flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
             >
               <Download className="w-3.5 h-3.5" />
               <span>.TXT</span>
@@ -326,10 +326,10 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
       <div className="flex flex-wrap gap-2 border-b border-[var(--card-border)] pb-3 mb-6 no-print">
         <button
           onClick={() => setActiveTab("summary")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm transition-all cursor-pointer active:scale-95 ${
             activeTab === "summary"
-              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+              ? "bg-[#0066cc] text-white font-semibold"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)] font-normal"
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -338,10 +338,10 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
 
         <button
           onClick={() => setActiveTab("transcript")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm transition-all cursor-pointer active:scale-95 ${
             activeTab === "transcript"
-              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+              ? "bg-[#0066cc] text-white font-semibold"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)] font-normal"
           }`}
         >
           <span>Full Transcript</span>
@@ -352,16 +352,16 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
             setActiveTab("flashcards");
             if (flashcards.length === 0) handleGenerateFlashcards();
           }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm transition-all cursor-pointer active:scale-95 ${
             activeTab === "flashcards"
-              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+              ? "bg-[#0066cc] text-white font-semibold"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)] font-normal"
           }`}
         >
           <Layers className="w-4 h-4" />
           <span>Flashcards</span>
           {flashcards.length > 0 && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-white/10 font-mono">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20 font-mono">
               {flashcards.length}
             </span>
           )}
@@ -372,16 +372,16 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
             setActiveTab("presentation");
             if (!presentation) handleGeneratePresentation();
           }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm transition-all cursor-pointer active:scale-95 ${
             activeTab === "presentation"
-              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+              ? "bg-[#0066cc] text-white font-semibold"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)] font-normal"
           }`}
         >
           <PresentationIcon className="w-4 h-4" />
           <span>Presentation (PPT)</span>
           {presentation?.slides && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-white/10 font-mono">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20 font-mono">
               {presentation.slides.length}
             </span>
           )}
@@ -389,16 +389,16 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
 
         <button
           onClick={() => setActiveTab("quiz")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm transition-all cursor-pointer active:scale-95 ${
             activeTab === "quiz"
-              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm font-black"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+              ? "bg-[#0066cc] text-white font-semibold"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)] font-normal"
           }`}
         >
           <HelpCircle className="w-4 h-4" />
           <span>Practice Quiz</span>
           {quiz.length > 0 && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-white/10 font-mono">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20 font-mono">
               {quiz.length}
             </span>
           )}
@@ -420,7 +420,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
           <div className="flex flex-wrap items-center justify-end gap-2 mb-4 no-print">
             <button
               onClick={handleCopyTranscript}
-              className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-normal flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
             >
               {copiedTranscript ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
               <span>Copy</span>
@@ -434,14 +434,14 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
                   .join("");
                 printCleanPdf(`${result.title || "Video"} — Full Transcript`, transcriptHtml);
               }}
-              className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-normal flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>PDF</span>
             </button>
             <button
               onClick={() => handleDownloadFile(result.transcript, `${safeFilename}_transcript.txt`, "text/plain")}
-              className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold cursor-pointer"
+              className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-normal cursor-pointer active:scale-95 transition-all"
             >
               .TXT
             </button>
