@@ -91,14 +91,12 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   const safeFilename = (result.title || "video").toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 40);
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 shadow-2xl mb-8 print-content">
+    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 shadow-xl mb-8 print-content transition-colors">
       {/* Title & Actions Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--card-border)] pb-5 mb-6 no-print">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black mb-1.5">{result.title || "Video Summary"}</h2>
+          <h2 className="text-xl sm:text-2xl font-black mb-1.5 text-[var(--text-main)]">{result.title || "Video Summary"}</h2>
           <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-medium">
-            <span>Model: <strong className="text-[var(--text-main)]">Qwen2.5 (Local)</strong></span>
-            <span>•</span>
             <span>Status: <strong className="text-[var(--color-success)]">Complete</strong></span>
           </div>
         </div>
@@ -107,7 +105,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleCopySummary}
-            className="px-3.5 py-1.5 rounded-lg bg-[rgba(242,242,240,0.06)] hover:bg-[rgba(242,242,240,0.12)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             {copiedSummary ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
             <span>Copy Summary</span>
@@ -115,7 +113,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
 
           <button
             onClick={() => handleDownloadFile(result.summary, `${safeFilename}_summary.md`, "text/markdown")}
-            className="px-3 py-1.5 rounded-lg bg-[rgba(242,242,240,0.06)] hover:bg-[rgba(242,242,240,0.12)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Download className="w-3.5 h-3.5" />
             <span>.MD</span>
@@ -123,7 +121,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
 
           <button
             onClick={() => window.print()}
-            className="px-3 py-1.5 rounded-lg bg-[rgba(242,242,240,0.06)] hover:bg-[rgba(242,242,240,0.12)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5" />
             <span>PDF</span>
@@ -131,14 +129,14 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 border-b border-[var(--card-border)] pb-2 mb-6 no-print">
+      {/* High Contrast Tabs */}
+      <div className="flex gap-2 border-b border-[var(--card-border)] pb-3 mb-6 no-print">
         <button
           onClick={() => setActiveTab("summary")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
             activeTab === "summary"
-              ? "bg-[rgba(217,236,149,0.12)] text-[var(--brand-lime)] border-b-2 border-[var(--brand-lime)]"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[rgba(242,242,240,0.05)]"
+              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -147,10 +145,10 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
 
         <button
           onClick={() => setActiveTab("transcript")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
             activeTab === "transcript"
-              ? "bg-[rgba(217,236,149,0.12)] text-[var(--brand-lime)] border-b-2 border-[var(--brand-lime)]"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[rgba(242,242,240,0.05)]"
+              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
           }`}
         >
           <span>Full Transcript</span>
@@ -160,7 +158,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
       {/* Content Panes */}
       {activeTab === "summary" ? (
         <div
-          className="markdown-content text-sm sm:text-base leading-relaxed"
+          className="markdown-content text-sm sm:text-base leading-relaxed text-[var(--text-main)]"
           dangerouslySetInnerHTML={{ __html: renderedSummaryHtml }}
         />
       ) : (
@@ -174,19 +172,19 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
                 value={transcriptSearch}
                 onChange={(e) => setTranscriptSearch(e.target.value)}
                 placeholder="Search words in transcript..."
-                className="w-full pl-9 pr-4 py-2 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-xs text-[var(--text-main)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-lime)]"
+                className="w-full pl-9 pr-4 py-2 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-xs text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-lime)]"
               />
             </div>
             <button
               onClick={handleCopyTranscript}
-              className="px-3 py-2 rounded-xl bg-[rgba(242,242,240,0.06)] hover:bg-[rgba(242,242,240,0.12)] border border-[var(--card-border)] text-xs font-semibold flex items-center gap-1.5"
+              className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
             >
               {copiedTranscript ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
               <span>Copy</span>
             </button>
             <button
               onClick={() => handleDownloadFile(result.transcript, `${safeFilename}_transcript.txt`, "text/plain")}
-              className="px-3 py-2 rounded-xl bg-[rgba(242,242,240,0.06)] hover:bg-[rgba(242,242,240,0.12)] border border-[var(--card-border)] text-xs font-semibold"
+              className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold cursor-pointer"
             >
               .TXT
             </button>
@@ -195,7 +193,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
           <div className="max-h-[480px] overflow-y-auto space-y-2.5 pr-2">
             {filteredTranscriptLines.length > 0 ? (
               filteredTranscriptLines.map((line, idx) => (
-                <p key={idx} className="text-sm leading-relaxed text-[var(--text-main)]/90">
+                <p key={idx} className="text-sm leading-relaxed text-[var(--text-main)]">
                   {line}
                 </p>
               ))

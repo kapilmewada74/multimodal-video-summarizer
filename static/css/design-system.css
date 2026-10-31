@@ -51,18 +51,18 @@ html.dark, :root {
 
 html.light {
   --color-success: #15803D;
-  --color-warning: #D97706;
-  --color-danger: #E11D48;
+  --color-warning: #B45309;
+  --color-danger: #DC2626;
 
-  --bg-app: #F2F2F0;
+  --bg-app: #F4F4F1;
   --text-main: #0E0F0C;
-  --text-muted: rgba(14, 15, 12, 0.6);
+  --text-muted: #57534E;
   --card-bg: #FFFFFF;
-  --card-border: rgba(14, 15, 12, 0.1);
-  --card-surface-elevated: #F8F8F6;
-  --input-bg: #FFFFFF;
-  --input-border: rgba(14, 15, 12, 0.15);
-  --btn-secondary-bg: #EAEAE7;
+  --card-border: rgba(14, 15, 12, 0.14);
+  --card-surface-elevated: #F8F8F5;
+  --input-bg: #FAFAF8;
+  --input-border: rgba(14, 15, 12, 0.22);
+  --btn-secondary-bg: #EAEAE4;
   --btn-secondary-text: #0E0F0C;
 }
 
@@ -364,9 +364,10 @@ body {
 }
 
 .tab-btn.active {
-  color: var(--brand-lime);
-  background-color: rgba(217, 236, 149, 0.12);
-  border-bottom: 2px solid var(--brand-lime);
+  color: #0E0F0C;
+  background-color: var(--brand-lime);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 /* ============================================================
