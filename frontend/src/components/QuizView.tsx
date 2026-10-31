@@ -170,8 +170,8 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
           </g>
         </svg>
 
-        <h3 className="text-3xl font-black text-[var(--text-main)] mb-1.5 tracking-tight">Quiz</h3>
-        <p className="text-sm text-[var(--text-muted)] max-w-sm mx-auto mb-8">Test your knowledge with customizable quizzes.</p>
+        <h3 className="text-3xl font-semibold text-[var(--text-main)] mb-1.5 tracking-[-0.28px]">Quiz</h3>
+        <p className="text-[17px] text-[var(--text-muted)] max-w-sm mx-auto mb-8 font-normal leading-[1.47] tracking-[-0.374px]">Test your knowledge with customizable quizzes.</p>
 
         <div className="max-w-[480px] mx-auto mb-9 space-y-5">
           {/* Row 1: Difficulty */}
@@ -186,9 +186,9 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
                   key={diff}
                   type="button"
                   onClick={() => setDifficulty(diff)}
-                  className={`py-2 px-5 rounded-full text-sm font-semibold capitalize transition-all cursor-pointer min-w-[70px] text-center border ${
+                  className={`py-2 px-5 rounded-full text-sm font-normal capitalize transition-all cursor-pointer min-w-[70px] text-center border active:scale-95 ${
                     difficulty === diff
-                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)] font-bold shadow-xs"
+                      ? "bg-[#0066cc] text-white border-[#0066cc] font-semibold"
                       : "bg-[var(--card-bg)] text-[var(--text-main)] border-[var(--card-border)] hover:border-[var(--text-muted)]"
                   }`}
                 >
@@ -210,9 +210,9 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
                   key={num}
                   type="button"
                   onClick={() => setNumQuestions(num)}
-                  className={`py-2 px-6 rounded-full text-sm font-semibold transition-all cursor-pointer min-w-[56px] text-center border ${
+                  className={`py-2 px-6 rounded-full text-sm font-normal transition-all cursor-pointer min-w-[56px] text-center border active:scale-95 ${
                     numQuestions === num
-                      ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)] font-bold shadow-xs"
+                      ? "bg-[#0066cc] text-white border-[#0066cc] font-semibold"
                       : "bg-[var(--card-bg)] text-[var(--text-main)] border-[var(--card-border)] hover:border-[var(--text-muted)]"
                   }`}
                 >
@@ -226,7 +226,7 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
         <div>
           <button
             onClick={handleStartCustomQuiz}
-            className="py-3.5 px-10 rounded-full bg-[#2E7D32] hover:bg-[#256828] text-white text-base font-bold transition-all shadow-md inline-flex items-center gap-2 cursor-pointer"
+            className="py-3 px-9 rounded-full bg-[#0066cc] hover:bg-[#0071e3] text-white text-base font-normal transition-all inline-flex items-center gap-2 cursor-pointer active:scale-95"
           >
             <span>Start Quiz</span>
             <ArrowRight className="w-4 h-4" />
@@ -234,7 +234,7 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
           {quiz.length > 0 && (
             <button
               onClick={() => setShowConfig(false)}
-              className="mt-3 text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer block mx-auto"
+              className="mt-3 text-xs font-normal text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors cursor-pointer block mx-auto active:scale-95"
             >
               Back to Current Quiz
             </button>
@@ -250,22 +250,22 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
 
     return (
       <div className="max-w-lg mx-auto py-8 text-center animate-in fade-in duration-200">
-        <div className="w-16 h-16 rounded-full bg-[var(--brand-lime)] text-[#0E0F0C] flex items-center justify-center mx-auto mb-4 shadow-lg">
-          <Trophy className="w-8 h-8" />
+        <div className="w-14 h-14 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center mx-auto mb-4">
+          <Trophy className="w-7 h-7" />
         </div>
-        <h3 className="text-2xl font-black text-[var(--text-main)] mb-1">Quiz Completed!</h3>
-        <p className="text-xs text-[var(--text-muted)] mb-6">
-          Difficulty: <strong className="capitalize text-[var(--text-main)]">{difficulty}</strong> • Here is your score report.
+        <h3 className="text-2xl font-semibold tracking-[-0.28px] text-[var(--text-main)] mb-1">Quiz Completed</h3>
+        <p className="text-xs text-[var(--text-muted)] mb-6 font-normal">
+          Difficulty: <strong className="capitalize text-[var(--text-main)] font-semibold">{difficulty}</strong> • Here is your score report.
         </p>
 
-        <div className="p-6 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] mb-6 shadow-sm">
-          <div className="text-4xl font-black text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)] mb-1">
+        <div className="p-6 rounded-[18px] bg-[var(--card-surface-elevated)] border border-[var(--card-border)] mb-6">
+          <div className="text-4xl font-semibold text-[#0066cc] mb-1">
             {percentage}%
           </div>
-          <p className="text-sm font-bold text-[var(--text-main)]">
+          <p className="text-sm font-semibold text-[var(--text-main)]">
             You scored {totalCorrect} out of {quiz.length} correct
           </p>
-          <p className="text-xs text-[var(--text-muted)] mt-1">
+          <p className="text-xs text-[var(--text-muted)] mt-1 font-normal">
             {percentage >= 80 && "Outstanding mastery! You have a solid grasp of this material."}
             {percentage >= 50 && percentage < 80 && "Good effort! A quick review of the notes will boost your score."}
             {percentage < 50 && "Keep practicing! Review the summary points and try again."}
@@ -275,14 +275,14 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={handleRetake}
-            className="px-5 py-2.5 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border border-[var(--card-border)]"
+            className="px-5 py-2 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-normal transition-all cursor-pointer flex items-center gap-1.5 border border-[var(--card-border)] active:scale-95"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Retake Quiz</span>
           </button>
           <button
             onClick={handleGenerateMore}
-            className="px-5 py-2.5 rounded-xl bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] text-xs font-black transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+            className="px-6 py-2 rounded-full bg-[#0066cc] hover:bg-[#0071e3] text-white text-xs font-normal transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Generate More Questions</span>
@@ -302,24 +302,24 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
       {/* Top Meta Bar */}
       <div className="flex items-center justify-between mb-4 text-xs">
         <div className="flex items-center gap-2 text-[var(--text-muted)]">
-          <span className="font-bold text-[var(--text-main)]">Question {currentIdx + 1} of {quiz.length}</span>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] capitalize font-semibold">
+          <span className="font-semibold text-[var(--text-main)]">Question {currentIdx + 1} of {quiz.length}</span>
+          <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] capitalize font-normal">
             {difficulty}
           </span>
           {provider && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)]">
+            <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] font-normal">
               {provider}
             </span>
           )}
         </div>
         <div className="flex items-center gap-3">
-          <div className="text-xs font-bold text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)]">
+          <div className="text-xs font-semibold text-[#0066cc]">
             Score: {totalCorrect} / {quiz.length}
           </div>
           <button
             onClick={handleGenerateMore}
             title="Configure difficulty or questions"
-            className="p-1 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] transition-colors cursor-pointer"
+            className="p-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] transition-colors cursor-pointer active:scale-95"
           >
             <Sliders className="w-3.5 h-3.5" />
           </button>
@@ -329,32 +329,32 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
       {/* Question Progress Track */}
       <div className="w-full h-1 bg-[var(--card-border)] rounded-full mb-5 overflow-hidden">
         <div
-          className="h-full bg-[var(--brand-lime)] transition-all duration-300"
+          className="h-full bg-[#0066cc] transition-all duration-300"
           style={{ width: `${Math.round(((currentIdx + 1) / quiz.length) * 100)}%` }}
         />
       </div>
 
       {/* Question Card */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] shadow-md mb-5">
-        <h3 className="text-base sm:text-lg font-black text-[var(--text-main)] mb-6 leading-snug">
+      <div className="p-6 sm:p-8 rounded-[18px] bg-[var(--card-bg)] border border-[var(--card-border)] mb-5">
+        <h3 className="text-base sm:text-lg font-semibold tracking-[-0.2px] text-[var(--text-main)] mb-6 leading-snug">
           {q.question}
         </h3>
 
         {/* Options */}
         <div className="space-y-3">
           {q.options.map((opt, optIdx) => {
-            let optionStyles = "bg-[var(--card-bg)] border-[var(--card-border)] text-[var(--text-main)] hover:border-[var(--brand-lime)]";
+            let optionStyles = "bg-[var(--card-bg)] border-[var(--card-border)] text-[var(--text-main)] hover:border-[#0066cc]";
             let icon = null;
 
             if (hasAnswered) {
               if (optIdx === q.answerIndex) {
-                optionStyles = "bg-green-500/15 border-green-500 text-green-700 dark:text-green-400 font-bold";
+                optionStyles = "bg-green-500/10 border-green-500/50 text-green-700 dark:text-green-400 font-semibold";
                 icon = <Check className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />;
               } else if (optIdx === userChoice) {
-                optionStyles = "bg-red-500/15 border-red-500 text-red-700 dark:text-red-400 font-bold";
+                optionStyles = "bg-red-500/10 border-red-500/50 text-red-700 dark:text-red-400 font-semibold";
                 icon = <X className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />;
               } else {
-                optionStyles = "bg-[var(--card-bg)] border-[var(--card-border)] opacity-40";
+                optionStyles = "bg-[var(--card-bg)] border-[var(--card-border)] opacity-35";
               }
             }
 
@@ -363,13 +363,13 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
                 key={optIdx}
                 disabled={hasAnswered}
                 onClick={() => handleSelectOption(optIdx)}
-                className={`w-full p-4 rounded-xl border text-left text-sm flex items-center justify-between gap-3 transition-all cursor-pointer ${optionStyles}`}
+                className={`w-full p-4 rounded-[11px] border text-left text-sm flex items-center justify-between gap-3 transition-all cursor-pointer active:scale-[0.98] ${optionStyles}`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-md bg-[var(--btn-secondary-bg)] flex items-center justify-center text-xs font-black shrink-0">
+                  <span className="w-6 h-6 rounded-full bg-[var(--btn-secondary-bg)] flex items-center justify-center text-xs font-semibold shrink-0">
                     {String.fromCharCode(65 + optIdx)}
                   </span>
-                  <span>{opt}</span>
+                  <span className="font-normal">{opt}</span>
                 </div>
                 {icon}
               </button>
@@ -379,11 +379,11 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
 
         {/* Answer Explanation Box */}
         {hasAnswered && (
-          <div className="mt-5 p-4 rounded-xl bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] text-xs text-[var(--text-muted)] animate-in fade-in duration-150">
-            <div className="font-bold text-[var(--text-main)] mb-1">
-              {userChoice === q.answerIndex ? "✅ Correct!" : "❌ Incorrect"}
+          <div className="mt-5 p-4 rounded-[11px] bg-[var(--card-surface-elevated)] border border-[var(--card-border)] text-xs text-[var(--text-muted)] animate-in fade-in duration-150">
+            <div className="font-semibold text-[var(--text-main)] mb-1">
+              {userChoice === q.answerIndex ? "✅ Correct" : "❌ Incorrect"}
             </div>
-            <p className="leading-relaxed">{q.explanation}</p>
+            <p className="leading-relaxed font-normal">{q.explanation}</p>
           </div>
         )}
       </div>
@@ -393,7 +393,7 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
         <div className="flex justify-end">
           <button
             onClick={handleNext}
-            className="px-6 py-2.5 rounded-xl bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] text-xs font-black flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+            className="px-6 py-2.5 rounded-full bg-[#0066cc] hover:bg-[#0071e3] text-white text-xs font-normal flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
           >
             <span>{currentIdx < quiz.length - 1 ? "Next Question" : "View Results"}</span>
             <ChevronRight className="w-4 h-4" />

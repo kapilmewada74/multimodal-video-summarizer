@@ -1,64 +1,123 @@
 @import "tailwindcss";
 
+/* Apple Design System Variables */
 :root {
-  --brand-lime: #D9EC95;
-  --brand-lime-hover: #C8DE65;
-  --brand-black: #0E0F0C;
-  --brand-ivory: #F2F2F0;
+  /* Apple Design Colors */
+  --color-primary: #0066cc;          /* Action Blue */
+  --color-primary-focus: #0071e3;    /* Focus Blue */
+  --color-primary-on-dark: #2997ff;  /* Sky Link Blue */
+  --color-ink: #1d1d1f;              /* Near-black Ink */
+  --color-body: #1d1d1f;
+  --color-body-on-dark: #ffffff;
+  --color-body-muted: #cccccc;
+  --color-ink-muted-80: #333333;
+  --color-ink-muted-48: #7a7a7a;
+  --color-divider-soft: #f0f0f0;
+  --color-hairline: #e0e0e0;
+  --color-canvas: #ffffff;
+  --color-canvas-parchment: #f5f5f7;
+  --color-surface-pearl: #fafafc;
+  --color-surface-tile-1: #272729;
+  --color-surface-tile-2: #2a2a2c;
+  --color-surface-tile-3: #252527;
+  --color-surface-black: #000000;
+  --color-surface-chip-translucent: rgba(210, 210, 215, 0.64);
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
 
-  /* Dark mode default */
-  --bg-app: #0E0F0C;
-  --text-main: #F2F2F0;
-  --text-muted: rgba(242, 242, 240, 0.65);
-  --card-bg: #141512;
-  --card-border: rgba(242, 242, 240, 0.12);
-  --card-elevated: #1B1D18;
-  --input-bg: #181916;
-  --input-border: rgba(242, 242, 240, 0.16);
-  --btn-secondary-bg: rgba(242, 242, 240, 0.08);
-  --btn-secondary-hover: rgba(242, 242, 240, 0.16);
-  --btn-secondary-text: #F2F2F0;
+  /* Theme-Aware Surfaces (Default: Apple Parchment / Light) */
+  --bg-app: #f5f5f7;                 /* canvas-parchment */
+  --text-main: #1d1d1f;              /* ink / body */
+  --text-muted: #7a7a7a;             /* ink-muted-48 */
+  --card-bg: #ffffff;                /* canvas */
+  --card-border: #e0e0e0;            /* hairline */
+  --card-elevated: #fafafc;          /* surface-pearl */
+  --card-surface-elevated: #fafafc;  /* surface-pearl */
+  --input-bg: #ffffff;
+  --input-border: #e0e0e0;
+  --btn-secondary-bg: #fafafc;
+  --btn-secondary-hover: #f0f0f0;
+  --btn-secondary-text: #1d1d1f;
+  --brand-primary: #0066cc;          /* Action Blue */
+  --brand-primary-hover: #0071e3;    /* Focus Blue */
+  --ring-focus: #0071e3;
+  --heading-accent: #1d1d1f;
+  --code-text: #0066cc;
+  --code-bg: #f5f5f7;
 
-  --heading-accent: var(--brand-lime);
-  --code-text: var(--brand-lime);
-  --code-bg: rgba(242, 242, 240, 0.1);
-
-  --color-success: #8ED081;
-  --color-warning: #F4C95D;
-  --color-danger: #FF6B6B;
-}
-
-.light {
-  --bg-app: #F4F4F1;
-  --text-main: #0E0F0C;
-  --text-muted: #57534E;
-  --card-bg: #FFFFFF;
-  --card-border: rgba(14, 15, 12, 0.14);
-  --card-elevated: #F8F8F5;
-  --input-bg: #FAFAF8;
-  --input-border: rgba(14, 15, 12, 0.22);
-  --btn-secondary-bg: #EAEAE4;
-  --btn-secondary-hover: #DFDFD7;
-  --btn-secondary-text: #0E0F0C;
-
-  /* In light mode: pure high-contrast black for headings and code - no lime */
-  --heading-accent: #0E0F0C;
-  --code-text: #0E0F0C;
-  --code-bg: #EAEAE4;
+  /* Route legacy brand tokens to Action Blue */
+  --brand-lime: #0066cc;
+  --brand-lime-hover: #0071e3;
+  --brand-black: #1d1d1f;
+  --brand-ivory: #f5f5f7;
 
   --color-success: #15803D;
   --color-warning: #B45309;
   --color-danger: #DC2626;
+
+  /* Radii Tokens */
+  --rounded-sm: 8px;
+  --rounded-md: 11px;
+  --rounded-lg: 18px;
+  --rounded-pill: 9999px;
+}
+
+.dark {
+  --bg-app: #1d1d1f;                 /* Near-black ink canvas */
+  --text-main: #ffffff;              /* body-on-dark */
+  --text-muted: #a1a1a6;             /* muted body on dark */
+  --card-bg: #272729;                /* surface-tile-1 */
+  --card-border: rgba(255, 255, 255, 0.12); /* hairline on dark */
+  --card-elevated: #2a2a2c;          /* surface-tile-2 */
+  --card-surface-elevated: #2a2a2c;  /* surface-tile-2 */
+  --input-bg: #1d1d1f;
+  --input-border: rgba(255, 255, 255, 0.16);
+  --btn-secondary-bg: #2a2a2c;
+  --btn-secondary-hover: #333336;
+  --btn-secondary-text: #ffffff;
+  --brand-primary: #0066cc;
+  --brand-primary-hover: #0071e3;
+  --ring-focus: #2997ff;             /* Sky Link Blue on dark */
+  --heading-accent: #ffffff;
+  --code-text: #2997ff;
+  --code-bg: #252527;
+
+  --color-success: #8ED081;
+  --color-warning: #F4C95D;
+  --color-danger: #FF6B6B;
+
+  --brand-lime: #0066cc;
+  --brand-lime-hover: #0071e3;
+  --brand-black: #000000;
+  --brand-ivory: #1d1d1f;
 }
 
 body {
   background-color: var(--bg-app);
   color: var(--text-main);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Micro-interaction: Active button scale (0.95) across all interactive elements */
+button, a.btn-primary, a.btn-secondary {
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+button:active, a.btn-primary:active, a.btn-secondary:active {
+  transform: scale(0.95) !important;
+}
+
+/* Apple Focus Ring */
+:focus-visible {
+  outline: 2px solid var(--ring-focus) !important;
+  outline-offset: 2px !important;
 }
 
 /* Custom Scrollbars */
@@ -72,94 +131,53 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-lime);
+  background: var(--color-hairline);
   border-radius: 9999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-lime-hover);
-}
-
-/* Shimmer Animation */
-@keyframes shimmer-sweep {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.animate-shimmer {
-  position: relative;
-  overflow: hidden;
-}
-
-.animate-shimmer::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 100%
-  );
-  animation: shimmer-sweep 2.2s infinite linear;
-}
-
-/* Pulse Animation */
-@keyframes pulse-dot {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.3;
-    transform: scale(0.75);
-  }
-}
-
-.animate-pulse-dot {
-  animation: pulse-dot 1.5s infinite ease-in-out;
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* KaTeX formula blocks */
 .katex-display {
   background-color: var(--card-elevated);
   border: 1px solid var(--card-border);
-  padding: 14px 18px;
-  border-radius: 8px;
+  padding: 16px 20px;
+  border-radius: 11px;
   overflow-x: auto;
-  margin: 14px 0 !important;
+  margin: 16px 0 !important;
 }
 
 /* Markdown typography styling */
 .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: -0.28px;
 }
 
 .markdown-content h1 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   border-bottom: 1px solid var(--card-border);
   padding-bottom: 8px;
 }
 
 .markdown-content h2 {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   color: var(--heading-accent);
-  border-left: 3px solid var(--heading-accent);
-  padding-left: 8px;
 }
 
 .markdown-content h3 {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .markdown-content p {
   margin-bottom: 1rem;
-  line-height: 1.7;
+  line-height: 1.5;
+  font-size: 17px;
+  letter-spacing: -0.374px;
 }
 
 .markdown-content ul, .markdown-content ol {
@@ -168,17 +186,18 @@ body {
 }
 
 .markdown-content li {
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.5;
 }
 
 .markdown-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.85em;
+  font-size: 0.88em;
   background-color: var(--code-bg);
   color: var(--code-text);
-  font-weight: 600;
+  font-weight: 400;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 /* Print styling for PDF export */
