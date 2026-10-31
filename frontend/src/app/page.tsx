@@ -150,14 +150,14 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-[var(--bg-app)] text-[var(--text-main)] transition-colors">
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-2.5 sm:px-4 py-8 sm:py-12">
+      <main className="flex-1 max-w-[1140px] w-full mx-auto px-3 sm:px-6 py-8 sm:py-12">
         {/* Clean Hero Section */}
-        <div className="text-center mb-8 no-print">
-          <h1 className="text-3xl sm:text-[48px] font-semibold tracking-[-0.28px] leading-[1.08] mb-3 text-[var(--text-main)]">
+        <div className="text-center mb-10 no-print">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.15] mb-3.5 text-[var(--text-main)]">
             Summarize Any Video in Seconds
           </h1>
 
-          <p className="text-[17px] text-[var(--text-muted)] max-w-xl mx-auto leading-[1.47] tracking-[-0.374px] font-normal">
+          <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto leading-relaxed font-normal">
             Generate structured study notes, complete transcripts, flashcards, slide presentations, and interactive quizzes from any video.
           </p>
         </div>
@@ -174,10 +174,10 @@ export default function Home() {
 
         {/* Minimal Clean Loading Indicator */}
         {job && (job.status === "processing" || job.status === "queued") && (
-          <div className="flex flex-col items-center justify-center py-10 px-6 my-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] text-center no-print">
-            <div className="w-9 h-9 border-[2.5px] border-[var(--card-border)] border-t-[#0066cc] rounded-full animate-spin mb-4" />
-            <h3 className="text-base font-semibold tracking-[-0.2px] text-[var(--text-main)]">Generating summary...</h3>
-            <p className="text-sm text-[var(--text-muted)] mt-1 max-w-sm">
+          <div className="flex flex-col items-center justify-center py-12 px-6 my-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl shadow-sm text-center no-print">
+            <div className="w-10 h-10 border-3 border-[var(--card-border)] border-t-[var(--brand-lime)] rounded-full animate-spin mb-4" />
+            <h3 className="text-base font-bold text-[var(--text-main)]">Generating summary...</h3>
+            <p className="text-xs text-[var(--text-muted)] mt-1 max-w-sm">
               Transcribing audio and synthesizing key takeaways locally.
             </p>
           </div>
@@ -185,7 +185,7 @@ export default function Home() {
 
         {/* Failure Alert */}
         {job && job.status === "failed" && (
-          <div className="p-4 my-6 bg-red-500/10 border border-red-500/20 rounded-[11px] text-center text-sm font-normal text-[var(--color-danger)] no-print">
+          <div className="p-4 my-6 bg-red-500/10 border border-red-500/20 rounded-xl text-center text-sm font-semibold text-[var(--color-danger)] no-print">
             {job.error || "An error occurred while generating the summary."}
           </div>
         )}
@@ -198,13 +198,13 @@ export default function Home() {
 
       {/* Floating Toast System */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-5 py-3 rounded-full bg-[var(--card-bg)] border border-[var(--card-border)] text-sm font-normal animate-in fade-in slide-in-from-bottom-3 duration-200 text-[var(--text-main)]">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-2xl text-xs font-bold animate-in fade-in slide-in-from-bottom-3 duration-200 text-[var(--text-main)]">
           {toast.type === "success" ? (
             <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
           ) : toast.type === "error" ? (
             <AlertCircle className="w-4 h-4 text-[var(--color-danger)]" />
           ) : (
-            <Info className="w-4 h-4 text-[#0066cc]" />
+            <Info className="w-4 h-4 text-[var(--brand-lime)]" />
           )}
           <span>{toast.message}</span>
         </div>

@@ -49,26 +49,26 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="w-9 h-9 border-[2.5px] border-[var(--card-border)] border-t-[#0066cc] rounded-full animate-spin mb-4" />
-        <h4 className="text-base font-semibold tracking-[-0.2px] text-[var(--text-main)]">Building Presentation Slides...</h4>
-        <p className="text-sm text-[var(--text-muted)] mt-1">Designing keynote slides with speaker notes</p>
+        <div className="w-10 h-10 border-3 border-[var(--card-border)] border-t-[var(--brand-lime)] rounded-full animate-spin mb-4" />
+        <h4 className="text-sm font-bold text-[var(--text-main)]">Generating Slide Presentation...</h4>
+        <p className="text-xs text-[var(--text-muted)] mt-1">Designing keynote slides with speaker notes via Gemini AI</p>
       </div>
     );
   }
 
   if (!data || !data.slides || data.slides.length === 0) {
     return (
-      <div className="text-center py-12 px-4 border border-dashed border-[var(--card-border)] rounded-[18px]">
-        <div className="w-11 h-11 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center mx-auto mb-3">
-          <Presentation className="w-5 h-5 text-[#0066cc]" />
+      <div className="text-center py-12 px-4 border border-dashed border-[var(--card-border)] rounded-2xl">
+        <div className="w-12 h-12 rounded-full bg-[var(--brand-lime)]/10 text-[var(--brand-lime)] flex items-center justify-center mx-auto mb-3">
+          <Presentation className="w-6 h-6 text-[#0E0F0C] dark:text-[var(--brand-lime)]" />
         </div>
-        <h4 className="text-base font-semibold text-[var(--text-main)] mb-1">Presentation & PPT Generation</h4>
-        <p className="text-sm text-[var(--text-muted)] max-w-md mx-auto mb-5 leading-relaxed font-normal">
+        <h4 className="text-base font-bold text-[var(--text-main)] mb-1">Presentation & PPT Generation</h4>
+        <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto mb-5 leading-relaxed">
           Convert your video insights into a structured 16:9 slide deck with speaker notes and downloadable Microsoft PowerPoint (.pptx) file.
         </p>
         <button
           onClick={onGenerate}
-          className="px-6 py-2.5 rounded-full bg-[#0066cc] hover:bg-[#0071e3] text-white text-sm font-normal transition-all inline-flex items-center gap-2 cursor-pointer active:scale-95"
+          className="px-5 py-2.5 rounded-xl bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] text-xs font-black transition-all shadow-sm inline-flex items-center gap-2 cursor-pointer"
         >
           <Sparkles className="w-3.5 h-3.5" />
           <span>Generate Slides</span>
@@ -117,13 +117,13 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
       {/* Header Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
         <div>
-          <h3 className="text-base font-semibold text-[var(--text-main)]">{data.title || "Video Presentation"}</h3>
+          <h3 className="text-base font-bold text-[var(--text-main)]">{data.title || "Video Presentation"}</h3>
           <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mt-0.5">
             <span>Slide {currentSlideIndex + 1} of {slides.length}</span>
             {data.provider && (
               <>
                 <span>•</span>
-                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] font-normal">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)]">
                   {data.provider}
                 </span>
               </>
@@ -134,9 +134,9 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowNotes(!showNotes)}
-            className={`px-4 py-1.5 rounded-full border text-xs font-normal flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+            className={`px-3 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
               showNotes
-                ? "bg-[#0066cc] text-white border-[#0066cc] font-semibold"
+                ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)]"
                 : "bg-[var(--btn-secondary-bg)] text-[var(--btn-secondary-text)] border-[var(--card-border)] hover:bg-[var(--btn-secondary-hover)]"
             }`}
           >
@@ -147,7 +147,7 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
           <button
             onClick={handleDownloadPptx}
             disabled={isDownloading}
-            className="px-5 py-1.5 rounded-full bg-[#0066cc] hover:bg-[#0071e3] text-white text-xs font-normal flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+            className="px-3.5 py-1.5 rounded-lg bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] text-xs font-black flex items-center gap-1.5 transition-all shadow-sm cursor-pointer disabled:opacity-50"
           >
             <Download className="w-3.5 h-3.5" />
             <span>{isDownloading ? "Generating..." : "Download .PPTX"}</span>
@@ -156,24 +156,24 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
           <button
             onClick={onGenerate}
             title="Regenerate Presentation"
-            className="p-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] transition-colors cursor-pointer active:scale-95"
+            className="p-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] transition-colors cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* 16:9 Slide Screen View: Apple Dark Canvas */}
-      <div className="relative w-full aspect-[16/9] min-h-[300px] max-h-[480px] p-8 sm:p-12 rounded-[18px] bg-[#272729] text-white border border-white/10 flex flex-col justify-between overflow-hidden">
+      {/* 16:9 Slide Screen View */}
+      <div className="relative w-full aspect-[16/9] min-h-[300px] max-h-[480px] p-8 sm:p-12 rounded-2xl bg-[#0E0F0C] text-[#F2F2F0] border border-[var(--card-border)] shadow-xl flex flex-col justify-between overflow-hidden">
         {/* Accent Top Bar */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-[#0066cc]" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-[var(--brand-lime)]" />
 
         {/* Slide Header */}
         <div>
-          <span className="text-[11px] font-semibold tracking-wider text-[#2997ff] uppercase mb-2 block">
+          <span className="text-[11px] font-bold tracking-widest text-[var(--brand-lime)] uppercase mb-2 block">
             SLIDE {currentSlideIndex + 1}
           </span>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-[-0.28px] text-white leading-tight">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#F2F2F0] leading-tight">
             {currentSlide.title}
           </h2>
         </div>
@@ -182,8 +182,8 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
         <div className="my-auto py-4 space-y-3">
           {currentSlide.bullets.map((bullet, idx) => (
             <div key={idx} className="flex items-start gap-3">
-              <span className="w-2 h-2 rounded-full bg-[#0066cc] mt-2 shrink-0" />
-              <p className="text-sm sm:text-base text-gray-200 leading-[1.47] font-normal">
+              <span className="w-2 h-2 rounded-full bg-[var(--brand-lime)] mt-2 shrink-0" />
+              <p className="text-sm sm:text-base text-gray-200 leading-relaxed font-medium">
                 {bullet}
               </p>
             </div>
@@ -191,7 +191,7 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
         </div>
 
         {/* Slide Footer */}
-        <div className="flex items-center justify-between text-[11px] text-gray-400 border-t border-white/10 pt-3">
+        <div className="flex items-center justify-between text-[11px] text-gray-500 border-t border-gray-800/80 pt-3">
           <span>{data.title || "Video Presentation"}</span>
           <span>{currentSlideIndex + 1} / {slides.length}</span>
         </div>
@@ -199,12 +199,12 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
 
       {/* Speaker Notes Drawer (Expandable) */}
       {showNotes && currentSlide.notes && (
-        <div className="mt-4 p-4 rounded-[11px] bg-[var(--card-surface-elevated)] border border-[var(--card-border)] text-xs text-[var(--text-muted)] animate-in fade-in duration-150">
-          <div className="font-semibold text-[var(--text-main)] mb-1 flex items-center gap-1.5">
-            <MessageSquare className="w-3.5 h-3.5 text-[#0066cc]" />
+        <div className="mt-4 p-4 rounded-xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] text-xs text-[var(--text-muted)] animate-in fade-in duration-150">
+          <div className="font-bold text-[var(--text-main)] mb-1 flex items-center gap-1.5">
+            <MessageSquare className="w-3.5 h-3.5 text-[var(--brand-lime)]" />
             <span>Speaker Notes</span>
           </div>
-          <p className="leading-relaxed font-normal">{currentSlide.notes}</p>
+          <p className="leading-relaxed">{currentSlide.notes}</p>
         </div>
       )}
 
@@ -213,7 +213,7 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
         <button
           onClick={() => setCurrentSlideIndex((prev) => Math.max(0, prev - 1))}
           disabled={currentSlideIndex === 0}
-          className="px-4 py-2 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-normal flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all active:scale-95 border border-[var(--card-border)]"
+          className="px-4 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Previous</span>
@@ -225,10 +225,10 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
             <button
               key={idx}
               onClick={() => setCurrentSlideIndex(idx)}
-              className={`w-7 h-7 rounded-full text-xs transition-all cursor-pointer active:scale-95 ${
+              className={`w-7 h-7 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 currentSlideIndex === idx
-                  ? "bg-[#0066cc] text-white font-semibold"
-                  : "bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] hover:text-[var(--text-main)] border border-[var(--card-border)]"
+                  ? "bg-[var(--brand-lime)] text-[#0E0F0C] font-black scale-105"
+                  : "bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] hover:text-[var(--text-main)]"
               }`}
             >
               {idx + 1}
@@ -239,7 +239,7 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
         <button
           onClick={() => setCurrentSlideIndex((prev) => Math.min(slides.length - 1, prev + 1))}
           disabled={currentSlideIndex === slides.length - 1}
-          className="px-4 py-2 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-normal flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all active:scale-95 border border-[var(--card-border)]"
+          className="px-4 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] text-xs font-bold flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
         >
           <span>Next</span>
           <ChevronRight className="w-4 h-4" />
