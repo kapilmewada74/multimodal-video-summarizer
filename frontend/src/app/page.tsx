@@ -91,7 +91,7 @@ export default function Home() {
     }, 1500);
   };
 
-  const handleUrlSubmit = async (url: string, mode: string) => {
+  const handleUrlSubmit = async (url: string) => {
     setResult(null);
     setJob({
       id: "init",
@@ -100,14 +100,14 @@ export default function Home() {
       step: 1,
       step_name: "Connecting",
       progress: 5,
-      message: "Initiating local video pipeline...",
+      message: "Initiating video pipeline...",
     });
 
     try {
       const res = await fetch("/api/summarize/url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, mode }),
+        body: JSON.stringify({ url }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Failed to start summarization");
@@ -130,7 +130,7 @@ export default function Home() {
     }
   };
 
-  const handleUploadSubmit = async (file: File, mode: string) => {
+  const handleUploadSubmit = async (file: File) => {
     setResult(null);
     setJob({
       id: "init",
@@ -139,13 +139,12 @@ export default function Home() {
       step: 1,
       step_name: "Uploading",
       progress: 10,
-      message: "Uploading media to local worker...",
+      message: "Uploading media to worker...",
     });
 
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("mode", mode);
 
       const res = await fetch("/api/summarize/upload", {
         method: "POST",
@@ -173,22 +172,17 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-app)] text-[var(--text-main)] transition-colors">
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        {/* Hero Section */}
+        {/* Clean Hero Section (Without Eyebrow Chip) */}
         <div className="text-center mb-10 no-print">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-[var(--brand-lime)] bg-[rgba(217,236,149,0.12)] border border-[rgba(217,236,149,0.25)] mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-lime)]" />
-            <span>AI Video Summarizer</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.1] mb-3.5">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.15] mb-3.5 text-[var(--text-main)]">
             Summarize Any Video in Seconds
           </h1>
 
-          <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto leading-relaxed font-normal">
             Generate structured notes, preserve mathematical formulas, and explore searchable transcripts — powered by local AI without external API fees.
           </p>
         </div>
@@ -228,7 +222,7 @@ export default function Home() {
                 mode: item.mode,
               });
               showToast(`Loaded: ${item.title}`, "info");
-              window.scrollTo({ top: 400, behavior: "smooth" });
+              window.scrollTo({ top: 350, behavior: "smooth" });
             }}
           />
         </div>
@@ -236,7 +230,7 @@ export default function Home() {
 
       {/* Floating Toast System */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-2xl text-xs font-bold animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-2xl text-xs font-bold animate-in fade-in slide-in-from-bottom-3 duration-200 text-[var(--text-main)]">
           {toast.type === "success" ? (
             <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
           ) : toast.type === "error" ? (
