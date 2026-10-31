@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SUMMARIZE.AI — Multimodal Video Summarizer",
-  description: "AI-powered video summarization and RAG assistant that preserves mathematical formulas and generates searchable transcripts.",
+  description: "AI-powered video summarizer that generates structured study notes, complete transcripts, flashcards, slide presentations, and interactive quizzes.",
 };
 
 export default function RootLayout({

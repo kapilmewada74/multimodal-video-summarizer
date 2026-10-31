@@ -158,7 +158,7 @@ export default function Home() {
           </h1>
 
           <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto leading-relaxed font-normal">
-            Generate structured notes and explore searchable transcripts — powered by local AI without external API fees.
+            Generate structured study notes, complete transcripts, flashcards, slide presentations, and interactive quizzes from any video.
           </p>
         </div>
 
