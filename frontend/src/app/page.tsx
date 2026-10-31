@@ -4,15 +4,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { Navbar } from "../components/Navbar";
 import { ToolCard } from "../components/ToolCard";
 import { OutputWorkspace } from "../components/OutputWorkspace";
-import { RecentHistory } from "../components/RecentHistory";
-import { JobState, JobResult, HistoryItem } from "../lib/types";
+import { JobState, JobResult } from "../lib/types";
 import { CheckCircle2, AlertCircle, Info, Loader2 } from "lucide-react";
 
 export default function Home() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [job, setJob] = useState<JobState | null>(null);
   const [result, setResult] = useState<JobResult | null>(null);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [toast, setToast] = useState<{ message: string; type: "success" | "info" | "error" } | null>(null);
 
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
@@ -28,7 +26,6 @@ export default function Home() {
       document.documentElement.classList.add("dark");
       document.documentElement.classList.remove("light");
     }
-    fetchHistory();
   }, []);
 
   const toggleTheme = () => {
@@ -51,18 +48,6 @@ export default function Home() {
     }, 3200);
   };
 
-  const fetchHistory = async () => {
-    try {
-      const res = await fetch("/api/history");
-      if (res.ok) {
-        const data = await res.json();
-        setHistory(data || []);
-      }
-    } catch {
-      // ignore
-    }
-  };
-
   const startPolling = (jobId: string) => {
     if (pollingRef.current) clearInterval(pollingRef.current);
 
@@ -78,7 +63,6 @@ export default function Home() {
           if (data.result) {
             setResult(data.result);
             showToast("Video summarized successfully!", "success");
-            fetchHistory();
           }
         } else if (data.status === "failed") {
           if (pollingRef.current) clearInterval(pollingRef.current);
@@ -218,24 +202,6 @@ export default function Home() {
         {result && (
           <OutputWorkspace result={result} onToast={showToast} />
         )}
-
-        {/* Recent History Drawer */}
-        <div className="no-print">
-          <RecentHistory
-            items={history}
-            onSelect={(item) => {
-              setResult({
-                title: item.title,
-                duration: item.duration,
-                summary: item.summary,
-                transcript: item.transcript,
-                mode: item.mode,
-              });
-              showToast(`Loaded: ${item.title}`, "info");
-              window.scrollTo({ top: 350, behavior: "smooth" });
-            }}
-          />
-        </div>
       </main>
 
       {/* Floating Toast System */}
