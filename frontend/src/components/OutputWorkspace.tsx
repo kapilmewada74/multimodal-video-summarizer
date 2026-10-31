@@ -4,8 +4,23 @@ import React, { useState, useMemo } from "react";
 import { marked } from "marked";
 import katex from "katex";
 import "katex/dist/katex.min.css";
-import { Copy, Download, Printer, Search, FileText, Check } from "lucide-react";
+import {
+  Copy,
+  Download,
+  Printer,
+  Search,
+  FileText,
+  Check,
+  Layers,
+  Presentation as PresentationIcon,
+  HelpCircle,
+  Key
+} from "lucide-react";
 import { JobResult } from "../lib/types";
+import { FlashcardsView, Flashcard } from "./FlashcardsView";
+import { PresentationView, PresentationData } from "./PresentationView";
+import { QuizView, QuizQuestion } from "./QuizView";
+import { ApiSettingsModal } from "./ApiSettingsModal";
 
 interface OutputWorkspaceProps {
   result: JobResult;
@@ -13,10 +28,24 @@ interface OutputWorkspaceProps {
 }
 
 export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
-  const [activeTab, setActiveTab] = useState<"summary" | "transcript">("summary");
+  const [activeTab, setActiveTab] = useState<"summary" | "transcript" | "flashcards" | "presentation" | "quiz">("summary");
   const [transcriptSearch, setTranscriptSearch] = useState("");
   const [copiedSummary, setCopiedSummary] = useState(false);
   const [copiedTranscript, setCopiedTranscript] = useState(false);
+
+  // Advanced features state
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const [flashcardsProvider, setFlashcardsProvider] = useState<string>("");
+  const [isLoadingFlashcards, setIsLoadingFlashcards] = useState(false);
+
+  const [presentation, setPresentation] = useState<PresentationData | null>(null);
+  const [isLoadingPresentation, setIsLoadingPresentation] = useState(false);
+
+  const [quiz, setQuiz] = useState<QuizQuestion[]>([]);
+  const [quizProvider, setQuizProvider] = useState<string>("");
+  const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
 
   // Render markdown with KaTeX math formula rendering
   const renderedSummaryHtml = useMemo(() => {
@@ -169,6 +198,90 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
     }, 250);
   };
 
+  // --- Generation Handlers ---
+  const handleGenerateFlashcards = async () => {
+    setIsLoadingFlashcards(true);
+    try {
+      const apiKey = localStorage.getItem("GEMINI_API_KEY") || undefined;
+      const res = await fetch("/api/generate/flashcards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: result.title,
+          summary: result.summary,
+          transcript: result.transcript,
+          apiKey,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to generate flashcards.");
+      const data = await res.json();
+      setFlashcards(data.flashcards || []);
+      setFlashcardsProvider(data.provider || "");
+      onToast(`Flashcards ready! (${data.provider || "AI"})`, "success");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error generating flashcards";
+      onToast(msg, "error");
+    } finally {
+      setIsLoadingFlashcards(false);
+    }
+  };
+
+  const handleGeneratePresentation = async () => {
+    setIsLoadingPresentation(true);
+    try {
+      const apiKey = localStorage.getItem("GEMINI_API_KEY") || undefined;
+      const res = await fetch("/api/generate/presentation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: result.title,
+          summary: result.summary,
+          transcript: result.transcript,
+          apiKey,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to generate presentation.");
+      const data = await res.json();
+      setPresentation(data);
+      onToast(`Presentation slides ready! (${data.provider || "AI"})`, "success");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error generating slides";
+      onToast(msg, "error");
+    } finally {
+      setIsLoadingPresentation(false);
+    }
+  };
+
+  const handleGenerateQuiz = async () => {
+    setIsLoadingQuiz(true);
+    try {
+      const apiKey = localStorage.getItem("GROK_API_KEY") || undefined;
+      const res = await fetch("/api/generate/quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: result.title,
+          summary: result.summary,
+          transcript: result.transcript,
+          apiKey,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to generate quiz.");
+      const data = await res.json();
+      setQuiz(data.quiz || []);
+      setQuizProvider(data.provider || "");
+      onToast(`Interactive Quiz ready! (${data.provider || "AI"})`, "success");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error generating quiz";
+      onToast(msg, "error");
+    } finally {
+      setIsLoadingQuiz(false);
+    }
+  };
+
   const filteredTranscriptLines = useMemo(() => {
     if (!result.transcript) return [];
     const lines = result.transcript.split("\n").filter((l) => l.trim().length > 0);
@@ -179,134 +292,237 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   const safeFilename = (result.title || "video").toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 40);
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 shadow-xl mb-8 print-content transition-colors">
-      {/* Title & Actions Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--card-border)] pb-5 mb-6 no-print">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-black mb-1.5 text-[var(--text-main)]">{result.title || "Video Summary"}</h2>
-          <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-medium">
-            <span>Status: <strong className="text-[var(--color-success)]">Complete</strong></span>
-          </div>
-        </div>
-
-        {/* Export Toolbar */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={handleCopySummary}
-            className="px-3.5 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            {copiedSummary ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>Copy Summary</span>
-          </button>
-
-          <button
-            onClick={() => printCleanPdf(result.title || "Video Summary", renderedSummaryHtml)}
-            className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>PDF</span>
-          </button>
-
-          <button
-            onClick={() => handleDownloadFile(result.summary, `${safeFilename}_summary.txt`, "text/plain")}
-            className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>.TXT</span>
-          </button>
-        </div>
-      </div>
-
-      {/* High Contrast Tabs */}
-      <div className="flex gap-2 border-b border-[var(--card-border)] pb-3 mb-6 no-print">
-        <button
-          onClick={() => setActiveTab("summary")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
-            activeTab === "summary"
-              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
-          }`}
-        >
-          <FileText className="w-4 h-4" />
-          <span>AI Summary Notes</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("transcript")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
-            activeTab === "transcript"
-              ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
-              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
-          }`}
-        >
-          <span>Full Transcript</span>
-        </button>
-      </div>
-
-      {/* Content Panes */}
-      {activeTab === "summary" ? (
-        <div
-          className="markdown-content text-sm sm:text-base leading-relaxed text-[var(--text-main)]"
-          dangerouslySetInnerHTML={{ __html: renderedSummaryHtml }}
-        />
-      ) : (
-        <div>
-          {/* Transcript Search Toolbar */}
-          <div className="flex items-center gap-2 mb-4 no-print">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-              <input
-                type="text"
-                value={transcriptSearch}
-                onChange={(e) => setTranscriptSearch(e.target.value)}
-                placeholder="Search words in transcript..."
-                className="w-full pl-9 pr-4 py-2 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-xs text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-lime)]"
-              />
+    <>
+      <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 shadow-xl mb-8 print-content transition-colors">
+        {/* Title & Actions Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--card-border)] pb-5 mb-6 no-print">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black mb-1.5 text-[var(--text-main)]">
+              {result.title || "Video Summary"}
+            </h2>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-medium">
+              <span>Status: <strong className="text-[var(--color-success)]">Ready</strong></span>
             </div>
-            <button
-              onClick={handleCopyTranscript}
-              className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
-            >
-              {copiedTranscript ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>Copy</span>
-            </button>
-            <button
-              onClick={() => {
-                const transcriptHtml = result.transcript
-                  .split("\n")
-                  .filter((l) => l.trim().length > 0)
-                  .map((l) => `<p class="transcript-line">${l.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`)
-                  .join("");
-                printCleanPdf(`${result.title || "Video"} — Full Transcript`, transcriptHtml);
-              }}
-              className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>PDF</span>
-            </button>
-            <button
-              onClick={() => handleDownloadFile(result.transcript, `${safeFilename}_transcript.txt`, "text/plain")}
-              className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold cursor-pointer"
-            >
-              .TXT
-            </button>
           </div>
 
-          <div className="max-h-[480px] overflow-y-auto space-y-2.5 pr-2">
-            {filteredTranscriptLines.length > 0 ? (
-              filteredTranscriptLines.map((line, idx) => (
-                <p key={idx} className="text-sm leading-relaxed text-[var(--text-main)]">
-                  {line}
-                </p>
-              ))
-            ) : (
-              <p className="text-xs text-[var(--text-muted)] py-4">
-                No matching lines found for &quot;{transcriptSearch}&quot;.
-              </p>
+          {/* Export & Settings Toolbar */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Configure Gemini & Grok API keys"
+            >
+              <Key className="w-3.5 h-3.5" />
+              <span>API Keys</span>
+            </button>
+
+            {activeTab === "summary" && (
+              <>
+                <button
+                  onClick={handleCopySummary}
+                  className="px-3.5 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  {copiedSummary ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>Copy Summary</span>
+                </button>
+
+                <button
+                  onClick={() => printCleanPdf(result.title || "Video Summary", renderedSummaryHtml)}
+                  className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>PDF</span>
+                </button>
+
+                <button
+                  onClick={() => handleDownloadFile(result.summary, `${safeFilename}_summary.txt`, "text/plain")}
+                  className="px-3 py-1.5 rounded-lg bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>.TXT</span>
+                </button>
+              </>
             )}
           </div>
         </div>
-      )}
-    </div>
+
+        {/* 5 High Contrast Navigation Tabs */}
+        <div className="flex flex-wrap gap-2 border-b border-[var(--card-border)] pb-3 mb-6 no-print">
+          <button
+            onClick={() => setActiveTab("summary")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === "summary"
+                ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
+                : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>AI Summary</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("transcript")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === "transcript"
+                ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
+                : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+            }`}
+          >
+            <span>Full Transcript</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab("flashcards");
+              if (flashcards.length === 0) handleGenerateFlashcards();
+            }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === "flashcards"
+                ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
+                : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Flashcards</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab("presentation");
+              if (!presentation) handleGeneratePresentation();
+            }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === "presentation"
+                ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
+                : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+            }`}
+          >
+            <PresentationIcon className="w-4 h-4" />
+            <span>Presentation (PPT)</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab("quiz");
+              if (quiz.length === 0) handleGenerateQuiz();
+            }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === "quiz"
+                ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-sm"
+                : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
+            }`}
+          >
+            <HelpCircle className="w-4 h-4" />
+            <span>Quiz</span>
+          </button>
+        </div>
+
+        {/* Tab 1: AI Summary Content Pane */}
+        {activeTab === "summary" && (
+          <div
+            className="markdown-content text-sm sm:text-base leading-relaxed text-[var(--text-main)]"
+            dangerouslySetInnerHTML={{ __html: renderedSummaryHtml }}
+          />
+        )}
+
+        {/* Tab 2: Full Transcript Content Pane */}
+        {activeTab === "transcript" && (
+          <div>
+            {/* Transcript Search Toolbar */}
+            <div className="flex flex-wrap items-center gap-2 mb-4 no-print">
+              <div className="relative flex-1 min-w-[200px]">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                <input
+                  type="text"
+                  value={transcriptSearch}
+                  onChange={(e) => setTranscriptSearch(e.target.value)}
+                  placeholder="Search words in transcript..."
+                  className="w-full pl-9 pr-4 py-2 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-xs text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-lime)]"
+                />
+              </div>
+              <button
+                onClick={handleCopyTranscript}
+                className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+              >
+                {copiedTranscript ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>Copy</span>
+              </button>
+              <button
+                onClick={() => {
+                  const transcriptHtml = result.transcript
+                    .split("\n")
+                    .filter((l) => l.trim().length > 0)
+                    .map((l) => `<p class="transcript-line">${l.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`)
+                    .join("");
+                  printCleanPdf(`${result.title || "Video"} — Full Transcript`, transcriptHtml);
+                }}
+                className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>PDF</span>
+              </button>
+              <button
+                onClick={() => handleDownloadFile(result.transcript, `${safeFilename}_transcript.txt`, "text/plain")}
+                className="px-3.5 py-2 rounded-xl bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold cursor-pointer"
+              >
+                .TXT
+              </button>
+            </div>
+
+            <div className="max-h-[480px] overflow-y-auto space-y-2.5 pr-2">
+              {filteredTranscriptLines.length > 0 ? (
+                filteredTranscriptLines.map((line, idx) => (
+                  <p key={idx} className="text-sm leading-relaxed text-[var(--text-main)]">
+                    {line}
+                  </p>
+                ))
+              ) : (
+                <p className="text-xs text-[var(--text-muted)] py-4">
+                  No matching lines found for &quot;{transcriptSearch}&quot;.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: Flashcards Pane */}
+        {activeTab === "flashcards" && (
+          <FlashcardsView
+            cards={flashcards}
+            provider={flashcardsProvider}
+            isLoading={isLoadingFlashcards}
+            onGenerate={handleGenerateFlashcards}
+          />
+        )}
+
+        {/* Tab 4: Presentation (PPT) Pane */}
+        {activeTab === "presentation" && (
+          <PresentationView
+            data={presentation}
+            isLoading={isLoadingPresentation}
+            onGenerate={handleGeneratePresentation}
+            onToast={onToast}
+          />
+        )}
+
+        {/* Tab 5: Quiz Pane */}
+        {activeTab === "quiz" && (
+          <QuizView
+            quiz={quiz}
+            provider={quizProvider}
+            isLoading={isLoadingQuiz}
+            onGenerate={handleGenerateQuiz}
+          />
+        )}
+      </div>
+
+      {/* API Keys Configuration Modal */}
+      <ApiSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onSave={() => {}}
+        onToast={onToast}
+      />
+    </>
   );
 }
