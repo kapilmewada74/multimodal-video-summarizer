@@ -98,9 +98,15 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e);
+                  }
+                }}
                 placeholder="https://www.youtube.com/watch?v=..."
                 disabled={isProcessing}
-                className="flex-1 px-4 py-3 text-sm rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-lime)] transition-all"
+                className="flex-1 px-4 py-3 text-sm rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--text-main)] focus:ring-2 focus:ring-black/5 dark:focus:ring-[var(--brand-lime)]/20 dark:focus:border-[var(--card-border)] transition-all shadow-sm"
               />
               <button
                 type="button"

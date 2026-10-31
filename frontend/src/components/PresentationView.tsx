@@ -27,6 +27,25 @@ export function PresentationView({ data, isLoading, onGenerate, onToast }: Prese
   const [showNotes, setShowNotes] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
+  // Keyboard navigation for slides
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!data?.slides || data.slides.length === 0) return;
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setCurrentSlideIndex((prev) => Math.max(0, prev - 1));
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setCurrentSlideIndex((prev) => Math.min(data.slides.length - 1, prev + 1));
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [data?.slides]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">

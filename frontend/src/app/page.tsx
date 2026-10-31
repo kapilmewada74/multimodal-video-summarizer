@@ -19,26 +19,18 @@ export default function Home() {
   useEffect(() => {
     const saved = (localStorage.getItem("theme") as "dark" | "light") || "dark";
     setTheme(saved);
-    if (saved === "light") {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-    } else {
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-    }
+    document.documentElement.classList.remove("dark", "light");
+    document.documentElement.classList.add(saved);
   }, []);
 
   const toggleTheme = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    localStorage.setItem("theme", next);
-    if (next === "light") {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-    } else {
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-    }
+    setTheme((prev) => {
+      const next = prev === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", next);
+      document.documentElement.classList.remove("dark", "light");
+      document.documentElement.classList.add(next);
+      return next;
+    });
   };
 
   const showToast = (message: string, type: "success" | "info" | "error" = "info") => {
