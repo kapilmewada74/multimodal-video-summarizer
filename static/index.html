@@ -260,126 +260,96 @@
     </div>
 
     <!-- ============================================================
-         LANDING PAGE: WORK YOUR WAY (Exact 3 Cards from Reference Image)
+         LANDING PAGE: WORK YOUR WAY (Interactive 3-Card Scroll Stack)
          ============================================================ -->
     <section id="features" style="margin-top: 80px;">
       <div class="section-header">
+        <div class="pill-eyebrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-lime);"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          <span>Interactive Card Stack</span>
+        </div>
         <h2 style="font-size: clamp(28px, 4.5vw, 42px); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 12px;">
           Work your way
         </h2>
         <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6;">
-          Batch process, review active-recall notes, and export presentation decks locally with zero limits.
+          Scroll or use controls to stack our 3 core study superpowers into an active deck.
         </p>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 60px;">
-        <!-- Card 1: Desktop Offline -->
-        <div style="border-radius: 26px; background-color: var(--card-bg); border: 1px solid var(--card-border); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-          <div style="height: 220px; background-color: #FCEEE8; padding: 24px 20px 0 20px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;">
-            <div style="width: 100%; max-width: 260px; background: #FFFFFF; border-top-left-radius: 12px; border-top-right-radius: 12px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 12px rgba(0,0,0,0.06); padding: 12px 14px 24px 14px;">
-              <div style="display: flex; gap: 5px; margin-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 8px;">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: #FF5F56;"></span>
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: #FFBD2E;"></span>
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: #27C93F;"></span>
-              </div>
-              <div style="display: flex; gap: 10px;">
-                <div style="font-size: 9px; line-height: 1.8; color: rgba(0,0,0,0.4); width: 50px;">
-                  <div>Recent</div>
-                  <div style="background: #FFEAE4; color: #DE5442; font-weight: 800; border-radius: 4px; padding: 0 4px;">Tools</div>
-                  <div>History</div>
-                </div>
-                <div style="flex: 1;">
-                  <div style="font-size: 10px; font-weight: 900; color: #1F1E1B; margin-bottom: 4px;">
-                    Exclusivity <span style="background: #FFE885; padding: 0 3px; border-radius: 3px;">agreement</span>
-                  </div>
-                  <div style="height: 4px; width: 100%; background: rgba(0,0,0,0.08); border-radius: 2px; margin-bottom: 4px;"></div>
-                  <div style="height: 4px; width: 80%; background: rgba(0,0,0,0.08); border-radius: 2px;"></div>
-                </div>
-              </div>
-            </div>
+      <!-- Framing Stage -->
+      <div style="border-radius: 32px; background-color: var(--card-bg); border: 1px solid var(--card-border); padding: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); margin-bottom: 60px;">
+        <!-- Top Control Strip -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; border-radius: 16px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--brand-lime);"></span>
+            <span id="static-stack-label" style="font-weight: 900; color: var(--text-main);">Card 1 of 3</span>
+            <span style="opacity: 0.6;">• Scroll inside or use arrows to stack</span>
           </div>
-          <div style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
-            <div>
-              <h3 style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; color: var(--text-main);">Work offline with Desktop</h3>
-              <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.6;">Batch edit and manage documents locally, with no internet and no limits.</p>
-            </div>
-            <div style="display: flex; justify-content: flex-end; padding-top: 20px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--text-muted);"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-            </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button id="static-stack-prev" style="width: 28px; height: 28px; border-radius: 8px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+            <button id="static-stack-next" style="width: 28px; height: 28px; border-radius: 8px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
           </div>
         </div>
 
-        <!-- Card 2: Mobile on the Go -->
-        <div style="border-radius: 26px; background-color: var(--card-bg); border: 1px solid var(--card-border); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-          <div style="height: 220px; background-color: #FCEEE8; padding: 24px 20px 0 20px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;">
-            <div style="width: 170px; background: #FFFFFF; border-top-left-radius: 18px; border-top-right-radius: 18px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 12px rgba(0,0,0,0.06); padding: 10px 12px 24px 12px;">
-              <div style="display: flex; justify-content: space-between; font-size: 8px; font-weight: 800; color: rgba(0,0,0,0.6); margin-bottom: 8px;">
-                <span>9:41</span>
-                <span>LTE</span>
-              </div>
-              <div style="display: flex; gap: 6px;">
-                <div style="flex: 1;">
-                  <div style="border: 1px dashed #0284C7; background: rgba(2,132,199,0.08); padding: 3px; border-radius: 4px; font-size: 9px; font-weight: 900; color: #0284C7; margin-bottom: 6px;">
-                    Modern architecture
-                  </div>
-                  <div style="height: 38px; background: #EFECE6; border-radius: 6px; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; font-size: 7px; color: rgba(0,0,0,0.4);">
-                    [Image.jpg]
-                  </div>
-                  <div style="height: 5px; width: 75%; background: #FFE885; border-radius: 2px;"></div>
-                </div>
-                <div style="width: 20px; background: #F4F4F1; border-radius: 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; font-size: 8px; font-weight: 800;">
-                  <span style="color: #DE5442;">A</span>
-                  <span>Tt</span>
-                  <span style="width: 5px; height: 5px; border-radius: 50%; background: #DE5442;"></span>
-                  <span>✎</span>
+        <!-- 600px Height ScrollStack Track -->
+        <div id="static-stack-track" style="height: 560px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; position: relative; padding: 0 10px;">
+          <div style="display: flex; flex-direction: column; gap: 24px; padding-bottom: 80px;">
+            <!-- Card 1: Local Multimodal AI (Dark) -->
+            <div class="static-stack-card" style="position: sticky; top: 30px; height: 360px; background-color: #0C0D0A; color: #FFFFFF; border: 1px solid rgba(255,255,255,0.12); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; z-index: 1;">
+              <div>
+                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: var(--brand-lime);">LOCAL MULTIMODAL AI</span>
+                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em;">2.0 Multimodal AI: Structured Summaries & Transcripts</h3>
+                <p style="font-size: 14px; color: rgba(255,255,255,0.7); max-width: 680px; line-height: 1.6;">Condense hours of lectures and recordings into crisp, executive-level summaries with timestamps and key takeaways — completely local and private.</p>
+                <div style="display: flex; gap: 10px; margin-top: 18px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); flex-wrap: wrap;">
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Fast Inference</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">100% Private</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Whisper AI</span>
                 </div>
               </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+                <div><span style="font-size: 11px; opacity: 0.6; display: block;">Pricing</span><span style="font-size: 14px; font-weight: 900;">Free & Unlimited</span></div>
+                <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 8px 20px; border-radius: 9999px; background: #FFFFFF; color: #000000; font-weight: 900; font-size: 12px; border: none; cursor: pointer;">Summarize Video →</button>
+              </div>
             </div>
-          </div>
-          <div style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
-            <div>
-              <h3 style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; color: var(--text-main);">On-the-go with Mobile</h3>
-              <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.6;">Your favorite tools, right in your pocket. Keep working on your projects anytime, anywhere.</p>
-            </div>
-            <div style="display: flex; justify-content: flex-end; padding-top: 20px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DE5442" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-            </div>
-          </div>
-        </div>
 
-        <!-- Card 3: Built for Business -->
-        <div style="border-radius: 26px; background-color: var(--card-bg); border: 1px solid var(--card-border); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-          <div style="height: 220px; background-color: #FCEEE8; padding: 24px 20px 0 20px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;">
-            <div style="width: 100%; max-width: 260px;">
-              <div style="display: flex; gap: 4px; margin-bottom: 8px;">
-                <span style="width: 18px; height: 18px; border-radius: 50%; background: #38BDF8; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; font-weight: 900;">JS</span>
-                <span style="width: 18px; height: 18px; border-radius: 50%; background: #FB923C; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; font-weight: 900;">AK</span>
-                <span style="width: 18px; height: 18px; border-radius: 50%; background: #DE5442; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; font-weight: 900;">+</span>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <div style="width: 100px; background: #FFFFFF; border-top-left-radius: 10px; border-top-right-radius: 10px; border: 1px solid rgba(0,0,0,0.08); padding: 8px 10px 18px 10px;">
-                  <div style="font-size: 8px; font-weight: 900; color: #38BDF8; margin-bottom: 4px;">INVOICE</div>
-                  <div style="height: 3px; width: 100%; background: rgba(0,0,0,0.08); margin-bottom: 3px;"></div>
-                  <div style="height: 3px; width: 60%; background: rgba(0,0,0,0.08); margin-bottom: 8px;"></div>
-                  <div style="font-family: serif; font-style: italic; font-size: 14px; color: #1F1E1B; opacity: 0.7;">Qu...</div>
-                </div>
-                <div style="flex: 1; background: #1F2428; border-top-left-radius: 10px; border-top-right-radius: 10px; padding: 8px 10px 18px 10px; font-family: monospace; font-size: 7.5px; color: #E1E4E8;">
-                  <div style="color: rgba(255,255,255,0.4);">/* API */</div>
-                  <div style="color: #79B8FF;">&#123;</div>
-                  <div style="padding-left: 6px;"><span style="color: #B392F0;">&quot;id&quot;</span>: <span style="color: #9ECBFF;">&quot;db601c95&quot;</span></div>
-                  <div style="padding-left: 6px;"><span style="color: #B392F0;">&quot;name&quot;</span>: <span style="color: #9ECBFF;">&quot;export&quot;</span></div>
-                  <div style="color: #79B8FF;">&#125;</div>
+            <!-- Card 2: Active-Recall Desk Notes (Terracotta) -->
+            <div class="static-stack-card" style="position: sticky; top: 52px; height: 360px; background-color: #DE5428; color: #FFFFFF; border: 1px solid rgba(0,0,0,0.12); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; z-index: 2;">
+              <div>
+                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: #FFF8B8;">ACTIVE RECALL</span>
+                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em;">Active-Recall Study Suite: 3D Desk Notes & Quizzes</h3>
+                <p style="font-size: 14px; color: rgba(255,255,255,0.9); max-width: 680px; line-height: 1.6;">Turn lecture concepts into tactile 3D sticky notes with paper-flip physics and adaptive practice quizzes scaled from Easy to Hard.</p>
+                <div style="display: flex; gap: 10px; margin-top: 18px; font-size: 12px; font-weight: 600; color: #FFFFFF; flex-wrap: wrap;">
+                  <span style="background: rgba(0,0,0,0.18); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.2);">3D Desk Notes</span>
+                  <span style="background: rgba(0,0,0,0.18); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.2);">Adaptive Quizzes</span>
+                  <span style="background: rgba(0,0,0,0.18); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.2);">Instant Explanations</span>
                 </div>
               </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 14px;">
+                <div><span style="font-size: 11px; opacity: 0.8; display: block;">Retention</span><span style="font-size: 14px; font-weight: 900;">Active Recall</span></div>
+                <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 8px 20px; border-radius: 9999px; background: #FFFFFF; color: #DE5428; font-weight: 900; font-size: 12px; border: none; cursor: pointer;">Practice Flashcards →</button>
+              </div>
             </div>
-          </div>
-          <div style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
-            <div>
-              <h3 style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; color: var(--text-main);">Built for business</h3>
-              <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.6;">Automate document management, onboard teams easily, and scale with flexible plans.</p>
-            </div>
-            <div style="display: flex; justify-content: flex-end; padding-top: 20px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--text-muted);"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+
+            <!-- Card 3: Keynote Slide Presentations (Graphite/Lime) -->
+            <div class="static-stack-card" style="position: sticky; top: 74px; height: 360px; background-color: #161814; color: #FFFFFF; border: 1px solid rgba(217,236,149,0.3); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; z-index: 3;">
+              <div>
+                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(217,236,149,0.15); border: 1px solid rgba(217,236,149,0.3); color: var(--brand-lime);">KEYNOTE SLIDE DECKS</span>
+                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em;">Keynote Slide Decks & Native PowerPoint Exports</h3>
+                <p style="font-size: 14px; color: rgba(255,255,255,0.7); max-width: 680px; line-height: 1.6;">Generate presentation-ready 16:9 widescreen slides with presenter speaker notes and direct .pptx, printable PDF, and raw text downloads.</p>
+                <div style="display: flex; gap: 10px; margin-top: 18px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); flex-wrap: wrap;">
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">16:9 Widescreen</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Native .PPTX</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Speaker Notes</span>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+                <div><span style="font-size: 11px; opacity: 0.6; display: block;">Formats</span><span style="font-size: 14px; font-weight: 900;">.pptx • .pdf • .txt</span></div>
+                <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 8px 20px; border-radius: 9999px; background: var(--brand-lime); color: #0E0F0C; font-weight: 900; font-size: 12px; border: none; cursor: pointer;">Create Slide Deck →</button>
+              </div>
             </div>
           </div>
         </div>
