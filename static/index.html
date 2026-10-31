@@ -25,13 +25,18 @@
        ============================================================ -->
   <nav style="height: 56px; position: sticky; top: 0; z-index: 50; background-color: var(--card-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px;">
     <div style="display: flex; align-items: center; gap: 10px;">
-      <div style="width: 32px; height: 32px; border-radius: 8px; background-color: var(--brand-lime); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(217, 236, 149, 0.4);">
+      <div style="width: 32px; height: 32px; border-radius: 8px; background-color: var(--brand-lime); display: flex; align-items: center; justify-content: center;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E0F0C" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </div>
       <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase;">SUMMARIZE<span style="color: var(--brand-lime);">.AI</span></span>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <div class="desktop-nav-links" style="display: flex; align-items: center; gap: 20px; font-size: 13px; font-weight: 600; color: var(--text-muted);">
+        <a href="#features" style="color: inherit; text-decoration: none;">Features</a>
+        <a href="#how-it-works" style="color: inherit; text-decoration: none;">How It Works</a>
+        <a href="#faq" style="color: inherit; text-decoration: none;">FAQ</a>
+      </div>
       <button id="theme-toggle-btn" class="btn-icon" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
@@ -44,13 +49,39 @@
   <main style="max-width: 1140px; margin: 0 auto; padding: 36px 16px 80px 16px;">
 
     <!-- Hero Header -->
-    <header style="text-align: center; margin-bottom: 40px;">
-      <h1 style="font-size: clamp(32px, 5vw, 46px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 14px;">
+    <header style="text-align: center; margin-bottom: 44px;">
+      <!-- Eyebrow Pill -->
+      <div class="pill-eyebrow">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-lime);"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
+        <span>Next-Generation Multimodal Learning Suite</span>
+      </div>
+
+      <h1 style="font-size: clamp(32px, 5vw, 52px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 14px;">
         Summarize Any Video in Seconds
       </h1>
-      <p style="font-size: 16px; color: var(--text-muted); max-width: 620px; margin: 0 auto; line-height: 1.6;">
-        Generate structured study notes, complete transcripts, flashcards, slide presentations, and interactive quizzes from any video.
+      <p style="font-size: 16px; color: var(--text-muted); max-width: 620px; margin: 0 auto 24px auto; line-height: 1.6;">
+        Generate structured study notes, complete transcripts, active-recall flashcards, slide presentations, and interactive quizzes from any video.
       </p>
+
+      <!-- Value Badges Strip -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-size: 12px; font-weight: 600; color: var(--text-muted);">
+        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-lime);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>Instant Processing</span>
+        </div>
+        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--color-success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>100% Private & Local</span>
+        </div>
+        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>PPTX & PDF Exports</span>
+        </div>
+        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+          <span>Active-Recall Suite</span>
+        </div>
+      </div>
     </header>
 
     <!-- Core Utility Card (iLovePDF Tool Pattern) -->
@@ -224,7 +255,312 @@
 
     </div>
 
+    <!-- ============================================================
+         LANDING PAGE: CORE CAPABILITIES & HOW IT WORKS
+         ============================================================ -->
+    <section id="features" style="margin-top: 80px;">
+      <div class="section-header">
+        <div class="pill-eyebrow">Core Capabilities</div>
+        <h2 style="font-size: clamp(24px, 4vw, 36px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px;">
+          Everything You Need to Master Video Content
+        </h2>
+        <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+          A comprehensive study workspace designed to turn passive watching into active, long-term mastery.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <!-- Card 1 -->
+        <div class="feature-card">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <div class="feature-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              </div>
+              <span style="font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); color: var(--text-muted);">
+                EXECUTIVE NOTES
+              </span>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Structured Summaries</h3>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px;">
+              Condense hours of lectures, meetings, and podcasts into crisp, hierarchically formatted notes with key takeaways and timestamps.
+            </p>
+          </div>
+          <div style="padding-top: 14px; border-top: 1px solid var(--card-border); display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; font-weight: 600; color: var(--text-muted);">
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><polyline points="20 6 9 17 4 12"/></svg> Hierarchical markdown</span>
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><polyline points="20 6 9 17 4 12"/></svg> 1-click copy & exports</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="feature-card">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <div class="feature-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              </div>
+              <span style="font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); color: var(--text-muted);">
+                ACTIVE RECALL
+              </span>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">3D Study Flashcards</h3>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px;">
+              Retain key terms, formulas, and concepts with responsive paper-flip flashcards equipped with keyboard navigation and progress trackers.
+            </p>
+          </div>
+          <div style="padding-top: 14px; border-top: 1px solid var(--card-border); display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; font-weight: 600; color: var(--text-muted);">
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><polyline points="20 6 9 17 4 12"/></svg> 3D flip physics</span>
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><polyline points="20 6 9 17 4 12"/></svg> Arrow key shortcuts</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="feature-card">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <div class="feature-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </div>
+              <span style="font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); color: var(--text-muted);">
+                16:9 KEYNOTE
+              </span>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Keynote Slide Decks</h3>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px;">
+              Transform video content into polished 16:9 presentation slides with integrated presenter notes and native PPTX downloads.
+            </p>
+          </div>
+          <div style="padding-top: 14px; border-top: 1px solid var(--card-border); display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; font-weight: 600; color: var(--text-muted);">
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><polyline points="20 6 9 17 4 12"/></svg> 16:9 widescreen view</span>
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><polyline points="20 6 9 17 4 12"/></svg> Native PPTX export</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="feature-card">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <div class="feature-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <span style="font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); color: var(--text-muted);">
+                KNOWLEDGE CHECK
+              </span>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Adaptive Practice Quizzes</h3>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px;">
+              Generate custom multiple-choice quizzes with selectable difficulty (Easy, Medium, Hard) and question counts (3, 5, 10).
+            </p>
+          </div>
+          <div style="padding-top: 14px; border-top: 1px solid var(--card-border); display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; font-weight: 600; color: var(--text-muted);">
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><polyline points="20 6 9 17 4 12"/></svg> Difficulty scaling</span>
+            <span style="display: flex; align-items: center; gap: 4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><polyline points="20 6 9 17 4 12"/></svg> Score breakdown & retake</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div id="how-it-works" style="margin-top: 60px;">
+        <div class="section-header">
+          <div class="pill-eyebrow">Simple Workflow</div>
+          <h2 style="font-size: clamp(22px, 3.5vw, 30px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px;">
+            From Raw Video to Study Deck in 3 Steps
+          </h2>
+          <p style="font-size: 13.5px; color: var(--text-muted);">
+            No friction, no complex setup. Paste or upload, and let the local pipeline handle the heavy lifting.
+          </p>
+        </div>
+
+        <div class="step-grid">
+          <div class="step-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </div>
+              <span style="font-size: 12px; font-weight: 900; color: var(--brand-lime);">01</span>
+            </div>
+            <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Paste URL or Upload</h4>
+            <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Provide any YouTube link or upload audio/video files directly from your machine.</p>
+          </div>
+
+          <div class="step-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+              </div>
+              <span style="font-size: 12px; font-weight: 900; color: var(--brand-lime);">02</span>
+            </div>
+            <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Multimodal Analysis</h4>
+            <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Whisper extracts clean audio while advanced LLMs synthesize notes, slides, and quizzes.</p>
+          </div>
+
+          <div class="step-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+              <span style="font-size: 12px; font-weight: 900; color: var(--brand-lime);">03</span>
+            </div>
+            <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Study & Export</h4>
+            <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Practice with flashcards, test your memory with quizzes, and download PPTX or PDF files.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ SECTION
+         ============================================================ -->
+    <section id="faq" style="margin-top: 80px;">
+      <div class="section-header">
+        <div class="pill-eyebrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-lime);"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Frequently Asked Questions</span>
+        </div>
+        <h2 style="font-size: clamp(22px, 3.5vw, 32px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px;">
+          Got Questions? We Have Answers.
+        </h2>
+        <p style="font-size: 13.5px; color: var(--text-muted);">
+          Everything you need to know about video processing, supported formats, privacy, and exports.
+        </p>
+      </div>
+
+      <div class="faq-container">
+        <div class="faq-item open">
+          <button class="faq-btn" type="button">
+            <span>What video formats and platforms are supported?</span>
+            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-content">
+            <p style="padding-top: 12px;">You can summarize YouTube links (including youtube.com, youtu.be, and Shorts) or upload local video and audio recordings in MP4, MKV, WebM, MOV, MP3, WAV, and M4A formats up to 500MB.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn" type="button">
+            <span>How does data privacy and processing work?</span>
+            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-content">
+            <p style="padding-top: 12px;">All media extraction and transcription occurs within your local environment. Your content remains completely private and is never stored on third-party public databases or used for public model training.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn" type="button">
+            <span>Can I export presentations and study notes offline?</span>
+            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-content">
+            <p style="padding-top: 12px;">Yes. You can export complete 16:9 presentation slide decks directly as native PowerPoint (.pptx) files, download notes as formatted PDFs or plain text (.txt), and copy the full timestamped transcript at any time.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn" type="button">
+            <span>How are the flashcards and practice quizzes generated?</span>
+            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-content">
+            <p style="padding-top: 12px;">Our pipeline analyzes the transcript for core terms, definitions, formulas, and conceptual relationships. It synthesizes 3D flip flashcards for active recall and constructs multi-tier quizzes with instant explanations.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn" type="button">
+            <span>How do the quiz difficulty levels work?</span>
+            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-content">
+            <p style="padding-top: 12px;">You can choose Easy (definition and fact recall), Medium (conceptual understanding and practical deduction), or Hard (synthesis and scenario analysis). You can also configure 3, 5, or 10 questions per quiz session.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn" type="button">
+            <span>How long does it take to summarize a video?</span>
+            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-content">
+            <p style="padding-top: 12px;">Typical 10-to-30-minute videos are processed in under 20 seconds. The pipeline utilizes lightweight audio streaming and fast inference engines to deliver immediate results without long queue times.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- ============================================================
+       SITE FOOTER
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <!-- Brand Info -->
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <div style="width: 26px; height: 26px; border-radius: 8px; background-color: var(--brand-lime); display: flex; align-items: center; justify-content: center;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#0E0F0C" stroke="#0E0F0C" stroke-width="1"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            </div>
+            <span style="font-size: 14px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-main);">SUMMARIZE<span style="color: var(--brand-lime);">.AI</span></span>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px;">
+            Local-first multimodal study workspace. Transform hours of video lectures into structured knowledge, flashcards, slides, and quizzes.
+          </p>
+          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); font-size: 10px; font-weight: 700; color: var(--text-muted);">
+            <span style="width: 6px; height: 6px; border-radius: 9999px; background-color: var(--color-success);"></span>
+            <span>Local Inference Ready</span>
+          </div>
+        </div>
+
+        <!-- Study Tools -->
+        <div>
+          <h4 style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-main); margin-bottom: 12px;">Study Tools</h4>
+          <ul style="list-style: none; font-size: 12.5px; line-height: 2; color: var(--text-muted);">
+            <li>Structured Summary Notes</li>
+            <li>Timestamped Transcript</li>
+            <li>Active-Recall Flashcards</li>
+            <li>16:9 Presentation Decks</li>
+            <li>Adaptive Practice Quizzes</li>
+          </ul>
+        </div>
+
+        <!-- Export Capabilities -->
+        <div>
+          <h4 style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-main); margin-bottom: 12px;">Export Formats</h4>
+          <ul style="list-style: none; font-size: 12.5px; line-height: 2; color: var(--text-muted);">
+            <li>PowerPoint (.pptx)</li>
+            <li>Printable PDF</li>
+            <li>Plain Text (.txt)</li>
+            <li>Markdown Clipboard</li>
+            <li>Auto-clean PPT Cache</li>
+          </ul>
+        </div>
+
+        <!-- Navigation -->
+        <div>
+          <h4 style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-main); margin-bottom: 12px;">Navigation</h4>
+          <ul style="list-style: none; font-size: 12.5px; line-height: 2; color: var(--text-muted);">
+            <li><a href="#features" style="color: inherit; text-decoration: none;">Features</a></li>
+            <li><a href="#how-it-works" style="color: inherit; text-decoration: none;">How It Works</a></li>
+            <li><a href="#faq" style="color: inherit; text-decoration: none;">FAQ</a></li>
+            <li style="padding-top: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--color-success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>100% Private Processing</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="padding-top: 24px; border-top: 1px solid var(--card-border); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted);">
+        <p>&copy; 2026 SUMMARIZE.AI. Built for high-efficiency learning.</p>
+        <div style="display: flex; gap: 20px; font-family: monospace; font-size: 11px;">
+          <span>v2.4.0 (Local)</span>
+          <span>Private & Unlimited</span>
+        </div>
+      </div>
+    </div>
+  </footer>
 
 
 

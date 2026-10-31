@@ -1212,4 +1212,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+
+  // --- FAQ Accordion Interactive Toggle ---
+  document.querySelectorAll(".faq-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = btn.closest(".faq-item");
+      if (!item) return;
+      const isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item").forEach(other => other.classList.remove("open"));
+      if (!isOpen) {
+        item.classList.add("open");
+      }
+    });
+  });
 });

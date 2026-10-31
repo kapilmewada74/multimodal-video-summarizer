@@ -2,8 +2,12 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Navbar } from "../components/Navbar";
+import { HeroSection } from "../components/HeroSection";
 import { ToolCard } from "../components/ToolCard";
 import { OutputWorkspace } from "../components/OutputWorkspace";
+import { FeaturesSection } from "../components/FeaturesSection";
+import { FaqSection } from "../components/FaqSection";
+import { Footer } from "../components/Footer";
 import { JobState, JobResult } from "../lib/types";
 import { CheckCircle2, AlertCircle, Info, Loader2 } from "lucide-react";
 
@@ -151,16 +155,8 @@ export default function Home() {
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
       <main className="flex-1 max-w-[1140px] w-full mx-auto px-3 sm:px-6 py-8 sm:py-12">
-        {/* Clean Hero Section */}
-        <div className="text-center mb-10 no-print">
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.15] mb-3.5 text-[var(--text-main)]">
-            Summarize Any Video in Seconds
-          </h1>
-
-          <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto leading-relaxed font-normal">
-            Generate structured study notes, complete transcripts, flashcards, slide presentations, and interactive quizzes from any video.
-          </p>
-        </div>
+        {/* Hero Section */}
+        <HeroSection />
 
         {/* Central Tool Card */}
         <div className="no-print">
@@ -194,7 +190,16 @@ export default function Home() {
         {result && (
           <OutputWorkspace result={result} onToast={showToast} />
         )}
+
+        {/* Core Capabilities & Workflow */}
+        <FeaturesSection />
+
+        {/* Frequently Asked Questions */}
+        <FaqSection />
       </main>
+
+      {/* Modern Footer */}
+      <Footer />
 
       {/* Floating Toast System */}
       {toast && (

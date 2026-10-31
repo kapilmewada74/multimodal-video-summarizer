@@ -36,7 +36,7 @@ export function ProgressStepper({ job }: ProgressStepperProps) {
       {/* Shimmer Progress Track */}
       <div className="w-full h-2.5 bg-[var(--input-border)] rounded-full overflow-hidden mb-3">
         <div
-          className="h-full bg-[var(--brand-lime)] rounded-full transition-all duration-300 animate-shimmer shadow-[0_0_12px_rgba(217,236,149,0.5)]"
+          className="h-full bg-[var(--brand-lime)] rounded-full transition-all duration-300 animate-shimmer"
           style={{ width: `${Math.max(5, job.progress)}%` }}
         />
       </div>
