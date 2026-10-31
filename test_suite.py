@@ -98,19 +98,19 @@ def run_tests():
     }
 
     # 6a. Flashcards
-    res_fc = requests.post(f"{BASE_URL}/api/generate/flashcards", json=sample_payload, timeout=15)
+    res_fc = requests.post(f"{BASE_URL}/api/generate/flashcards", json=sample_payload, timeout=30)
     assert res_fc.status_code == 200
     assert "flashcards" in res_fc.json()
     print("✓ Flashcards generation endpoint operational!")
 
     # 6b. Presentation Outline
-    res_ppt = requests.post(f"{BASE_URL}/api/generate/presentation", json=sample_payload, timeout=15)
+    res_ppt = requests.post(f"{BASE_URL}/api/generate/presentation", json=sample_payload, timeout=30)
     assert res_ppt.status_code == 200
     assert "slides" in res_ppt.json()
     print("✓ Presentation generation endpoint operational!")
 
     # 6c. Quiz
-    res_quiz = requests.post(f"{BASE_URL}/api/generate/quiz", json=sample_payload, timeout=15)
+    res_quiz = requests.post(f"{BASE_URL}/api/generate/quiz", json=sample_payload, timeout=30)
     assert res_quiz.status_code == 200
     assert "quiz" in res_quiz.json()
     print("✓ Quiz generation endpoint operational!")

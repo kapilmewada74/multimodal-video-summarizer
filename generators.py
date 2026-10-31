@@ -4,10 +4,44 @@ import re
 import logging
 from typing import Dict, Any, Optional, List
 import httpx
+from dotenv import load_dotenv
+
+# Ensure environment variables from .env are loaded
+load_dotenv()
 
 logger = logging.getLogger("summarizer_generators")
 
-# Local LLM import from services
+# In-memory generation cache to prevent duplicate external API calls
+_GENERATION_CACHE: Dict[str, Any] = {}
+
+def get_cache_key(prefix: str, title: str, summary: str) -> str:
+    import hashlib
+    raw = f"{prefix}:{title}:{summary[:300]}"
+    return hashlib.md5(raw.encode("utf-8")).hexdigest()
+
+def _clean_xai_key(key: Optional[str] = None) -> Optional[str]:
+    k = key or os.getenv("XAI_API_KEY") or os.getenv("GROK_API_KEY")
+    if not k:
+        return None
+    k = k.strip()
+    if "xai-" in k:
+        return "xai-" + k.split("xai-", 1)[1].strip()
+    return k
+
+def _get_gemini_models():
+    configured = os.getenv("GEMINI_MODEL", "gemini-3.5-flash").strip()
+    # Prefer flash-lite first for sub-2s latency, followed by full flash
+    models = []
+    if "lite" in configured:
+        models.append(configured)
+    else:
+        models.append("gemini-3.5-flash-lite")
+        models.append(configured)
+    for alt in ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest"]:
+        if alt not in models:
+            models.append(alt)
+    return models
+
 def get_local_llm():
     from services import get_llm
     return get_llm()
@@ -20,14 +54,12 @@ def _clean_json_text(text: str) -> str:
         text = match.group(1).strip()
     return text
 
-
 def _parse_json_safely(raw_text: str, fallback_type: str = "flashcards") -> Dict[str, Any]:
     cleaned = _clean_json_text(raw_text)
     try:
         return json.loads(cleaned)
     except Exception as e:
         logger.warning(f"Failed to parse json directly: {e}. Attempting recovery.")
-        # Try to find outermost { ... }
         start = cleaned.find("{")
         end = cleaned.rfind("}")
         if start != -1 and end != -1:
@@ -40,7 +72,7 @@ def _parse_json_safely(raw_text: str, fallback_type: str = "flashcards") -> Dict
         if fallback_type == "flashcards":
             return {
                 "flashcards": [
-                    {"front": "Key Concept", "back": cleaned[:300], "tag": "Overview"}
+                    {"front": "Key Takeaway", "back": cleaned[:300], "tag": "Overview"}
                 ]
             }
         elif fallback_type == "ppt":
@@ -55,16 +87,49 @@ def _parse_json_safely(raw_text: str, fallback_type: str = "flashcards") -> Dict
                 "quiz": [
                     {
                         "question": "What is the primary topic discussed in the video?",
-                        "options": ["Key Subject", "Irrelevant Topic A", "Irrelevant Topic B", "Irrelevant Topic C"],
+                        "options": ["Key Subject", "Alternative Topic A", "Alternative Topic B", "Alternative Topic C"],
                         "answerIndex": 0,
-                        "explanation": "Based on the transcript and summary."
+                        "explanation": "Derived from the summary and transcript."
                     }
                 ]
             }
 
+def _call_gemini_rest(prompt: str, system_instruction: Optional[str] = None) -> Optional[tuple[str, str]]:
+    """Execute high-speed REST call to Google Gemini API with model cascade."""
+    key = os.getenv("GEMINI_API_KEY")
+    if not key:
+        return None
+    key = key.strip()
+
+    full_prompt = f"{system_instruction}\n\n{prompt}" if system_instruction else prompt
+    payload = {
+        "contents": [{"parts": [{"text": full_prompt}]}],
+        "generationConfig": {
+            "temperature": 0.2,
+            "responseMimeType": "application/json"
+        }
+    }
+
+    models_to_try = _get_gemini_models()
+    for model in models_to_try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+        try:
+            with httpx.Client(timeout=16.0) as client:
+                r = client.post(url, json=payload)
+                if r.status_code == 200:
+                    data = r.json()
+                    text = data["candidates"][0]["content"]["parts"][0]["text"]
+                    return text, model
+                else:
+                    logger.warning(f"Gemini {model} returned {r.status_code}. Trying next model...")
+        except Exception as e:
+            logger.warning(f"Gemini {model} call error: {e}. Trying next model...")
+
+    return None
+
 
 # ============================================================
-# 1. FLASHCARDS GENERATION (Gemini API with Local Fallback)
+# 1. FLASHCARDS GENERATION (Gemini 3.5 with Local Fallback)
 # ============================================================
 
 FLASHCARD_SYSTEM_PROMPT = """You are an educational specialist creating revision flashcards.
@@ -84,24 +149,20 @@ Return ONLY a valid JSON object matching this schema:
 """
 
 def generate_flashcards(title: str, summary: str, transcript: str, api_key: Optional[str] = None) -> Dict[str, Any]:
-    gemini_key = api_key or os.getenv("GEMINI_API_KEY")
+    cache_key = get_cache_key("flashcards", title, summary)
+    if cache_key in _GENERATION_CACHE:
+        return _GENERATION_CACHE[cache_key]
+
     prompt = f"TITLE: {title}\n\nSUMMARY:\n{summary}\n\nTRANSCRIPT EXCERPT:\n{transcript[:4000]}"
     
-    # 1. Try Gemini API if key is available
-    if gemini_key:
-        try:
-            logger.info("Generating flashcards using Gemini API...")
-            from google import genai
-            client = genai.Client(api_key=gemini_key)
-            response = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=f"{FLASHCARD_SYSTEM_PROMPT}\n\n{prompt}"
-            )
-            data = _parse_json_safely(response.text, "flashcards")
-            data["provider"] = "Gemini API (gemini-2.0-flash)"
-            return data
-        except Exception as e:
-            logger.warning(f"Gemini API flashcard generation failed: {e}. Falling back to local LLM.")
+    # 1. Try Gemini API
+    res = _call_gemini_rest(prompt, FLASHCARD_SYSTEM_PROMPT)
+    if res:
+        raw_text, used_model = res
+        data = _parse_json_safely(raw_text, "flashcards")
+        data["provider"] = f"Gemini API ({used_model})"
+        _GENERATION_CACHE[cache_key] = data
+        return data
     
     # 2. Local Fallback with Qwen2.5
     logger.info("Generating flashcards using Local Qwen LLM...")
@@ -111,13 +172,14 @@ def generate_flashcards(title: str, summary: str, transcript: str, api_key: Opti
 
         llm = get_local_llm()
         chat_prompt = ChatPromptTemplate.from_messages([
-            ("system", FLASHCARD_SYSTEM_PROMPT),
-            ("human", prompt)
+            ("system", "{sys}"),
+            ("human", "{human_input}")
         ])
         chain = chat_prompt | llm | StrOutputParser()
-        raw = chain.invoke({})
+        raw = chain.invoke({"sys": FLASHCARD_SYSTEM_PROMPT, "human_input": prompt})
         data = _parse_json_safely(raw, "flashcards")
         data["provider"] = "Local Engine (Qwen2.5)"
+        _GENERATION_CACHE[cache_key] = data
         return data
     except Exception as e:
         logger.error(f"Local flashcard generation failed: {e}")
@@ -133,11 +195,13 @@ def generate_flashcards(title: str, summary: str, transcript: str, api_key: Opti
                 cards.append({"front": "Concept", "back": clean, "tag": "Note"})
         if not cards:
             cards = [{"front": "Main Subject", "back": title, "tag": "Overview"}]
-        return {"flashcards": cards, "provider": "Local Engine (Rule-based Fallback)"}
+        res_data = {"flashcards": cards, "provider": "Local Engine (Rule-based Fallback)"}
+        _GENERATION_CACHE[cache_key] = res_data
+        return res_data
 
 
 # ============================================================
-# 2. PRESENTATION (PPT) GENERATION (Gemini API with Local Fallback)
+# 2. PRESENTATION (PPT) GENERATION (Gemini 3.5 with Local Fallback)
 # ============================================================
 
 PPT_SYSTEM_PROMPT = """You are an expert keynote presentation designer.
@@ -162,24 +226,20 @@ Return ONLY a valid JSON object matching this schema:
 """
 
 def generate_presentation(title: str, summary: str, transcript: str, api_key: Optional[str] = None) -> Dict[str, Any]:
-    gemini_key = api_key or os.getenv("GEMINI_API_KEY")
+    cache_key = get_cache_key("presentation", title, summary)
+    if cache_key in _GENERATION_CACHE:
+        return _GENERATION_CACHE[cache_key]
+
     prompt = f"TITLE: {title}\n\nSUMMARY:\n{summary}\n\nTRANSCRIPT EXCERPT:\n{transcript[:4000]}"
     
     # 1. Try Gemini API
-    if gemini_key:
-        try:
-            logger.info("Generating PPT outline using Gemini API...")
-            from google import genai
-            client = genai.Client(api_key=gemini_key)
-            response = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=f"{PPT_SYSTEM_PROMPT}\n\n{prompt}"
-            )
-            data = _parse_json_safely(response.text, "ppt")
-            data["provider"] = "Gemini API (gemini-2.0-flash)"
-            return data
-        except Exception as e:
-            logger.warning(f"Gemini API PPT generation failed: {e}. Falling back to local LLM.")
+    res = _call_gemini_rest(prompt, PPT_SYSTEM_PROMPT)
+    if res:
+        raw_text, used_model = res
+        data = _parse_json_safely(raw_text, "ppt")
+        data["provider"] = f"Gemini API ({used_model})"
+        _GENERATION_CACHE[cache_key] = data
+        return data
 
     # 2. Local Fallback with Qwen2.5
     logger.info("Generating PPT outline using Local Qwen LLM...")
@@ -189,13 +249,14 @@ def generate_presentation(title: str, summary: str, transcript: str, api_key: Op
 
         llm = get_local_llm()
         chat_prompt = ChatPromptTemplate.from_messages([
-            ("system", PPT_SYSTEM_PROMPT),
-            ("human", prompt)
+            ("system", "{sys}"),
+            ("human", "{human_input}")
         ])
         chain = chat_prompt | llm | StrOutputParser()
-        raw = chain.invoke({})
+        raw = chain.invoke({"sys": PPT_SYSTEM_PROMPT, "human_input": prompt})
         data = _parse_json_safely(raw, "ppt")
         data["provider"] = "Local Engine (Qwen2.5)"
+        _GENERATION_CACHE[cache_key] = data
         return data
     except Exception as e:
         logger.error(f"Local PPT generation failed: {e}")
@@ -213,15 +274,17 @@ def generate_presentation(title: str, summary: str, transcript: str, api_key: Op
                 "bullets": bullets,
                 "notes": f"Explanation of {sec_title}."
             })
-        return {
+        res_data = {
             "title": title or "Video Presentation",
             "slides": slides,
             "provider": "Local Engine (Rule-based Fallback)"
         }
+        _GENERATION_CACHE[cache_key] = res_data
+        return res_data
 
 
 # ============================================================
-# 3. QUIZ GENERATION (Grok API with Local Fallback)
+# 3. QUIZ GENERATION (Grok with Gemini & Local Fallbacks)
 # ============================================================
 
 QUIZ_SYSTEM_PROMPT = """You are an expert exam educator creating interactive test quizzes.
@@ -242,8 +305,12 @@ Return ONLY a valid JSON object matching this schema:
 """
 
 def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[str] = None) -> Dict[str, Any]:
-    grok_key = api_key or os.getenv("GROK_API_KEY") or os.getenv("XAI_API_KEY")
+    cache_key = get_cache_key("quiz", title, summary)
+    if cache_key in _GENERATION_CACHE:
+        return _GENERATION_CACHE[cache_key]
+
     prompt = f"TITLE: {title}\n\nSUMMARY:\n{summary}\n\nTRANSCRIPT EXCERPT:\n{transcript[:4000]}"
+    grok_key = _clean_xai_key(api_key)
     
     # 1. Try Grok (xAI) API
     if grok_key:
@@ -259,21 +326,32 @@ def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[s
                     {"role": "system", "content": QUIZ_SYSTEM_PROMPT},
                     {"role": "user", "content": prompt}
                 ],
-                "temperature": 0.3
+                "temperature": 0.2
             }
-            res = httpx.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload, timeout=40.0)
-            if res.status_code == 200:
-                data = res.json()
-                content = data["choices"][0]["message"]["content"]
-                parsed = _parse_json_safely(content, "quiz")
-                parsed["provider"] = "Grok API (grok-2-mini)"
-                return parsed
-            else:
-                logger.warning(f"Grok API returned status {res.status_code}: {res.text}. Falling back to local LLM.")
+            with httpx.Client(timeout=20.0) as client:
+                r = client.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
+                if r.status_code == 200:
+                    resp_json = r.json()
+                    raw_text = resp_json["choices"][0]["message"]["content"]
+                    data = _parse_json_safely(raw_text, "quiz")
+                    data["provider"] = "Grok API (grok-2-mini)"
+                    _GENERATION_CACHE[cache_key] = data
+                    return data
+                else:
+                    logger.warning(f"Grok API status {r.status_code}: {r.text[:200]}. Engaging Gemini fallback.")
         except Exception as e:
-            logger.warning(f"Grok API call failed: {e}. Falling back to local LLM.")
+            logger.warning(f"Grok API call failed: {e}. Engaging Gemini fallback.")
 
-    # 2. Local Fallback with Qwen2.5
+    # 2. Try Gemini API as Intelligent Quiz Fallback
+    res = _call_gemini_rest(prompt, QUIZ_SYSTEM_PROMPT)
+    if res:
+        raw_text, used_model = res
+        data = _parse_json_safely(raw_text, "quiz")
+        data["provider"] = f"Gemini API ({used_model})"
+        _GENERATION_CACHE[cache_key] = data
+        return data
+
+    # 3. Local Fallback with Qwen2.5
     logger.info("Generating quiz using Local Qwen LLM...")
     try:
         from langchain_core.prompts import ChatPromptTemplate
@@ -281,116 +359,132 @@ def generate_quiz(title: str, summary: str, transcript: str, api_key: Optional[s
 
         llm = get_local_llm()
         chat_prompt = ChatPromptTemplate.from_messages([
-            ("system", QUIZ_SYSTEM_PROMPT),
-            ("human", prompt)
+            ("system", "{sys}"),
+            ("human", "{human_input}")
         ])
         chain = chat_prompt | llm | StrOutputParser()
-        raw = chain.invoke({})
+        raw = chain.invoke({"sys": QUIZ_SYSTEM_PROMPT, "human_input": prompt})
         data = _parse_json_safely(raw, "quiz")
         data["provider"] = "Local Engine (Qwen2.5)"
+        _GENERATION_CACHE[cache_key] = data
         return data
     except Exception as e:
-        logger.error(f"Local quiz generation failed: {e}")
+        logger.error(f"Local Quiz generation failed: {e}")
         # Rule-based fallback
-        return {
+        res_data = {
             "quiz": [
                 {
-                    "question": f"What is the main topic covered in '{title}'?",
-                    "options": [title, "Unrelated Programming Topic", "Machine Learning Theory", "General Computing"],
+                    "question": f"What was the primary focus of '{title}'?",
+                    "options": [
+                        title,
+                        "Unrelated General Discussion",
+                        "Historical Chronology Only",
+                        "Future Speculation"
+                    ],
                     "answerIndex": 0,
-                    "explanation": f"The video explicitly teaches concepts related to {title}."
+                    "explanation": f"The primary subject of this video presentation is {title}."
                 }
             ],
             "provider": "Local Engine (Rule-based Fallback)"
         }
+        _GENERATION_CACHE[cache_key] = res_data
+        return res_data
 
 
 # ============================================================
-# 4. POWERPOINT (.pptx) FILE CREATION
+# 4. POWERPOINT PPTX BUILDER (.pptx file binary generation)
 # ============================================================
 
-def build_pptx_file(presentation_data: Dict[str, Any], output_path: str) -> str:
-    """Generate a clean, styled Microsoft PowerPoint (.pptx) file."""
-    import pptx
+def build_pptx_file(presentation_data: Dict[str, Any], output_path: Optional[str] = None) -> bytes:
+    """Generate professional 16:9 widescreen PPTX file with branding."""
+    import io
+    from pptx import Presentation
     from pptx.util import Inches, Pt
     from pptx.dml.color import RGBColor
     from pptx.enum.text import PP_ALIGN
 
-    prs = pptx.Presentation()
-    # 16:9 widescreen layout
+    prs = Presentation()
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
 
     blank_layout = prs.slide_layouts[6]
 
-    # Color tokens matching BYAMN Design
-    brand_black = RGBColor(14, 15, 12)
-    brand_lime = RGBColor(217, 236, 149)
-    brand_dark_gray = RGBColor(35, 38, 30)
-    text_white = RGBColor(245, 245, 242)
-    text_muted = RGBColor(180, 180, 175)
+    title_text = presentation_data.get("title", "Lecture Summary")
+    slides_data = presentation_data.get("slides", [])
+
+    # Brand Colors
+    BRAND_BLACK = RGBColor(14, 15, 12)       # #0E0F0C
+    BRAND_LIME = RGBColor(217, 236, 149)     # #D9EC95
+    TEXT_WHITE = RGBColor(242, 242, 240)     # #F2F2F0
+    TEXT_MUTED = RGBColor(160, 160, 160)
 
     # 1. Title Slide
     slide = prs.slides.add_slide(blank_layout)
     bg = slide.background
     fill = bg.fill
     fill.solid()
-    fill.fore_color.rgb = brand_black
+    fill.fore_color.rgb = BRAND_BLACK
 
-    # Title Box
-    title_box = slide.shapes.add_textbox(Inches(1.5), Inches(2.2), Inches(10.3), Inches(2.5))
-    tf = title_box.text_frame
+    tx_box = slide.shapes.add_textbox(Inches(1.0), Inches(2.2), Inches(11.333), Inches(3.0))
+    tf = tx_box.text_frame
     tf.word_wrap = True
+
     p = tf.paragraphs[0]
-    p.text = presentation_data.get("title", "Video Presentation")
+    p.text = title_text
     p.font.size = Pt(44)
     p.font.bold = True
-    p.font.color.rgb = brand_lime
+    p.font.color.rgb = BRAND_LIME
+    p.alignment = PP_ALIGN.LEFT
 
     p2 = tf.add_paragraph()
-    p2.text = "Generated by AI Video Study Suite"
+    p2.text = "Multimodal Video Summary & Lecture Deck"
     p2.font.size = Pt(20)
-    p2.font.color.rgb = text_muted
-    p2.space_before = Pt(24)
+    p2.font.color.rgb = TEXT_WHITE
+    p2.space_before = Pt(14)
 
     # 2. Content Slides
-    slides_list = presentation_data.get("slides", [])
-    for idx, s in enumerate(slides_list, 1):
-        slide = prs.slides.add_slide(blank_layout)
-        bg = slide.background
+    for idx, slide_info in enumerate(slides_data, start=1):
+        s = prs.slides.add_slide(blank_layout)
+        bg = s.background
         fill = bg.fill
         fill.solid()
-        fill.fore_color.rgb = brand_black
+        fill.fore_color.rgb = BRAND_BLACK
 
-        # Slide Header Bar
-        header_box = slide.shapes.add_textbox(Inches(1.2), Inches(0.8), Inches(10.9), Inches(1.2))
+        # Header Box
+        header_box = s.shapes.add_textbox(Inches(1.0), Inches(0.8), Inches(11.333), Inches(1.2))
         htf = header_box.text_frame
         htf.word_wrap = True
         hp = htf.paragraphs[0]
-        hp.text = s.get("title", f"Slide {idx}")
-        hp.font.size = Pt(30)
+        hp.text = f"{idx}. {slide_info.get('title', 'Slide')}"
+        hp.font.size = Pt(28)
         hp.font.bold = True
-        hp.font.color.rgb = brand_lime
+        hp.font.color.rgb = BRAND_LIME
 
-        # Slide Bullets Box
-        bullets_box = slide.shapes.add_textbox(Inches(1.2), Inches(2.2), Inches(10.9), Inches(4.5))
+        # Bullets Box
+        bullets_box = s.shapes.add_textbox(Inches(1.0), Inches(2.2), Inches(11.333), Inches(4.5))
         btf = bullets_box.text_frame
         btf.word_wrap = True
 
-        bullets = s.get("bullets", [])
+        bullets = slide_info.get("bullets", [])
         for b_idx, bullet in enumerate(bullets):
             bp = btf.paragraphs[0] if b_idx == 0 else btf.add_paragraph()
             bp.text = f"•  {bullet}"
-            bp.font.size = Pt(20)
-            bp.font.color.rgb = text_white
+            bp.font.size = Pt(18)
+            bp.font.color.rgb = TEXT_WHITE
             bp.space_before = Pt(16)
 
         # Speaker notes
-        notes_text = s.get("notes", "")
+        notes_text = slide_info.get("notes", "")
         if notes_text:
-            notes_slide = slide.notes_slide
-            notes_slide.notes_text_frame.text = notes_text
+            notes_slide = s.notes_slide
+            text_frame = notes_slide.notes_text_frame
+            text_frame.text = notes_text
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    prs.save(output_path)
-    return output_path
+    if output_path:
+        prs.save(output_path)
+        with open(output_path, "rb") as f:
+            return f.read()
+
+    out = io.BytesIO()
+    prs.save(out)
+    return out.getvalue()
