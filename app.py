@@ -1,10 +1,44 @@
 import os
+import sys
 import uuid
 import shutil
 import threading
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
 from dotenv import load_dotenv
+
+# Safe stdout/stderr wrapper to prevent [Errno 5] Input/output error on detached terminals
+class SafeStream:
+    """Safely wraps stdout/stderr to prevent [Errno 5] Input/output error on detached or closed terminals."""
+    def __init__(self, stream):
+        self._stream = stream
+    def write(self, data):
+        try:
+            return self._stream.write(data)
+        except (OSError, IOError):
+            return len(data) if data else 0
+    def flush(self):
+        try:
+            return self._stream.flush()
+        except (OSError, IOError):
+            pass
+    def isatty(self):
+        try:
+            return self._stream.isatty()
+        except (OSError, IOError):
+            return False
+    def fileno(self):
+        try:
+            return self._stream.fileno()
+        except (OSError, IOError, AttributeError):
+            raise OSError(5, "Input/output error")
+    def __getattr__(self, name):
+        return getattr(self._stream, name)
+
+if not isinstance(sys.stdout, SafeStream):
+    sys.stdout = SafeStream(sys.stdout)
+if not isinstance(sys.stderr, SafeStream):
+    sys.stderr = SafeStream(sys.stderr)
 
 # Load server environment variables (.env)
 load_dotenv()
@@ -178,21 +212,26 @@ class GenerateRequest(BaseModel):
     summary: str
     transcript: Optional[str] = ""
     apiKey: Optional[str] = None
+    force_refresh: Optional[bool] = False
+    forceRefresh: Optional[bool] = False
 
 
 class PptxRequest(BaseModel):
     title: str
     slides: List[Dict[str, Any]]
+    template: Optional[str] = "warm_hexagons"
 
 
 @app.post("/api/generate/flashcards")
 async def api_generate_flashcards(payload: GenerateRequest):
     try:
+        force = bool(payload.force_refresh or payload.forceRefresh)
         data = generators.generate_flashcards(
             title=payload.title,
             summary=payload.summary,
             transcript=payload.transcript or "",
-            api_key=payload.apiKey
+            api_key=payload.apiKey,
+            force_refresh=force
         )
         return data
     except Exception as e:
@@ -202,11 +241,13 @@ async def api_generate_flashcards(payload: GenerateRequest):
 @app.post("/api/generate/presentation")
 async def api_generate_presentation(payload: GenerateRequest):
     try:
+        force = bool(payload.force_refresh or payload.forceRefresh)
         data = generators.generate_presentation(
             title=payload.title,
             summary=payload.summary,
             transcript=payload.transcript or "",
-            api_key=payload.apiKey
+            api_key=payload.apiKey,
+            force_refresh=force
         )
         return data
     except Exception as e:

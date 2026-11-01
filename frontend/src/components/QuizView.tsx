@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { HelpCircle, Check, X, RefreshCw, Trophy, Sparkles, ChevronRight, Sliders, RotateCcw, Zap, ArrowRight } from "lucide-react";
+import { Check, X, RefreshCw, Trophy, Sparkles, ChevronRight, Sliders, RotateCcw, ArrowRight } from "lucide-react";
+import { MathText } from "./MathText";
 
 export interface QuizQuestion {
   question: string;
@@ -175,18 +176,15 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
 
         <div className="max-w-[480px] mx-auto mb-9 space-y-5">
           {/* Row 1: Difficulty */}
-          <div className="flex flex-wrap items-center justify-between gap-3 text-left">
-            <div className="flex items-center gap-2.5 text-sm sm:text-base font-semibold text-[var(--text-main)]">
-              <Zap className="w-5 h-5 text-[var(--text-muted)]" />
-              <span>Difficulty</span>
-            </div>
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-4 text-left">
+            <span className="text-sm sm:text-base font-semibold text-[var(--text-main)]">Difficulty</span>
+            <div className="grid grid-cols-3 gap-2 w-[260px]">
               {(["easy", "medium", "hard"] as const).map((diff) => (
                 <button
                   key={diff}
                   type="button"
                   onClick={() => setDifficulty(diff)}
-                  className={`py-2 px-5 rounded-full text-sm font-semibold capitalize transition-all cursor-pointer min-w-[70px] text-center border ${
+                  className={`py-2 rounded-full text-sm font-semibold capitalize transition-all cursor-pointer text-center border w-full ${
                     difficulty === diff
                       ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)] font-bold shadow-xs"
                       : "bg-[var(--card-bg)] text-[var(--text-main)] border-[var(--card-border)] hover:border-[var(--text-muted)]"
@@ -199,18 +197,15 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
           </div>
 
           {/* Row 2: Number of Questions */}
-          <div className="flex flex-wrap items-center justify-between gap-3 text-left">
-            <div className="flex items-center gap-2.5 text-sm sm:text-base font-semibold text-[var(--text-main)]">
-              <HelpCircle className="w-5 h-5 text-[var(--text-muted)]" />
-              <span>Number of Questions</span>
-            </div>
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-4 text-left">
+            <span className="text-sm sm:text-base font-semibold text-[var(--text-main)]">Number of Questions</span>
+            <div className="grid grid-cols-3 gap-2 w-[260px]">
               {[3, 5, 10].map((num) => (
                 <button
                   key={num}
                   type="button"
                   onClick={() => setNumQuestions(num)}
-                  className={`py-2 px-6 rounded-full text-sm font-semibold transition-all cursor-pointer min-w-[56px] text-center border ${
+                  className={`py-2 rounded-full text-sm font-semibold transition-all cursor-pointer text-center border w-full ${
                     numQuestions === num
                       ? "bg-[var(--brand-lime)] text-[#0E0F0C] border-[var(--brand-lime)] font-bold shadow-xs"
                       : "bg-[var(--card-bg)] text-[var(--text-main)] border-[var(--card-border)] hover:border-[var(--text-muted)]"
@@ -306,11 +301,6 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] capitalize font-semibold">
             {difficulty}
           </span>
-          {provider && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)]">
-              {provider}
-            </span>
-          )}
         </div>
         <div className="flex items-center gap-3">
           <div className="text-xs font-bold text-[var(--brand-lime-hover)] dark:text-[var(--brand-lime)]">
@@ -336,9 +326,11 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
 
       {/* Question Card */}
       <div className="p-6 sm:p-8 rounded-2xl bg-[var(--card-surface-elevated)] border border-[var(--card-border)] shadow-md mb-5">
-        <h3 className="text-base sm:text-lg font-black text-[var(--text-main)] mb-6 leading-snug">
-          {q.question}
-        </h3>
+        <MathText
+          as="h3"
+          text={q.question}
+          className="text-base sm:text-lg font-black text-[var(--text-main)] mb-6 leading-snug"
+        />
 
         {/* Options */}
         <div className="space-y-3">
@@ -369,7 +361,7 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
                   <span className="w-6 h-6 rounded-md bg-[var(--btn-secondary-bg)] flex items-center justify-center text-xs font-black shrink-0">
                     {String.fromCharCode(65 + optIdx)}
                   </span>
-                  <span>{opt}</span>
+                  <MathText text={opt} as="span" />
                 </div>
                 {icon}
               </button>
@@ -393,7 +385,7 @@ export function QuizView({ quiz, provider, isLoading, onGenerate }: QuizViewProp
                 </>
               )}
             </div>
-            <p className="leading-relaxed">{q.explanation}</p>
+            <MathText text={q.explanation} as="p" className="leading-relaxed" />
           </div>
         )}
       </div>

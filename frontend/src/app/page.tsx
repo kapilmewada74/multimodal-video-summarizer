@@ -5,6 +5,7 @@ import { Navbar } from "../components/Navbar";
 import { HeroSection } from "../components/HeroSection";
 import { ToolCard } from "../components/ToolCard";
 import { OutputWorkspace } from "../components/OutputWorkspace";
+import { GeneratingProgressCard } from "../components/GeneratingProgressCard";
 import { FeaturesSection } from "../components/FeaturesSection";
 import { FaqSection } from "../components/FaqSection";
 import { Footer } from "../components/Footer";
@@ -12,16 +13,18 @@ import { JobState, JobResult } from "../lib/types";
 import { CheckCircle2, AlertCircle, Info, Loader2 } from "lucide-react";
 
 export default function Home() {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<"dark" | "light">("light");
   const [job, setJob] = useState<JobState | null>(null);
   const [result, setResult] = useState<JobResult | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "info" | "error" } | null>(null);
 
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const lastInputRef = useRef<{ type: "url" | "upload"; value: string } | null>(null);
+  const lastSubmittedFileRef = useRef<File | null>(null);
 
-  // Load theme from localStorage
+  // Load theme from localStorage (defaults to light mode)
   useEffect(() => {
-    const saved = (localStorage.getItem("theme") as "dark" | "light") || "dark";
+    const saved = (localStorage.getItem("theme") as "dark" | "light") || "light";
     setTheme(saved);
     document.documentElement.classList.remove("dark", "light");
     document.documentElement.classList.add(saved);
@@ -70,8 +73,23 @@ export default function Home() {
     }, 1500);
   };
 
-  const handleUrlSubmit = async (url: string) => {
-    setResult(null);
+  const handleUrlSubmit = async (url: string, force: boolean = false) => {
+    const trimmed = url.trim();
+    if (!trimmed) return;
+
+    // If summary is already generated for this exact URL and not forcing regeneration, do not re-run
+    if (!force && result && lastInputRef.current?.type === "url" && lastInputRef.current?.value === trimmed) {
+      showToast("Summary already generated for this video.", "info");
+      const workspaceEl = document.getElementById("workspace-container");
+      if (workspaceEl) {
+        workspaceEl.scrollIntoView({ behavior: "smooth" });
+      }
+      return;
+    }
+
+    lastInputRef.current = { type: "url", value: trimmed };
+    if (!force) setResult(null);
+
     setJob({
       id: "init",
       type: "url",
@@ -79,19 +97,19 @@ export default function Home() {
       step: 1,
       step_name: "Connecting",
       progress: 5,
-      message: "Initiating video pipeline...",
+      message: force ? "Regenerating summary with AI..." : "Initiating video pipeline...",
     });
 
     try {
       const res = await fetch("/api/summarize/url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: trimmed }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Failed to start summarization");
 
-      showToast("Pipeline initiated locally!", "info");
+      showToast(force ? "Regenerating summary..." : "Pipeline initiated locally!", "info");
       startPolling(data.job_id);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error submitting URL";
@@ -109,8 +127,23 @@ export default function Home() {
     }
   };
 
-  const handleUploadSubmit = async (file: File) => {
-    setResult(null);
+  const handleUploadSubmit = async (file: File, force: boolean = false) => {
+    const fileId = `${file.name}_${file.size}_${file.lastModified}`;
+
+    // If summary is already generated for this exact file and not forcing regeneration, do not re-run
+    if (!force && result && lastInputRef.current?.type === "upload" && lastInputRef.current?.value === fileId) {
+      showToast("Summary already generated for this file.", "info");
+      const workspaceEl = document.getElementById("workspace-container");
+      if (workspaceEl) {
+        workspaceEl.scrollIntoView({ behavior: "smooth" });
+      }
+      return;
+    }
+
+    lastInputRef.current = { type: "upload", value: fileId };
+    lastSubmittedFileRef.current = file;
+    if (!force) setResult(null);
+
     setJob({
       id: "init",
       type: "upload",
@@ -118,7 +151,7 @@ export default function Home() {
       step: 1,
       step_name: "Uploading",
       progress: 10,
-      message: "Uploading media to worker...",
+      message: force ? "Regenerating summary with AI..." : "Uploading media to worker...",
     });
 
     try {
@@ -132,7 +165,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Failed to upload file");
 
-      showToast("File uploaded! Processing audio...", "info");
+      showToast(force ? "Regenerating summary..." : "File uploaded! Processing audio...", "info");
       startPolling(data.job_id);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error uploading file";
@@ -150,16 +183,25 @@ export default function Home() {
     }
   };
 
+  const handleRegenerateSummary = () => {
+    if (!lastInputRef.current) return;
+    if (lastInputRef.current.type === "url") {
+      handleUrlSubmit(lastInputRef.current.value, true);
+    } else if (lastSubmittedFileRef.current) {
+      handleUploadSubmit(lastSubmittedFileRef.current, true);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-app)] text-[var(--text-main)] transition-colors">
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
-      <main className="flex-1 max-w-[1140px] w-full mx-auto px-3 sm:px-6 py-8 sm:py-12">
-        {/* Hero Section */}
-        <HeroSection />
-
-        {/* Central Tool Card */}
-        <div className="no-print">
+      {/* ============================================================
+           HERO & TOOL SECTION — SEAMLESS EDGE-TO-EDGE BLENDED ON APP BACKGROUND
+           ============================================================ */}
+      <section className="w-full px-0 pt-10 sm:pt-16 md:pt-20 lg:pt-24 pb-16 sm:pb-24 lg:pb-32 no-print">
+        <div className="w-full max-w-[2048px] mx-auto">
+          <HeroSection />
           <ToolCard
             isProcessing={job?.status === "processing" || job?.status === "queued"}
             onSubmitUrl={handleUrlSubmit}
@@ -167,16 +209,15 @@ export default function Home() {
             onError={(msg) => showToast(msg, "error")}
           />
         </div>
+      </section>
 
-        {/* Minimal Clean Loading Indicator */}
+      {/* ============================================================
+           MAIN WORKSPACE & CONTENT CONTAINER
+           ============================================================ */}
+      <main className="flex-1 max-w-[1180px] w-full mx-auto px-3 sm:px-6 pb-12 sm:pb-16">
+        {/* Intelligent Audio Waveform & 3-Stage Progress Card */}
         {job && (job.status === "processing" || job.status === "queued") && (
-          <div className="flex flex-col items-center justify-center py-12 px-6 my-8 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl shadow-sm text-center no-print">
-            <div className="w-10 h-10 border-3 border-[var(--card-border)] border-t-[var(--brand-lime)] rounded-full animate-spin mb-4" />
-            <h3 className="text-base font-bold text-[var(--text-main)]">Generating summary...</h3>
-            <p className="text-xs text-[var(--text-muted)] mt-1 max-w-sm">
-              Transcribing audio and synthesizing key takeaways locally.
-            </p>
-          </div>
+          <GeneratingProgressCard job={job} />
         )}
 
         {/* Failure Alert */}
@@ -188,7 +229,10 @@ export default function Home() {
 
         {/* Output Workspace */}
         {result && (
-          <OutputWorkspace result={result} onToast={showToast} />
+          <OutputWorkspace
+            result={result}
+            onToast={showToast}
+          />
         )}
 
         {/* Core Capabilities & Workflow */}

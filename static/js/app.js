@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeToggleBtn = document.getElementById("theme-toggle-btn");
   const htmlEl = document.documentElement;
   
-  const savedTheme = localStorage.getItem("theme") || "dark";
+  const savedTheme = localStorage.getItem("theme") || "light";
   htmlEl.classList.remove("dark", "light");
   htmlEl.classList.add(savedTheme);
   updateThemeIcon(savedTheme);
@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
       htmlEl.classList.add(nextTheme);
       localStorage.setItem("theme", nextTheme);
       updateThemeIcon(nextTheme);
-      showToast(`Switched to ${nextTheme} mode`, "info");
     });
   }
 
@@ -51,21 +50,31 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeInputMode = "url";
 
   if (tabUrlBtn && tabUploadBtn) {
-    tabUrlBtn.addEventListener("click", () => {
-      activeInputMode = "url";
-      tabUrlBtn.classList.add("active");
-      tabUploadBtn.classList.remove("active");
-      sectionUrlInput.style.display = "block";
-      sectionUploadInput.style.display = "none";
-    });
+    const setTabState = (mode) => {
+      activeInputMode = mode;
+      if (mode === "url") {
+        tabUrlBtn.classList.add("active");
+        tabUploadBtn.classList.remove("active");
+        tabUrlBtn.style.background = "";
+        tabUrlBtn.style.color = "";
+        tabUploadBtn.style.background = "";
+        tabUploadBtn.style.color = "";
+        if (sectionUrlInput) sectionUrlInput.style.display = "flex";
+        if (sectionUploadInput) sectionUploadInput.style.display = "none";
+      } else {
+        tabUploadBtn.classList.add("active");
+        tabUrlBtn.classList.remove("active");
+        tabUrlBtn.style.background = "";
+        tabUrlBtn.style.color = "";
+        tabUploadBtn.style.background = "";
+        tabUploadBtn.style.color = "";
+        if (sectionUploadInput) sectionUploadInput.style.display = "flex";
+        if (sectionUrlInput) sectionUrlInput.style.display = "none";
+      }
+    };
 
-    tabUploadBtn.addEventListener("click", () => {
-      activeInputMode = "upload";
-      tabUploadBtn.classList.add("active");
-      tabUrlBtn.classList.remove("active");
-      sectionUploadInput.style.display = "block";
-      sectionUrlInput.style.display = "none";
-    });
+    tabUrlBtn.addEventListener("click", () => setTabState("url"));
+    tabUploadBtn.addEventListener("click", () => setTabState("upload"));
   }
 
   // --- Paste Clipboard Helper ---
@@ -95,34 +104,51 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Drag and Drop File Upload ---
-  const dropzone = document.getElementById("file-dropzone");
   const fileInput = document.getElementById("file-input");
-  const fileSelectedInfo = document.getElementById("file-selected-info");
-  const fileNameDisplay = document.getElementById("file-name-display");
+  const fileDropzoneText = document.getElementById("file-dropzone-text");
+  const browseFileBtn = document.getElementById("browse-file-btn");
   const fileRemoveBtn = document.getElementById("file-remove-btn");
+  const browseSparks = document.getElementById("browse-sparks");
 
   let currentUploadedFile = null;
 
-  if (dropzone && fileInput) {
-    dropzone.addEventListener("click", () => fileInput.click());
+  if (sectionUploadInput && fileInput) {
+    sectionUploadInput.addEventListener("click", (e) => {
+      if (e.target !== fileRemoveBtn && !fileRemoveBtn.contains(e.target)) {
+        if (!currentUploadedFile) fileInput.click();
+      }
+    });
+
+    if (browseFileBtn) {
+      browseFileBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        fileInput.click();
+      });
+    }
 
     ["dragenter", "dragover"].forEach(name => {
-      dropzone.addEventListener(name, (e) => {
+      sectionUploadInput.addEventListener(name, (e) => {
         e.preventDefault();
-        dropzone.style.borderColor = "var(--brand-lime)";
-        dropzone.style.backgroundColor = "rgba(217, 236, 149, 0.05)";
+        sectionUploadInput.style.borderColor = "var(--brand-lime)";
+        sectionUploadInput.style.backgroundColor = "rgba(217, 236, 149, 0.08)";
+        if (!currentUploadedFile && fileDropzoneText) {
+          fileDropzoneText.textContent = "Drop video or audio right here...";
+        }
       });
     });
 
     ["dragleave", "drop"].forEach(name => {
-      dropzone.addEventListener(name, (e) => {
+      sectionUploadInput.addEventListener(name, (e) => {
         e.preventDefault();
-        dropzone.style.borderColor = "var(--card-border)";
-        dropzone.style.backgroundColor = "transparent";
+        sectionUploadInput.style.borderColor = "var(--card-border)";
+        sectionUploadInput.style.backgroundColor = "var(--card-bg)";
+        if (!currentUploadedFile && fileDropzoneText) {
+          fileDropzoneText.textContent = "Click to upload or drag & drop video/audio";
+        }
       });
     });
 
-    dropzone.addEventListener("drop", (e) => {
+    sectionUploadInput.addEventListener("drop", (e) => {
       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
         handleFileSelection(e.dataTransfer.files[0]);
       }
@@ -144,17 +170,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     currentUploadedFile = file;
     const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-    fileNameDisplay.textContent = `${file.name} (${sizeMb} MB)`;
-    fileSelectedInfo.style.display = "flex";
-    dropzone.style.display = "none";
+    if (fileDropzoneText) {
+      fileDropzoneText.textContent = `${file.name} (${sizeMb} MB)`;
+      fileDropzoneText.style.color = "var(--text-main)";
+      fileDropzoneText.style.fontWeight = "700";
+    }
+    if (browseFileBtn) browseFileBtn.style.display = "none";
+    if (browseSparks) browseSparks.style.display = "none";
+    if (fileRemoveBtn) fileRemoveBtn.style.display = "inline-flex";
   }
 
   if (fileRemoveBtn) {
-    fileRemoveBtn.addEventListener("click", () => {
+    fileRemoveBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
       currentUploadedFile = null;
       fileInput.value = "";
-      fileSelectedInfo.style.display = "none";
-      dropzone.style.display = "flex";
+      if (fileDropzoneText) {
+        fileDropzoneText.textContent = "Click to upload or drag & drop video/audio";
+        fileDropzoneText.style.color = "var(--text-muted)";
+        fileDropzoneText.style.fontWeight = "normal";
+      }
+      if (browseFileBtn) browseFileBtn.style.display = "inline-flex";
+      if (browseSparks) browseSparks.style.display = "block";
+      fileRemoveBtn.style.display = "none";
     });
   }
 
@@ -165,6 +203,153 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let activePollingTimer = null;
   let activeJobId = null;
+  let lastSubmittedInput = null;
+  let jobElapsedSeconds = 0;
+  let jobElapsedTimer = null;
+
+  function resetLoadingUI() {
+    jobElapsedSeconds = 0;
+    if (jobElapsedTimer) clearInterval(jobElapsedTimer);
+    jobElapsedTimer = setInterval(() => {
+      jobElapsedSeconds += 1;
+      updateLoadingUI(null, jobElapsedSeconds);
+    }, 1000);
+    updateLoadingUI(null, 0);
+  }
+
+  function stopLoadingUI() {
+    if (jobElapsedTimer) clearInterval(jobElapsedTimer);
+  }
+
+  function updateLoadingUI(job, elapsed) {
+    const stageSubtitle = document.getElementById("loading-stage-subtitle");
+    const progressPct = document.getElementById("static-progress-pct");
+    const progressBarFill = document.getElementById("static-progress-bar-fill");
+    const dot1 = document.getElementById("static-stage-dot-1");
+    const dot2 = document.getElementById("static-stage-dot-2");
+    const dot3 = document.getElementById("static-stage-dot-3");
+    const label1 = document.getElementById("static-stage-label-1");
+    const label2 = document.getElementById("static-stage-label-2");
+    const label3 = document.getElementById("static-stage-label-3");
+    const line1 = document.getElementById("static-step-line-1");
+    const line2 = document.getElementById("static-step-line-2");
+
+    let activeStage = 1;
+    let baseTarget = 5;
+    if (job && job.progress) baseTarget = Math.max(job.progress, baseTarget);
+    let slowCreep = Math.min((elapsed || 0) * 0.25, 12);
+    let progressVal = Math.min(baseTarget + slowCreep, 93);
+
+    if (job) {
+      if (job.progress >= 80 || (job.step_name && job.step_name.toLowerCase().includes("synthesiz")) || (job.message && job.message.toLowerCase().includes("synthesiz"))) {
+        activeStage = 3;
+      } else if (job.progress >= 45 || job.step === 3 || (job.step_name && job.step_name.toLowerCase().includes("summariz")) || (job.message && job.message.toLowerCase().includes("summariz"))) {
+        activeStage = 2;
+      }
+    }
+
+    if (elapsed >= 16) {
+      activeStage = Math.max(activeStage, 3);
+    } else if (elapsed >= 7) {
+      activeStage = Math.max(activeStage, 2);
+    }
+
+    if (stageSubtitle) {
+      if (job && job.message && !job.message.toLowerCase().includes("processing")) {
+        stageSubtitle.textContent = job.message;
+      } else if (activeStage === 1) {
+        stageSubtitle.textContent = "Transcribing audio speech with local AI model...";
+      } else if (activeStage === 2) {
+        stageSubtitle.textContent = "Extracting core concepts, principles, and structured highlights...";
+      } else {
+        stageSubtitle.textContent = "Synthesizing final structured summary...";
+      }
+    }
+
+    if (progressPct) progressPct.textContent = `${Math.round(progressVal)}%`;
+    if (progressBarFill) progressBarFill.style.width = `${Math.max(6, Math.round(progressVal))}%`;
+
+    // Render Stage 1
+    if (dot1 && label1) {
+      if (activeStage > 1) {
+        dot1.style.background = "var(--brand-lime)";
+        dot1.style.color = "#0E0F0C";
+        dot1.innerHTML = `<svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        label1.style.fontWeight = "600";
+        label1.style.color = "var(--text-main)";
+        label1.style.opacity = "1";
+      } else {
+        dot1.style.background = "var(--brand-lime)";
+        dot1.style.color = "#0E0F0C";
+        dot1.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#0E0F0C;animation:pulse-dot 1.2s infinite ease-in-out;"></span>`;
+        label1.style.fontWeight = "700";
+        label1.style.color = "var(--text-main)";
+        label1.style.opacity = "1";
+      }
+    }
+
+    // Render Stage 2
+    if (dot2 && label2) {
+      if (activeStage > 2) {
+        dot2.style.background = "var(--brand-lime)";
+        dot2.style.border = "none";
+        dot2.style.color = "#0E0F0C";
+        dot2.innerHTML = `<svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        label2.style.fontWeight = "600";
+        label2.style.color = "var(--text-main)";
+        label2.style.opacity = "1";
+      } else if (activeStage === 2) {
+        dot2.style.background = "var(--brand-lime)";
+        dot2.style.border = "none";
+        dot2.style.color = "#0E0F0C";
+        dot2.style.boxShadow = "0 0 10px rgba(217, 236, 149, 0.4)";
+        dot2.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#0E0F0C;animation:pulse-dot 1.2s infinite ease-in-out;"></span>`;
+        label2.style.fontWeight = "700";
+        label2.style.color = "var(--text-main)";
+        label2.style.opacity = "1";
+      } else {
+        dot2.style.background = "var(--card-elevated)";
+        dot2.style.border = "1px solid var(--card-border)";
+        dot2.style.color = "var(--text-muted)";
+        dot2.style.boxShadow = "none";
+        dot2.innerHTML = "2";
+        label2.style.fontWeight = "500";
+        label2.style.color = "var(--text-muted)";
+        label2.style.opacity = "0.65";
+      }
+    }
+
+    // Render Stage 3
+    if (dot3 && label3) {
+      if (activeStage === 3) {
+        dot3.style.background = "var(--brand-lime)";
+        dot3.style.border = "none";
+        dot3.style.color = "#0E0F0C";
+        dot3.style.boxShadow = "0 0 10px rgba(217, 236, 149, 0.4)";
+        dot3.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#0E0F0C;animation:pulse-dot 1.2s infinite ease-in-out;"></span>`;
+        label3.style.fontWeight = "700";
+        label3.style.color = "var(--text-main)";
+        label3.style.opacity = "1";
+      } else {
+        dot3.style.background = "var(--card-elevated)";
+        dot3.style.border = "1px solid var(--card-border)";
+        dot3.style.color = "var(--text-muted)";
+        dot3.style.boxShadow = "none";
+        dot3.innerHTML = "3";
+        label3.style.fontWeight = "500";
+        label3.style.color = "var(--text-muted)";
+        label3.style.opacity = "0.65";
+      }
+    }
+
+    // Render Connecting Lines
+    if (line1) {
+      line1.style.background = activeStage > 1 ? "var(--brand-lime)" : "var(--brand-lime)";
+    }
+    if (line2) {
+      line2.style.background = activeStage > 2 ? "var(--brand-lime)" : activeStage === 2 ? "linear-gradient(to right, var(--brand-lime), var(--card-border))" : "var(--card-border)";
+    }
+  }
 
   if (startSummarizeBtn) {
     startSummarizeBtn.addEventListener("click", async () => {
@@ -175,12 +360,25 @@ document.addEventListener("DOMContentLoaded", () => {
           youtubeUrlInput.focus();
           return;
         }
+        if (currentResult && lastSubmittedInput && lastSubmittedInput.type === "url" && lastSubmittedInput.value === url) {
+          showToast("Summary already generated! Use 'Regenerate' in the toolbar to create a new one.", "info");
+          if (workspaceContainer) workspaceContainer.scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+        lastSubmittedInput = { type: "url", value: url };
         await initiateJob("/api/summarize/url", { url }, false);
       } else {
         if (!currentUploadedFile) {
           showToast("Please select a video or audio file to upload.", "error");
           return;
         }
+        const fileId = `${currentUploadedFile.name}_${currentUploadedFile.size}_${currentUploadedFile.lastModified}`;
+        if (currentResult && lastSubmittedInput && lastSubmittedInput.type === "upload" && lastSubmittedInput.value === fileId) {
+          showToast("Summary already generated! Use 'Regenerate' in the toolbar to create a new one.", "info");
+          if (workspaceContainer) workspaceContainer.scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+        lastSubmittedInput = { type: "upload", value: fileId };
         const formData = new FormData();
         formData.append("file", currentUploadedFile);
         await initiateJob("/api/summarize/upload", formData, true);
@@ -194,6 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (loadingContainer) loadingContainer.style.display = "block";
     if (errorContainer) errorContainer.style.display = "none";
     if (workspaceContainer) workspaceContainer.style.display = "none";
+    resetLoadingUI();
 
     try {
       const opts = {
@@ -214,6 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startPolling(activeJobId);
 
     } catch (err) {
+      stopLoadingUI();
       showToast(err.message, "error");
       startSummarizeBtn.disabled = false;
       startSummarizeBtn.textContent = "Summarize Video →";
@@ -234,9 +434,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!res.ok) throw new Error("Could not check task status.");
 
         const job = await res.json();
+        updateLoadingUI(job, jobElapsedSeconds);
 
         if (job.status === "completed") {
           clearInterval(activePollingTimer);
+          stopLoadingUI();
           if (loadingContainer) loadingContainer.style.display = "none";
           startSummarizeBtn.disabled = false;
           startSummarizeBtn.textContent = "Summarize Video →";
@@ -244,6 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
           renderOutputWorkspace(job.result);
         } else if (job.status === "failed") {
           clearInterval(activePollingTimer);
+          stopLoadingUI();
           if (loadingContainer) loadingContainer.style.display = "none";
           startSummarizeBtn.disabled = false;
           startSummarizeBtn.textContent = "Summarize Video →";
@@ -332,13 +535,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Flashcards Logic ---
-  async function loadFlashcards() {
+  async function loadFlashcards(forceRefresh = false) {
     if (!currentResult) return;
     flashcardsContainer.innerHTML = `
       <div style="text-align: center; padding: 48px 20px;">
         <div style="width: 36px; height: 36px; border: 3px solid var(--card-border); border-top-color: var(--brand-lime); border-radius: 50%; margin: 0 auto 14px auto; animation: spin 0.8s linear infinite;"></div>
         <div style="font-size: 15px; font-weight: 700;">Generating Study Flashcards...</div>
-        <div style="font-size: 13px; color: var(--text-muted);">Powered by Gemini AI with local fallback</div>
+        <div style="font-size: 13px; color: var(--text-muted);">Synthesizing key formulas, concepts, and definitions</div>
       </div>
     `;
 
@@ -349,7 +552,9 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({
           title: currentResult.title,
           summary: currentResult.summary,
-          transcript: currentResult.transcript
+          transcript: currentResult.transcript,
+          force_refresh: forceRefresh,
+          forceRefresh: forceRefresh
         })
       });
       const data = await res.json();
@@ -424,78 +629,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderDesk() {
       flashcardsContainer.innerHTML = `
-        <div class="desk-mat">
-          <!-- Desk Header -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); flex-shrink: 0;">
-                <line x1="12" y1="17" x2="12" y2="22"></line>
-                <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
-              </svg>
-              <h3 style="font-size: 20px; font-weight: 900; letter-spacing: -0.02em; margin: 0; color: var(--text-main);">Desk Sticky Notes</h3>
-              <span style="font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 9999px; background: var(--btn-secondary-bg); color: var(--text-muted); border: 1px solid var(--card-border);">${deck.length} notes</span>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <button id="desk-add-btn" class="btn-secondary" style="height: 32px; padding: 4px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; display: inline-flex; align-items: center; gap: 6px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>Add Note</span>
-              </button>
-              <button id="desk-regen-btn" class="btn-secondary" style="width: 32px; height: 32px; padding: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;" title="Regenerate Notes">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-              </button>
-              <div style="width: 1px; height: 16px; background: var(--card-border); margin: 0 4px;"></div>
-              <button id="desk-scroll-prev" class="btn-secondary" style="width: 32px; height: 32px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;" title="Scroll Left">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-              </button>
-              <button id="desk-scroll-next" class="btn-secondary" style="width: 32px; height: 32px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;" title="Scroll Right">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </button>
-            </div>
+        <div style="width: 100%; padding: 4px 0;">
+          <!-- Desk Header Controls -->
+          <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 12px; gap: 8px;">
+            <button id="desk-regen-btn" class="btn-secondary" style="height: 32px; padding: 0 12px; border-radius: 10px; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Regenerate Flashcards">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              <span>Regenerate</span>
+            </button>
+            <div style="width: 1px; height: 16px; background: var(--card-border); margin: 0 4px;"></div>
+            <button id="desk-scroll-prev" class="btn-secondary" style="width: 32px; height: 32px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Scroll Left">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button id="desk-scroll-next" class="btn-secondary" style="width: 32px; height: 32px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Scroll Right">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
           </div>
 
           <!-- Horizontal Carousel Track -->
-          <div id="desk-track" class="desk-notes-track">
+          <div id="desk-track" class="desk-notes-track" style="display: flex; gap: 20px; overflow-x: auto; padding: 8px 4px 16px 4px; scroll-behavior: smooth;">
             ${deck.map((card, i) => {
               const th = DESK_NOTE_THEMES[card.colorIndex ?? (i % DESK_NOTE_THEMES.length)] || DESK_NOTE_THEMES[0];
               const lines = card.back ? card.back.split(/\n+/).map(l => l.trim()).filter(Boolean) : [];
               return `
-                <div class="desk-note-card" data-idx="${i}" style="background-color: ${th.bg}; color: ${th.textColor}; min-height: 220px;">
-                  <div>
-                    <!-- 3D Pushpin -->
-                    <div style="margin: 0 auto 10px auto; text-align: center;">
-                      <div class="desk-note-pin-head" style="background-color: ${th.pinBg}; background-image: radial-gradient(circle at 35% 30%, #FFFFFF 0%, ${th.pinBg} 60%, rgba(0,0,0,0.4) 100%);"></div>
-                      <div class="desk-note-pin-shadow"></div>
+                <div class="tilted-card-wrapper" data-idx="${i}" style="perspective: 1000px; width: 320px; height: 340px; flex-shrink: 0; cursor: pointer; user-select: none;">
+                  <div class="tilted-card-inner" style="width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); border-radius: 22px;">
+                    <!-- Front Face -->
+                    <div class="tilted-card-front" style="position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 22px; background-color: ${th.bg}; color: ${th.textColor}; padding: 22px; box-shadow: 0 10px 24px -6px rgba(0,0,0,0.12); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; transform-style: preserve-3d; border: 1px solid rgba(0,0,0,0.08);">
+                      <!-- 3D Pushpin (Depth 35px) -->
+                      <div style="transform: translateZ(35px); display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div style="display: flex; flex-direction: column; items-center;">
+                          <div class="desk-note-pin-head" style="width: 16px; height: 16px; border-radius: 50%; background-color: ${th.pinBg}; background-image: radial-gradient(circle at 35% 30%, #FFFFFF 0%, ${th.pinBg} 60%, rgba(0,0,0,0.4) 100%); box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>
+                          <div style="width: 12px; height: 4px; border-radius: 50%; background: rgba(0,0,0,0.25); filter: blur(1px); margin-top: -2px;"></div>
+                        </div>
+                        ${card.tag ? `<span style="font-size: 10px; font-weight: 800; text-transform: uppercase; background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 9999px;">${escapeHtml(card.tag)}</span>` : ''}
+                      </div>
+
+                      <!-- Question Title (Depth 25px) -->
+                      <div style="transform: translateZ(25px); margin-top: 14px;">
+                        <h4 style="font-size: 15px; font-weight: 600; line-height: 1.4; color: #1F1E1B; margin: 0;">
+                          ${escapeHtml(card.front)}
+                        </h4>
+                      </div>
+
+                      <!-- Footer Cue (Depth 15px) -->
+                      <div style="transform: translateZ(15px); display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 800; color: rgba(0,0,0,0.55); margin-top: auto; padding-top: 12px;">
+                        <span>${i + 1}</span>
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.7); font-size: 13px;" title="Flip card">↻</span>
+                      </div>
+
+                      <!-- Glare Overlay -->
+                      <div class="tilted-card-glare" style="position: absolute; inset: 0; pointer-events: none; border-radius: 22px; opacity: 0; transition: opacity 0.2s ease; mix-blend-mode: overlay; z-index: 20;"></div>
                     </div>
 
-                    <!-- Title -->
-                    <h4 style="font-size: 17px; font-weight: 900; line-height: 1.3; margin-bottom: 10px; color: #1F1E1B;">
-                      ${escapeHtml(card.front)}
-                    </h4>
-
-                    <!-- Preview Content -->
-                    <div style="font-size: 13px; color: ${th.subtextColor}; line-height: 1.5; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">
-                      ${lines.length > 1
-                        ? lines.slice(0, 3).map(l => `<div style="display: flex; gap: 6px; margin-bottom: 3px;"><span style="color: rgba(0,0,0,0.5); font-weight: bold;">•</span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(l.replace(/^[-•*]\s*/, ''))}</span></div>`).join('')
-                        : escapeHtml(card.back)
-                      }
+                    <!-- Back Face (Flip) -->
+                    <div class="tilted-card-back" style="position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: rotateY(180deg); border-radius: 22px; background-color: ${th.bg}; color: ${th.textColor}; padding: 22px; box-shadow: 0 10px 24px -6px rgba(0,0,0,0.12); display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto; border: 1px solid rgba(0,0,0,0.08);">
+                      <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 8px; margin-bottom: 12px;">
+                          <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: rgba(0,0,0,0.6);">${escapeHtml(card.tag || "Explanation")}</span>
+                          <span style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.7); font-size: 13px;" title="Flip back">↺</span>
+                        </div>
+                        <div style="font-size: 13.5px; line-height: 1.6; color: #2E2C28;">
+                          ${lines.length > 1
+                            ? `<ul style="padding-left: 16px; margin: 0;">${lines.map(l => `<li style="margin-bottom: 4px;">${escapeHtml(l.replace(/^[-•*]\s*/, ''))}</li>`).join('')}</ul>`
+                            : escapeHtml(card.back)
+                          }
+                        </div>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 800; color: rgba(0,0,0,0.55); margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.06);">
+                        <span>${i + 1}</span>
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.7); font-size: 13px;" title="Flip back">↺</span>
+                      </div>
                     </div>
-                  </div>
-
-                  <!-- Expand Icon -->
-                  <div style="display: flex; justify-content: flex-end; padding-top: 10px;">
-                    <button class="desk-expand-btn" data-idx="${i}" style="background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: 6px; color: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;" title="Open Note">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
-                    </button>
                   </div>
                 </div>
               `;
             }).join('')}
           </div>
         </div>
-
-        <!-- Opened Sticky Note Modal Container -->
-        <div id="desk-modal-slot"></div>
       `;
 
       // Event Listeners for Track
@@ -504,165 +714,52 @@ document.addEventListener("DOMContentLoaded", () => {
       const nextBtn = document.getElementById("desk-scroll-next");
 
       if (prevBtn && track) {
-        prevBtn.addEventListener("click", () => track.scrollBy({ left: -320, behavior: "smooth" }));
+        prevBtn.addEventListener("click", () => track.scrollBy({ left: -340, behavior: "smooth" }));
       }
       if (nextBtn && track) {
-        nextBtn.addEventListener("click", () => track.scrollBy({ left: 320, behavior: "smooth" }));
-      }
-
-      const addBtn = document.getElementById("desk-add-btn");
-      if (addBtn) {
-        addBtn.addEventListener("click", () => {
-          const newNote = {
-            front: "New Sticky Note",
-            back: "• Key concept point\n• Important takeaway",
-            tag: "Concept",
-            colorIndex: deck.length % DESK_NOTE_THEMES.length
-          };
-          deck.push(newNote);
-          renderDesk();
-          openModal(deck.length - 1);
-        });
+        nextBtn.addEventListener("click", () => track.scrollBy({ left: 340, behavior: "smooth" }));
       }
 
       const regenBtn = document.getElementById("desk-regen-btn");
       if (regenBtn) {
-        regenBtn.addEventListener("click", () => loadFlashcards());
+        regenBtn.addEventListener("click", () => loadFlashcards(true));
       }
 
-      // Card Clicks
-      document.querySelectorAll(".desk-note-card").forEach(el => {
-        el.addEventListener("click", () => {
-          const idx = parseInt(el.getAttribute("data-idx"));
-          openModal(idx);
+      // 3D Tilt and Flip Listeners on each card
+      document.querySelectorAll(".tilted-card-wrapper").forEach(wrapper => {
+        const inner = wrapper.querySelector(".tilted-card-inner");
+        const glare = wrapper.querySelector(".tilted-card-glare");
+        let isFlipped = false;
+
+        wrapper.addEventListener("mousemove", (e) => {
+          const rect = wrapper.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+
+          const rotX = -((y - centerY) / centerY) * 12;
+          const rotY = ((x - centerX) / centerX) * 12;
+
+          const baseRotY = isFlipped ? 180 - rotY : rotY;
+          const currentRotX = isFlipped ? -rotX : rotX;
+
+          inner.style.transform = `scale(1.05) rotateX(${currentRotX}deg) rotateY(${baseRotY}deg)`;
+
+          if (glare) {
+            glare.style.opacity = "0.5";
+            glare.style.background = `radial-gradient(circle at ${(x / rect.width) * 100}% ${(y / rect.height) * 100}%, rgba(255,255,255,0.5), transparent 70%)`;
+          }
         });
-      });
 
-      document.querySelectorAll(".desk-expand-btn").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const idx = parseInt(btn.getAttribute("data-idx"));
-          openModal(idx);
+        wrapper.addEventListener("mouseleave", () => {
+          inner.style.transform = isFlipped ? "rotateY(180deg) scale(1)" : "rotateY(0deg) scale(1)";
+          if (glare) glare.style.opacity = "0";
         });
-      });
-    }
 
-    function openModal(idx) {
-      activeModalIndex = idx;
-      const card = deck[idx];
-      if (!card) return;
-      const th = DESK_NOTE_THEMES[card.colorIndex ?? (idx % DESK_NOTE_THEMES.length)] || DESK_NOTE_THEMES[0];
-      const slot = document.getElementById("desk-modal-slot");
-      if (!slot) return;
-
-      slot.innerHTML = `
-        <div class="desk-modal-overlay" id="desk-modal-overlay">
-          <div class="desk-modal-card" id="desk-modal-card" style="background-color: ${th.bg}; color: ${th.textColor};">
-            <!-- Header Row: Color Picker Dots & Actions -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <!-- 5 Color Dots -->
-              <div style="display: flex; align-items: center; gap: 10px;">
-                ${DESK_NOTE_THEMES.map((t, cIdx) => {
-                  const isSel = (card.colorIndex ?? (idx % DESK_NOTE_THEMES.length)) === cIdx;
-                  return `
-                    <button class="desk-color-dot" data-cidx="${cIdx}" style="width: 22px; height: 22px; border-radius: 50%; background-color: ${t.bg}; border: ${isSel ? '2px solid #000' : '1px solid rgba(0,0,0,0.15)'}; outline: ${isSel ? '2px solid transparent' : 'none'}; cursor: pointer; transition: transform 0.15s ease;" title="${t.name}"></button>
-                  `;
-                }).join('')}
-              </div>
-
-              <!-- Top Right Buttons -->
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <button id="desk-modal-delete" style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.75); border: 1px solid rgba(0,0,0,0.06); color: #DC2626; display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Delete Note">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-                <button id="desk-modal-minimize" style="padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.1); color: #1F1E1B; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
-                  <span>Minimize</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Title -->
-            <input 
-              id="desk-modal-title" 
-              type="text" 
-              value="${escapeHtml(card.front)}" 
-              style="width: 100%; font-size: 24px; font-weight: 900; background: transparent; border: none; outline: none; color: #1F1E1B; letter-spacing: -0.02em; margin-bottom: 12px;"
-              placeholder="Note Title..."
-            />
-
-            <!-- Divider -->
-            <div style="height: 1px; width: 100%; background: rgba(0,0,0,0.1); margin-bottom: 16px;"></div>
-
-            <!-- Content Area -->
-            <textarea 
-              id="desk-modal-body" 
-              style="width: 100%; min-height: 160px; max-height: 320px; font-size: 15px; line-height: 1.6; background: transparent; border: none; outline: none; color: #2E2C28; resize: none; font-family: inherit;"
-              placeholder="Note content..."
-            >${escapeHtml(card.back)}</textarea>
-
-            <!-- Bottom Row -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 8px;">
-              <span style="font-size: 12px; color: #525252; font-weight: 500;">Changes save automatically</span>
-              <button id="desk-modal-done" style="padding: 8px 22px; border-radius: 12px; background-color: ${th.accentBtn}; color: #FFFFFF; font-size: 13px; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
-                Done
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Modal Handlers
-      const overlay = document.getElementById("desk-modal-overlay");
-      const cardEl = document.getElementById("desk-modal-card");
-      const titleInput = document.getElementById("desk-modal-title");
-      const bodyTextarea = document.getElementById("desk-modal-body");
-      const doneBtn = document.getElementById("desk-modal-done");
-      const minBtn = document.getElementById("desk-modal-minimize");
-      const delBtn = document.getElementById("desk-modal-delete");
-
-      const saveCurrent = () => {
-        if (titleInput) card.front = titleInput.value;
-        if (bodyTextarea) card.back = bodyTextarea.value;
-      };
-
-      if (titleInput) {
-        titleInput.addEventListener("input", saveCurrent);
-      }
-      if (bodyTextarea) {
-        bodyTextarea.addEventListener("input", saveCurrent);
-      }
-
-      const closeModal = () => {
-        saveCurrent();
-        slot.innerHTML = "";
-        activeModalIndex = null;
-        renderDesk();
-      };
-
-      if (doneBtn) doneBtn.addEventListener("click", closeModal);
-      if (minBtn) minBtn.addEventListener("click", closeModal);
-      if (overlay) {
-        overlay.addEventListener("click", (e) => {
-          if (e.target === overlay) closeModal();
-        });
-      }
-
-      if (delBtn) {
-        delBtn.addEventListener("click", () => {
-          deck.splice(idx, 1);
-          slot.innerHTML = "";
-          activeModalIndex = null;
-          renderDesk();
-        });
-      }
-
-      document.querySelectorAll(".desk-color-dot").forEach(btn => {
-        btn.addEventListener("click", () => {
-          saveCurrent();
-          const cIdx = parseInt(btn.getAttribute("data-cidx"));
-          card.colorIndex = cIdx;
-          openModal(idx);
+        wrapper.addEventListener("click", () => {
+          isFlipped = !isFlipped;
+          inner.style.transform = isFlipped ? "rotateY(180deg) scale(1.03)" : "rotateY(0deg) scale(1.03)";
         });
       });
     }
@@ -671,13 +768,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Presentation Logic ---
+  let selectedPptTemplate = "modern_editorial";
+
   async function loadPresentation() {
     if (!currentResult) return;
     presentationContainer.innerHTML = `
       <div style="text-align: center; padding: 48px 20px;">
         <div style="width: 36px; height: 36px; border: 3px solid var(--card-border); border-top-color: var(--brand-lime); border-radius: 50%; margin: 0 auto 14px auto; animation: spin 0.8s linear infinite;"></div>
         <div style="font-size: 15px; font-weight: 700;">Generating Keynote Presentation...</div>
-        <div style="font-size: 13px; color: var(--text-muted);">Powered by Gemini AI with downloadable .pptx</div>
+        <div style="font-size: 13px; color: var(--text-muted);">Planning structured layout archetypes & photo pairings</div>
       </div>
     `;
 
@@ -702,88 +801,427 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderPresentation(data) {
     if (!data || !data.slides || data.slides.length === 0) {
-      presentationContainer.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--text-muted);">No slides available.</div>`;
+      presentationContainer.innerHTML = `
+        <div style="max-width: 600px; margin: 0 auto; text-align: center; padding: 32px 16px;">
+          <h4 style="font-size: 17px; font-weight: 800; margin-bottom: 6px;">Choose Presentation Template</h4>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Select your preferred keynote design style before generating slides.</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px;">
+            <div class="template-choice-card ${selectedPptTemplate === 'modern_editorial' ? 'selected' : ''}" data-tmpl="modern_editorial" style="border: 2px solid ${selectedPptTemplate === 'modern_editorial' ? 'var(--brand-lime)' : 'var(--card-border)'}; border-radius: 14px; padding: 14px; cursor: pointer; text-align: left; background: var(--card-bg);">
+              <span style="font-size: 10px; font-weight: 800; background: var(--btn-secondary-bg); padding: 2px 6px; border-radius: 6px; text-transform: uppercase;">Featured</span>
+              <div style="font-size: 14px; font-weight: 800; margin: 6px 0 2px 0;">Modern Editorial</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Blueprint navy & light grey photo splits</div>
+            </div>
+            <div class="template-choice-card ${selectedPptTemplate === 'warm_hexagons' ? 'selected' : ''}" data-tmpl="warm_hexagons" style="border: 2px solid ${selectedPptTemplate === 'warm_hexagons' ? 'var(--brand-lime)' : 'var(--card-border)'}; border-radius: 14px; padding: 14px; cursor: pointer; text-align: left; background: var(--card-bg);">
+              <span style="font-size: 10px; font-weight: 800; background: var(--btn-secondary-bg); padding: 2px 6px; border-radius: 6px; text-transform: uppercase;">Warm</span>
+              <div style="font-size: 14px; font-weight: 800; margin: 6px 0 2px 0;">Earthy Hexagons</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Warm cream & terracotta honeycomb</div>
+            </div>
+            <div class="template-choice-card ${selectedPptTemplate === 'modern_dark' ? 'selected' : ''}" data-tmpl="modern_dark" style="border: 2px solid ${selectedPptTemplate === 'modern_dark' ? 'var(--brand-lime)' : 'var(--card-border)'}; border-radius: 14px; padding: 14px; cursor: pointer; text-align: left; background: var(--card-bg);">
+              <span style="font-size: 10px; font-weight: 800; background: var(--btn-secondary-bg); padding: 2px 6px; border-radius: 6px; text-transform: uppercase;">Classic</span>
+              <div style="font-size: 14px; font-weight: 800; margin: 6px 0 2px 0;">Midnight Lime</div>
+              <div style="font-size: 12px; color: var(--text-muted);">High-contrast dark obsidian</div>
+            </div>
+          </div>
+          <button id="generate-pptx-trigger-btn" class="btn-primary" style="padding: 10px 24px; font-size: 13px; font-weight: 800; border-radius: 12px; cursor: pointer;">
+            Generate Slides
+          </button>
+        </div>
+      `;
+
+      presentationContainer.querySelectorAll(".template-choice-card").forEach(c => {
+        c.addEventListener("click", () => {
+          selectedPptTemplate = c.dataset.tmpl;
+          renderPresentation(data);
+        });
+      });
+
+      const genBtn = document.getElementById("generate-pptx-trigger-btn");
+      if (genBtn) genBtn.addEventListener("click", loadPresentation);
       return;
     }
 
+    const rawSlides = data.slides;
+    const layouts = ["split_left_image", "split_right_image", "cards_right"];
+    const images = ["photo_classroom_raising_hands.png", "photo_classroom_desks.png", "photo_school_building.png"];
+
+    const deckSlides = [
+      {
+        type: "title",
+        title: data.title || "Presentation",
+        kicker: rawSlides[0]?.kicker || "Presentation Overview",
+        summary: rawSlides[0]?.summary || "A structured keynote presentation exploring core principles, systematic frameworks, and key strategic takeaways.",
+        subtitle: "KEY TAKEAWAYS & EXECUTIVE SUMMARY",
+        notes: "Opening introduction and presentation overview."
+      },
+      ...rawSlides.map((s, idx) => ({
+        type: "body",
+        title: s.title || `Slide ${idx + 1}`,
+        kicker: s.kicker || `Section ${String(idx + 1).padStart(2, "0")} • Core Focus`,
+        summary: s.summary || (s.bullets && s.bullets[0] ? `${s.title} establishes a critical mechanism in this domain.` : "Overview of key insights."),
+        bullets: s.bullets || [],
+        layout: s.layout || layouts[idx % layouts.length],
+        image_asset: s.image_asset || images[idx % images.length],
+        notes: s.notes || ""
+      })),
+      {
+        type: "last",
+        title: "Thank you",
+        kicker: "Summary & Key Takeaways",
+        summary: data.title ? `Key takeaways and strategic conclusions for "${data.title}".` : "Keynote Presentation",
+        subtitle: data.title ? `Key insights & overview for "${data.title}"` : "Keynote Presentation",
+        notes: "Closing Slide: Summary and final remarks."
+      }
+    ];
+
     let slideIdx = 0;
-    const slides = data.slides;
+    const totalCount = deckSlides.length;
 
     function renderCurrentSlide() {
-      const slide = slides[slideIdx];
+      const slide = deckSlides[slideIdx];
+      const pageStr = `Page ${String(slideIdx + 1).padStart(2, "0")}`;
+
+      let canvasHtml = "";
+
+      if (selectedPptTemplate === "modern_editorial") {
+        if (slide.type === "title") {
+          canvasHtml = `
+            <div style="width: 100%; height: 100%; padding: 5%; display: flex; flex-direction: column; justify-content: space-between; position: relative; background-image: url('/static/templates/modern_editorial/bg_cover.png'); background-size: cover; background-position: center; box-sizing: border-box;">
+              <div style="max-width: 65%; text-align: left;">
+                <div style="font-size: clamp(10px, 1.2vw, 13px); font-weight: 700; color: #4A5568; margin-bottom: 8px;">${escapeHtml(slide.kicker)}</div>
+                <h2 style="font-family: Arial, sans-serif; font-size: clamp(20px, 3.2vw, 42px); font-weight: 900; line-height: 1.1; color: #000; text-transform: uppercase; margin: 0;">${escapeHtml(slide.title)}</h2>
+              </div>
+              <div style="align-self: flex-end; max-width: 44%; text-align: left; margin: auto 0 auto auto; padding-right: 2%;">
+                <p style="font-size: clamp(11px, 1.3vw, 15px); color: #2D3748; line-height: 1.5; font-weight: 400; margin: 0;">${escapeHtml(slide.summary)}</p>
+              </div>
+              <div style="padding-bottom: 5%;"></div>
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 9%; background: #1B395D; display: flex; align-items: center; justify-content: space-between; padding: 0 4%; color: #fff; font-size: clamp(10px, 1.1vw, 12px); font-weight: 700;">
+                <span>${escapeHtml(data.title || "Presentation")}</span>
+                <span>${pageStr}</span>
+              </div>
+            </div>
+          `;
+        } else if (slide.type === "body") {
+          if (slide.layout === "split_left_image") {
+            canvasHtml = `
+              <div style="width: 100%; height: 100%; display: flex; padding-bottom: 9%; box-sizing: border-box; position: relative;">
+                <div style="width: 50%; padding: 4%; display: flex; flex-direction: column; justify-content: space-between; background: #EEF0F6; box-sizing: border-box;">
+                  <div>
+                    <div style="font-size: clamp(9px, 1vw, 12px); font-weight: 700; color: #1A1A1A; margin-bottom: 4px;">${escapeHtml(slide.kicker)}</div>
+                    <h2 style="font-size: clamp(16px, 2.2vw, 28px); font-weight: 900; color: #000; text-transform: uppercase; line-height: 1.15; margin: 0;">${escapeHtml(slide.title)}</h2>
+                  </div>
+                  <div style="width: 100%; aspect-ratio: 4/3; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-top: 8px;">
+                    <img src="/static/templates/modern_editorial/${slide.image_asset || 'photo_classroom_raising_hands.png'}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  </div>
+                </div>
+                <div style="width: 50%; padding: 4%; background: #DEDEE0; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;">
+                  <p style="font-size: clamp(11px, 1.25vw, 14px); color: #2D3748; line-height: 1.45; margin: 0 0 14px 0;">${escapeHtml(slide.summary)}</p>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    ${slide.bullets.map(b => `
+                      <div style="padding-bottom: 6px; border-bottom: 1px dotted rgba(0,0,0,0.35); display: flex; align-items: center; gap: 8px; font-size: clamp(10px, 1.2vw, 13px); color: #000; font-weight: 600;">
+                        <span style="width: 6px; height: 6px; border-radius: 50%; background: #000; shrink-0;"></span>
+                        <span>${escapeHtml(b)}</span>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 9%; background: #1B395D; display: flex; align-items: center; justify-content: space-between; padding: 0 4%; color: #fff; font-size: clamp(10px, 1.1vw, 12px); font-weight: 700;">
+                  <span>${escapeHtml(data.title || "School Presentation")}</span>
+                  <span>${pageStr}</span>
+                </div>
+              </div>
+            `;
+          } else if (slide.layout === "split_right_image") {
+            canvasHtml = `
+              <div style="width: 100%; height: 100%; display: flex; padding-bottom: 9%; box-sizing: border-box; position: relative;">
+                <div style="width: 52%; padding: 4%; display: flex; flex-direction: column; justify-content: center; background: #EEF0F6; box-sizing: border-box;">
+                  <h2 style="font-size: clamp(16px, 2.2vw, 28px); font-weight: 900; color: #000; text-transform: uppercase; line-height: 1.15; margin: 0 0 4px 0;">${escapeHtml(slide.title)}</h2>
+                  <div style="font-size: clamp(10px, 1.1vw, 13px); font-weight: 700; color: #000; margin-bottom: 8px;">${escapeHtml(slide.kicker)}</div>
+                  <p style="font-size: clamp(10px, 1.15vw, 13px); color: #2D3748; line-height: 1.4; margin: 0 0 12px 0;">${escapeHtml(slide.summary)}</p>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    ${slide.bullets.map((b, i) => `
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 20px; height: 20px; background: #1B395D; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; border-radius: 3px; shrink-0;">${String(i+1).padStart(2, "0")}</div>
+                        <span style="font-size: clamp(10px, 1.2vw, 13px); color: #000; font-weight: 600;">${escapeHtml(b)}</span>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+                <div style="width: 48%; padding: 3%; background: #EEF0F6; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                  <div style="width: 100%; height: 100%; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    <img src="/static/templates/modern_editorial/${slide.image_asset || 'photo_classroom_desks.png'}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  </div>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 9%; background: #1B395D; display: flex; align-items: center; justify-content: space-between; padding: 0 4%; color: #fff; font-size: clamp(10px, 1.1vw, 12px); font-weight: 700;">
+                  <span>${escapeHtml(data.title || "School Presentation")}</span>
+                  <span>${pageStr}</span>
+                </div>
+              </div>
+            `;
+          } else {
+            canvasHtml = `
+              <div style="width: 100%; height: 100%; display: flex; padding-bottom: 9%; box-sizing: border-box; position: relative;">
+                <div style="width: 45%; padding: 4%; background: #DEDEE0; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;">
+                  <div style="width: 100%; aspect-ratio: 16/10; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 10px;">
+                    <img src="/static/templates/modern_editorial/${slide.image_asset || 'photo_school_building.png'}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  </div>
+                  <p style="font-size: clamp(10px, 1.1vw, 12px); color: #2D3748; line-height: 1.4; margin: 0;">${escapeHtml(slide.summary)}</p>
+                </div>
+                <div style="width: 55%; padding: 4%; background: #EEF0F6; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                    <div style="width: 12px; height: 12px; background: #1B395D;"></div>
+                    <h2 style="font-size: clamp(15px, 2vw, 24px); font-weight: 900; color: #000; text-transform: uppercase; margin: 0;">${escapeHtml(slide.title)}</h2>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    ${slide.bullets.map((b, i) => `
+                      <div style="background: #1B395D; color: #fff; padding: 8px 12px; border-radius: 4px; display: flex; align-items: center; gap: 10px; font-size: clamp(10px, 1.15vw, 13px); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                        <span style="opacity: 0.85; font-weight: 900;">${String(i+1).padStart(2, "0")}</span>
+                        <span>${escapeHtml(b)}</span>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 9%; background: #1B395D; display: flex; align-items: center; justify-content: space-between; padding: 0 4%; color: #fff; font-size: clamp(10px, 1.1vw, 12px); font-weight: 700;">
+                  <span>${escapeHtml(data.title || "School Presentation")}</span>
+                  <span>${pageStr}</span>
+                </div>
+              </div>
+            `;
+          }
+        } else {
+          canvasHtml = `
+            <div style="width: 100%; height: 100%; padding: 5%; display: flex; flex-direction: column; justify-content: space-between; position: relative; background-image: url('/static/templates/modern_editorial/bg_cover.png'); background-size: cover; background-position: center; box-sizing: border-box;">
+              <div style="max-width: 65%; text-align: left;">
+                <div style="font-size: clamp(10px, 1.2vw, 13px); font-weight: 700; color: #4A5568; margin-bottom: 8px;">Summary & Key Takeaways</div>
+                <h2 style="font-family: Arial, sans-serif; font-size: clamp(24px, 4vw, 54px); font-weight: 900; line-height: 1.1; color: #000; text-transform: uppercase; margin: 0;">THANK YOU</h2>
+                <p style="font-size: clamp(11px, 1.3vw, 15px); color: #2D3748; line-height: 1.5; font-weight: 400; margin-top: 14px;">${escapeHtml(slide.summary)}</p>
+              </div>
+              <div style="padding-bottom: 5%;"></div>
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 9%; background: #1B395D; display: flex; align-items: center; justify-content: space-between; padding: 0 4%; color: #fff; font-size: clamp(10px, 1.1vw, 12px); font-weight: 700;">
+                <span>${escapeHtml(data.title || "Presentation")}</span>
+                <span>${pageStr}</span>
+              </div>
+            </div>
+          `;
+        }
+      } else if (selectedPptTemplate === "warm_hexagons") {
+        let bgHex = "/static/templates/warm_hexagons/slide_body.png";
+        if (slide.type === "title") bgHex = "/static/templates/warm_hexagons/slide_first.png";
+        else if (slide.type === "last") bgHex = "/static/templates/warm_hexagons/slide_last.png";
+
+        canvasHtml = `
+          <div style="width: 100%; height: 100%; background-color: #F0E7DD; background-image: url('${bgHex}'); background-size: cover; background-position: center; position: relative;">
+            ${slide.type === "title" ? `
+              <div style="position: absolute; left: 6.2%; top: 55%; transform: translateY(-50%); max-width: 55%; text-align: left;">
+                <h2 style="font-family: Georgia, serif; font-size: clamp(20px, 3vw, 38px); font-weight: 900; line-height: 1.2; color: #3B2213; margin: 0;">${escapeHtml(slide.title)}</h2>
+                <div style="font-size: clamp(10px, 1.1vw, 12px); font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #5C4436; margin-top: 14px;">${escapeHtml(slide.subtitle)}</div>
+              </div>
+            ` : slide.type === "body" ? `
+              <div style="position: absolute; left: 6.2%; top: 18%; max-width: 58%; text-align: left;">
+                <h2 style="font-family: Georgia, serif; font-size: clamp(18px, 2.4vw, 30px); font-weight: 800; line-height: 1.25; color: #3B2213; margin: 0;">${escapeHtml(slide.title)}</h2>
+              </div>
+              <div style="position: absolute; left: 6.2%; top: 34%; max-width: 58%; text-align: left; display: flex; flex-direction: column; gap: 10px;">
+                ${slide.bullets.map(b => `
+                  <div style="display: flex; align-items: flex-start; gap: 10px; font-size: clamp(12px, 1.3vw, 15px); color: #423730; line-height: 1.45; font-weight: 500;">
+                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #5C4436; margin-top: 6px; flex-shrink: 0;"></span>
+                    <span>${escapeHtml(b)}</span>
+                  </div>
+                `).join("")}
+              </div>
+            ` : `
+              <div style="position: absolute; left: 6.0%; top: 60%; transform: translateY(-50%); max-width: 52%; text-align: left;">
+                <h2 style="font-family: Georgia, serif; font-size: clamp(30px, 4.2vw, 54px); font-weight: 900; line-height: 1.1; color: #3B2213; margin: 0;">Thank you</h2>
+                <div style="font-size: clamp(11px, 1.2vw, 13px); font-weight: 600; color: #5C4436; margin-top: 12px;">${escapeHtml(slide.subtitle)}</div>
+              </div>
+            `}
+          </div>
+        `;
+      } else {
+        canvasHtml = `
+          <div style="width: 100%; height: 100%; background: #0E0F0C; padding: 8%; display: flex; flex-direction: column; justify-content: space-between; color: #F2F2F0; box-sizing: border-box;">
+            <div>
+              <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.15em; color: var(--brand-lime); text-transform: uppercase;">SLIDE ${slideIdx + 1}</span>
+              <h2 style="font-size: clamp(18px, 2.5vw, 32px); font-weight: 900; margin: 6px 0 0 0;">${escapeHtml(slide.title)}</h2>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin: auto 0;">
+              ${slide.bullets.map(b => `
+                <div style="display: flex; align-items: flex-start; gap: 10px; font-size: clamp(12px, 1.3vw, 15px); color: #ddd;">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--brand-lime); margin-top: 6px; flex-shrink: 0;"></span>
+                  <span>${escapeHtml(b)}</span>
+                </div>
+              `).join("")}
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666; border-top: 1px solid #222; padding-top: 10px;">
+              <span>${escapeHtml(data.title || "Video Presentation")}</span>
+              <span>${slideIdx + 1} / ${totalCount}</span>
+            </div>
+          </div>
+        `;
+      }
+
       presentationContainer.innerHTML = `
-        <div style="max-width: 750px; margin: 0 auto;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <div style="max-width: 840px; margin: 0 auto;">
+          <!-- Presentation Header Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
             <div>
-              <div style="font-size: 15px; font-weight: 800;">${data.title || "Presentation"}</div>
-              <div style="font-size: 12px; color: var(--text-muted);">Slide ${slideIdx + 1} of ${slides.length} • ${data.provider || "AI"}</div>
+              <div style="font-size: 15px; font-weight: 800; color: var(--text-main);">${escapeHtml(data.title || "Presentation")}</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                <span>Slide ${slideIdx + 1} of ${totalCount}</span>
+              </div>
             </div>
-            <button id="download-pptx-btn" class="btn-primary" style="padding: 6px 14px; font-size: 12px;">
-              Download .PPTX
-            </button>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <select id="static-template-select" style="font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 10px; background: var(--btn-secondary-bg); border: 1px solid var(--card-border); color: var(--text-main); cursor: pointer;">
+                <option value="modern_editorial" ${selectedPptTemplate === "modern_editorial" ? "selected" : ""}>Modern Editorial (Sample 2)</option>
+                <option value="warm_hexagons" ${selectedPptTemplate === "warm_hexagons" ? "selected" : ""}>Earthy Hexagons (Sample 1)</option>
+                <option value="modern_dark" ${selectedPptTemplate === "modern_dark" ? "selected" : ""}>Midnight Lime (Classic)</option>
+              </select>
+
+              <div style="position: relative;" id="download-dropdown-wrap">
+                <button id="download-toggle-btn" class="btn-primary" style="padding: 7px 14px; font-size: 12px; font-weight: 800; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="download-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 6px; width: 175px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 100; padding: 6px;">
+                  <button id="menu-download-pptx" style="width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; border: none; background: transparent; color: var(--text-main); font-size: 12px; font-weight: 700; cursor: pointer; text-align: left;">
+                    <span style="color: #E2552B;">📊</span>
+                    <span>PowerPoint (.PPTX)</span>
+                  </button>
+                  <button id="menu-download-pdf" style="width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; border: none; background: transparent; color: var(--text-main); font-size: 12px; font-weight: 700; cursor: pointer; text-align: left;">
+                    <span style="color: #1B395D;">📄</span>
+                    <span>PDF Document (.PDF)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div style="aspect-ratio: 16/9; min-height: 320px; border-radius: 16px; background: #0E0F0C; color: #F2F2F0; padding: 36px 40px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid var(--card-border); position: relative; overflow: hidden;">
-            <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--brand-lime);"></div>
-            <div>
-              <div style="font-size: 11px; font-weight: 700; color: var(--brand-lime); text-transform: uppercase; margin-bottom: 6px;">SLIDE ${slideIdx + 1}</div>
-              <div style="font-size: 24px; font-weight: 800; color: #F2F2F0; line-height: 1.25;">${slide.title}</div>
-            </div>
-
-            <div style="margin: auto 0; padding: 12px 0;">
-              ${slide.bullets.map(b => `<div style="margin-bottom: 10px; font-size: 15px; color: #E5E7EB; display: flex; align-items: flex-start; gap: 8px;"><span style="color: var(--brand-lime);">•</span> <span>${b}</span></div>`).join("")}
-            </div>
-
-            <div style="font-size: 11px; color: #6B7280; border-top: 1px solid #1F2937; padding-top: 8px; display: flex; justify-content: space-between;">
-              <span>${data.title || "Presentation"}</span>
-              <span>${slideIdx + 1} / ${slides.length}</span>
-            </div>
+          <!-- 16:9 Canvas View -->
+          <div style="aspect-ratio: 16/9; min-height: 320px; border-radius: 18px; border: 1px solid rgba(0,0,0,0.12); position: relative; overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.2);">
+            ${canvasHtml}
           </div>
 
+          <!-- Speaker Notes Drawer -->
           ${slide.notes ? `
-            <div style="margin-top: 14px; padding: 12px 16px; border-radius: 10px; background: var(--card-surface-elevated); border: 1px solid var(--card-border); font-size: 12px; color: var(--text-muted);">
-              <strong style="color: var(--text-main);">Speaker Notes:</strong> ${slide.notes}
+            <div style="margin-top: 14px; padding: 12px 16px; border-radius: 12px; background: var(--card-surface-elevated); border: 1px solid var(--card-border); font-size: 13px; color: var(--text-muted); text-align: left;">
+              <strong style="color: var(--text-main);">Speaker Notes:</strong> <span style="color: var(--text-main);">${escapeHtml(slide.notes)}</span>
             </div>
           ` : ""}
 
+          <!-- Slide Navigation & Jump Controls -->
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px;">
-            <button id="ppt-prev-btn" class="btn-secondary" ${slideIdx === 0 ? "disabled" : ""}>← Previous</button>
-            <div style="display: flex; gap: 6px;">
-              ${slides.map((_, i) => `<button class="slide-dot-btn btn-secondary" style="padding: 4px 8px; font-size: 11px; ${i === slideIdx ? 'background: var(--brand-lime); color: #0E0F0C; font-weight: 800;' : ''}" data-idx="${i}">${i + 1}</button>`).join("")}
+            <button id="ppt-prev-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 10px; cursor: pointer;" ${slideIdx === 0 ? "disabled style='opacity:0.35; cursor:not-allowed;'" : ""}>← Previous</button>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; overflow: hidden; padding: 2px; scrollbar-width: none;">
+              ${deckSlides.map((s, i) => `
+                <button class="slide-dot-btn btn-secondary" style="padding: 4px 10px; font-size: 11px; border-radius: 8px; cursor: pointer; ${i === slideIdx ? 'background: var(--brand-lime); color: #0E0F0C; font-weight: 800; border-color: var(--brand-lime);' : ''}" data-idx="${i}">
+                  ${i === 0 ? "Title" : i === totalCount - 1 ? "End" : i}
+                </button>
+              `).join("")}
             </div>
-            <button id="ppt-next-btn" class="btn-secondary" ${slideIdx === slides.length - 1 ? "disabled" : ""}>Next →</button>
+            <button id="ppt-next-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 10px; cursor: pointer;" ${slideIdx === totalCount - 1 ? "disabled style='opacity:0.35; cursor:not-allowed;'" : ""}>Next →</button>
           </div>
         </div>
       `;
 
-      document.getElementById("download-pptx-btn").addEventListener("click", async () => {
-        const btn = document.getElementById("download-pptx-btn");
-        btn.disabled = true;
-        btn.textContent = "Compiling PPTX...";
-        try {
-          const res = await fetch("/api/download/pptx", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ title: data.title, slides: data.slides })
-          });
-          if (!res.ok) throw new Error("PPTX creation failed");
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `${(data.title || "presentation").replace(/[^a-z0-9]+/gi, "_")}.pptx`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          showToast("PowerPoint file downloaded!", "success");
-        } catch (e) {
-          showToast(e.message, "error");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "Download .PPTX";
-        }
-      });
+      // Template Switch Listener
+      const tmplSel = document.getElementById("static-template-select");
+      if (tmplSel) {
+        tmplSel.addEventListener("change", (e) => {
+          selectedPptTemplate = e.target.value;
+          renderCurrentSlide();
+        });
+      }
+
+      // Download Dropdown & Handlers
+      const toggleBtn = document.getElementById("download-toggle-btn");
+      const downloadMenu = document.getElementById("download-menu");
+      if (toggleBtn && downloadMenu) {
+        toggleBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          downloadMenu.style.display = downloadMenu.style.display === "block" ? "none" : "block";
+        });
+        document.addEventListener("click", () => {
+          downloadMenu.style.display = "none";
+        });
+      }
+
+      const pptxBtn = document.getElementById("menu-download-pptx");
+      if (pptxBtn) {
+        pptxBtn.addEventListener("click", async () => {
+          if (downloadMenu) downloadMenu.style.display = "none";
+          showToast("Compiling PowerPoint (.pptx)...", "info");
+          try {
+            const res = await fetch("/api/download/pptx", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                title: data.title,
+                slides: data.slides,
+                template: selectedPptTemplate
+              })
+            });
+            if (!res.ok) throw new Error("PPTX creation failed");
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${(data.title || "presentation").replace(/[^a-z0-9]+/gi, "_")}.pptx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("PowerPoint (.pptx) downloaded successfully!", "success");
+          } catch (e) {
+            showToast(e.message, "error");
+          }
+        });
+      }
+
+      const pdfBtn = document.getElementById("menu-download-pdf");
+      if (pdfBtn) {
+        pdfBtn.addEventListener("click", () => {
+          if (downloadMenu) downloadMenu.style.display = "none";
+          showToast("Preparing presentation PDF...", "info");
+          const iframe = document.createElement("iframe");
+          iframe.style.position = "fixed";
+          iframe.style.right = "0";
+          iframe.style.bottom = "0";
+          iframe.style.width = "0";
+          iframe.style.height = "0";
+          iframe.style.border = "0";
+          document.body.appendChild(iframe);
+
+          const doc = iframe.contentWindow?.document;
+          if (!doc) return;
+
+          const slidesHtml = deckSlides.map((s, sIdx) => `
+            <div style="width: 100vw; height: 100vh; page-break-after: always; position: relative; padding: 48px 64px 64px 64px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; background: #EEF0F6; font-family: Arial, sans-serif;">
+              <div>
+                <div style="font-size: 13px; font-weight: 700; color: #4A5568; text-transform: uppercase; margin-bottom: 12px;">${escapeHtml(s.kicker || `Slide ${sIdx + 1}`)}</div>
+                <h1 style="font-size: 32px; font-weight: 900; color: #000; margin: 0 0 16px 0; text-transform: uppercase;">${escapeHtml(s.title)}</h1>
+                ${s.summary ? `<p style="font-size: 15px; color: #2D3748; line-height: 1.6; max-width: 80%;">${escapeHtml(s.summary)}</p>` : ""}
+                ${s.bullets && s.bullets.length ? `<ul style="margin: 16px 0; padding-left: 24px; font-size: 15px; line-height: 1.8; color: #1F1E1B;">${s.bullets.map(b => `<li style="margin-bottom: 6px;">${escapeHtml(b)}</li>`).join("")}</ul>` : ""}
+              </div>
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 44px; background: #1B395D; color: #FFFFFF; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; font-size: 12px; font-weight: 700;">
+                <span>${escapeHtml(data.title || "Presentation")}</span>
+                <span>Page ${String(sIdx + 1).padStart(2, "0")}</span>
+              </div>
+            </div>
+          `).join("");
+
+          doc.open();
+          doc.write(`<!DOCTYPE html><html><head><title>${escapeHtml(data.title || "Presentation")}</title><style>@page { size: landscape; margin: 0; } * { box-sizing: border-box; } body { margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }</style></head><body>${slidesHtml}</body></html>`);
+          doc.close();
+
+          setTimeout(() => {
+            iframe.contentWindow?.focus();
+            iframe.contentWindow?.print();
+            setTimeout(() => {
+              if (document.body.contains(iframe)) document.body.removeChild(iframe);
+            }, 2000);
+          }, 400);
+        });
+      }
 
       const prevBtn = document.getElementById("ppt-prev-btn");
       if (prevBtn && slideIdx > 0) {
@@ -794,12 +1232,23 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const nextBtn = document.getElementById("ppt-next-btn");
-      if (nextBtn && slideIdx < slides.length - 1) {
+      if (nextBtn && slideIdx < totalCount - 1) {
         nextBtn.addEventListener("click", () => {
           slideIdx++;
           renderCurrentSlide();
         });
       }
+
+      document.querySelectorAll(".slide-dot-btn").forEach(b => {
+        b.addEventListener("click", (e) => {
+          slideIdx = parseInt(e.target.getAttribute("data-idx"), 10);
+          renderCurrentSlide();
+        });
+      });
+    }
+
+    renderCurrentSlide();
+  }
 
       document.querySelectorAll(".slide-dot-btn").forEach(b => {
         b.addEventListener("click", (e) => {
@@ -851,28 +1300,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <div style="max-width: 480px; margin: 0 auto 36px auto;">
           <!-- Row 1: Difficulty -->
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; gap: 12px; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 10px; color: var(--text-main); font-size: 15px; font-weight: 600;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Difficulty</span>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button type="button" class="setup-diff-btn" data-diff="easy" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "easy" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Easy</button>
-              <button type="button" class="setup-diff-btn" data-diff="medium" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "medium" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Medium</button>
-              <button type="button" class="setup-diff-btn" data-diff="hard" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 68px; text-align: center; ${chosenDiff === "hard" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Hard</button>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 16px;">
+            <div style="color: var(--text-main); font-size: 15px; font-weight: 600;">Difficulty</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 260px;">
+              <button type="button" class="setup-diff-btn" data-diff="easy" style="width: 100%; padding: 8px 0; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; text-align: center; box-sizing: border-box; ${chosenDiff === "easy" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Easy</button>
+              <button type="button" class="setup-diff-btn" data-diff="medium" style="width: 100%; padding: 8px 0; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; text-align: center; box-sizing: border-box; ${chosenDiff === "medium" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Medium</button>
+              <button type="button" class="setup-diff-btn" data-diff="hard" style="width: 100%; padding: 8px 0; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; text-align: center; box-sizing: border-box; ${chosenDiff === "hard" ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">Hard</button>
             </div>
           </div>
 
           <!-- Row 2: Number of Questions -->
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 10px; color: var(--text-main); font-size: 15px; font-weight: 600;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              <span>Number of Questions</span>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button type="button" class="setup-count-btn" data-count="3" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 3 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">3</button>
-              <button type="button" class="setup-count-btn" data-count="5" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 5 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">5</button>
-              <button type="button" class="setup-count-btn" data-count="10" style="padding: 8px 22px; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; min-width: 54px; text-align: center; ${chosenCount === 10 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">10</button>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <div style="color: var(--text-main); font-size: 15px; font-weight: 600;">Number of Questions</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 260px;">
+              <button type="button" class="setup-count-btn" data-count="3" style="width: 100%; padding: 8px 0; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; text-align: center; box-sizing: border-box; ${chosenCount === 3 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">3</button>
+              <button type="button" class="setup-count-btn" data-count="5" style="width: 100%; padding: 8px 0; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; text-align: center; box-sizing: border-box; ${chosenCount === 5 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">5</button>
+              <button type="button" class="setup-count-btn" data-count="10" style="width: 100%; padding: 8px 0; font-size: 14px; border-radius: 9999px; cursor: pointer; transition: all 0.15s; text-align: center; box-sizing: border-box; ${chosenCount === 10 ? "background: var(--brand-lime); color: #0E0F0C; font-weight: 700; border: 1px solid var(--brand-lime);" : "background: var(--card-bg); color: var(--text-main); font-weight: 500; border: 1px solid var(--card-border);"}">10</button>
             </div>
           </div>
         </div>
@@ -1097,19 +1540,119 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+function cleanAndDeduplicateSummary(rawText) {
+  if (!rawText) return "";
+
+  // 1. Remove hallucinated CJK characters and punctuation
+  var cleaned = rawText.replace(/[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af\u3000-\u303f\uff00-\uffef]+/g, "");
+  cleaned = cleaned.replace(/\(\s*\)/g, "");
+  cleaned = cleaned.replace(/\(\s*Section\s*\d*\s*\)/gi, "");
+  cleaned = cleaned.replace(/\*\*\s*\*\*/g, "");
+  cleaned = cleaned.replace(/^\s*[-*]\s*[-*:\s]*$/gm, "");
+
+  // 2. Check for duplicate blocks separated by --- or repeated # Video Summary / ## Main Topic
+  var parts = cleaned.split(/\n\s*---\s*\n/);
+  if (parts.length <= 1) {
+    var summaryHeaderMatches = [...cleaned.matchAll(/(?:^|\n)#+\s*Video Summary/gi)];
+    if (summaryHeaderMatches.length > 1) {
+      parts = [cleaned.slice(0, summaryHeaderMatches[1].index), cleaned.slice(summaryHeaderMatches[1].index)];
+    }
+  }
+
+  if (parts.length <= 1) {
+    var mainTopicMatches = [...cleaned.matchAll(/(?:^|\n)##\s*Main Topic/gi)];
+    if (mainTopicMatches.length > 1) {
+      parts = [cleaned.slice(0, mainTopicMatches[1].index), cleaned.slice(mainTopicMatches[1].index)];
+    }
+  }
+
+  if (parts.length <= 1) {
+    return cleaned.replace(/^\s*#+\s*(?:Video\s+)?Summary\s*\n+/i, "").trim();
+  }
+
+  var mainTopics = [];
+  var keyConcepts = [];
+  var detailedBreakdowns = [];
+  var keyTakeaways = [];
+
+  for (var i = 0; i < parts.length; i++) {
+    var part = parts[i];
+    var mtMatch = part.match(/##\s*Main Topic\s*\n+([\s\S]*?)(?=\n##|$)/i);
+    if (mtMatch) {
+      var mt = mtMatch[1].trim();
+      if (mt && !mainTopics.includes(mt)) mainTopics.push(mt);
+    }
+
+    var kcMatch = part.match(/##\s*Key Concepts\s*\n+([\s\S]*?)(?=\n##|$)/i);
+    if (kcMatch) {
+      var lines = kcMatch[1].trim().split("\n");
+      for (var j = 0; j < lines.length; j++) {
+        var trimmed = lines[j].trim();
+        if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+          var item = trimmed.replace(/^[-*]\s*/, "").replace(/^[-:\s]+/, "").trim();
+          if (item && !keyConcepts.some(function(e) { return e.toLowerCase() === item.toLowerCase(); })) {
+            keyConcepts.push(item);
+          }
+        }
+      }
+    }
+
+    var dbMatch = part.match(/##\s*Detailed Breakdown\s*\n+([\s\S]*?)(?=\n##|$)/i);
+    if (dbMatch) {
+      var lines = dbMatch[1].trim().split("\n");
+      for (var j = 0; j < lines.length; j++) {
+        var trimmed = lines[j].trim();
+        if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+          var item = trimmed.replace(/^[-*]\s*/, "").replace(/^[-:\s]+/, "").trim();
+          if (item && !detailedBreakdowns.some(function(e) { return e.toLowerCase() === item.toLowerCase(); })) {
+            detailedBreakdowns.push(item);
+          }
+        }
+      }
+    }
+
+    var ktMatch = part.match(/##\s*Key Takeaways\s*\n+([\s\S]*?)(?=\n##|$)/i);
+    if (ktMatch) {
+      var lines = ktMatch[1].trim().split("\n");
+      for (var j = 0; j < lines.length; j++) {
+        var trimmed = lines[j].trim();
+        if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+          var item = trimmed.replace(/^[-*]\s*/, "").replace(/^[-:\s]+/, "").trim();
+          if (item && !keyTakeaways.some(function(e) { return e.toLowerCase() === item.toLowerCase(); })) {
+            keyTakeaways.push(item);
+          }
+        } else if (trimmed && !trimmed.startsWith("#") && trimmed.length > 3) {
+          if (!keyTakeaways.includes(trimmed)) keyTakeaways.push(trimmed);
+        }
+      }
+    }
+  }
+
+  var out = [];
+  if (mainTopics.length) out.push("## Main Topic\n" + mainTopics.join(" ") + "\n");
+  if (keyConcepts.length) out.push("## Key Concepts\n" + keyConcepts.map(function(c) { return "- " + c; }).join("\n") + "\n");
+  if (detailedBreakdowns.length) out.push("## Detailed Breakdown\n" + detailedBreakdowns.map(function(b) { return "- " + b; }).join("\n") + "\n");
+  if (keyTakeaways.length) out.push("## Key Takeaways\n" + keyTakeaways.map(function(t) { return t.startsWith("-") ? t : "- " + t; }).join("\n") + "\n");
+
+  return out.join("\n").trim();
+}
+
   function renderOutputWorkspace(result) {
     if (!result) return;
     currentResult = result;
     workspaceContainer.style.display = "block";
     workspaceContainer.scrollIntoView({ behavior: "smooth" });
 
-    videoTitleHeading.textContent = result.title || "Video Summary";
+    videoTitleHeading.textContent = result.title || "Video";
+
+    var cleanedSummary = cleanAndDeduplicateSummary(result.summary || "");
+    currentResult.cleanedSummary = cleanedSummary;
 
     // Render Markdown + Math
     if (window.marked) {
-      summaryContentEl.innerHTML = marked.parse(result.summary || "");
+      summaryContentEl.innerHTML = marked.parse(cleanedSummary);
     } else {
-      summaryContentEl.textContent = result.summary || "";
+      summaryContentEl.textContent = cleanedSummary;
     }
 
     // Trigger KaTeX Formula Rendering
@@ -1245,8 +1788,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (copySummaryBtn) {
     copySummaryBtn.addEventListener("click", () => {
-      if (!currentResult || !currentResult.summary) return;
-      navigator.clipboard.writeText(currentResult.summary).then(() => {
+      if (!currentResult || (!currentResult.summary && !currentResult.cleanedSummary)) return;
+      var textToCopy = currentResult.cleanedSummary ? `# Video Summary\n\n${currentResult.cleanedSummary}` : currentResult.summary;
+      navigator.clipboard.writeText(textToCopy).then(() => {
         showToast("Summary copied to clipboard!", "success");
       });
     });
@@ -1261,8 +1805,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (downloadTxtSummaryBtn) {
     downloadTxtSummaryBtn.addEventListener("click", () => {
-      if (!currentResult || !currentResult.summary) return;
-      downloadFile(currentResult.summary, `${sanitizeFilename(currentResult.title)}_summary.txt`, "text/plain");
+      if (!currentResult || (!currentResult.summary && !currentResult.cleanedSummary)) return;
+      var textToDownload = currentResult.cleanedSummary ? `# Video Summary\n\n${currentResult.cleanedSummary}` : currentResult.summary;
+      downloadFile(textToDownload, `${sanitizeFilename(currentResult.title)}_summary.txt`, "text/plain");
       showToast("Downloaded Summary TXT!", "success");
     });
   }
@@ -1435,12 +1980,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- FAQ Accordion Interactive Toggle ---
-  document.querySelectorAll(".faq-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const item = btn.closest(".faq-item");
+  document.querySelectorAll(".faq-btn, .faq-card-modern").forEach(elem => {
+    elem.addEventListener("click", () => {
+      const item = elem.classList.contains("faq-card-modern") ? elem : elem.closest(".faq-item");
       if (!item) return;
       const isOpen = item.classList.contains("open");
-      document.querySelectorAll(".faq-item").forEach(other => other.classList.remove("open"));
+      document.querySelectorAll(".faq-item, .faq-card-modern").forEach(other => other.classList.remove("open"));
       if (!isOpen) {
         item.classList.add("open");
       }
