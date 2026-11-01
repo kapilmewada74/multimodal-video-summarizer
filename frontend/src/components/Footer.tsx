@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { Shield, Terminal, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Logo } from "./Logo";
 
 export function Footer() {
   return (
-    <footer className="mt-24 sm:mt-32 border-t border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-muted)] no-print">
+    <footer className="mt-auto border-t border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-muted)] no-print">
       <div className="max-w-[1140px] mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-10 mb-12">
           {/* Brand Info */}
@@ -18,12 +18,8 @@ export function Footer() {
               </span>
             </div>
             <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-              Local-first multimodal study workspace. Transform hours of video lectures into structured knowledge, flashcards, slides, and quizzes.
+              Transform hours of video lectures, meetings, and podcasts into structured notes, active-recall flashcards, slide presentations, and quizzes.
             </p>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--btn-secondary-bg)] border border-[var(--card-border)] text-[10px] font-bold text-[var(--text-muted)]">
-              <span className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
-              <span>Local Inference Ready</span>
-            </div>
           </div>
 
           {/* Study Tools */}
@@ -66,20 +62,17 @@ export function Footer() {
               Export Formats
             </h4>
             <ul className="space-y-2 text-xs">
-              <li className="flex items-center gap-1.5">
-                <span>PowerPoint (.pptx)</span>
+              <li>
+                <span>PowerPoint Presentation (.pptx)</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <span>Printable PDF</span>
+              <li>
+                <span>Printable PDF (.pdf)</span>
               </li>
-              <li className="flex items-center gap-1.5">
+              <li>
                 <span>Plain Text (.txt)</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <span>Markdown Clipboard</span>
-              </li>
-              <li className="flex items-center gap-1.5">
-                <span>Auto-clean PPT Cache</span>
+              <li>
+                <span>Markdown Notes (.md)</span>
               </li>
             </ul>
           </div>
@@ -105,20 +98,16 @@ export function Footer() {
                   FAQ <ArrowUpRight className="w-3 h-3 opacity-60" />
                 </a>
               </li>
-              <li className="pt-1 flex items-center gap-2 text-[11px] text-[var(--text-muted)]">
-                <Shield className="w-3.5 h-3.5 text-[var(--color-success)]" />
-                <span>100% Private Processing</span>
-              </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Clean Professional Bottom Bar */}
         <div className="pt-6 border-t border-[var(--card-border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <p>© {new Date().getFullYear()} SUMMARIZE.AI. Built for high-efficiency learning.</p>
-          <div className="flex items-center gap-6">
-            <span className="text-[var(--text-muted)] font-mono text-[11px]">v2.4.0 (Local)</span>
-            <span className="text-[var(--text-muted)]">Private & Unlimited</span>
+          <p>© {new Date().getFullYear()} SUMMARIZE.AI. All rights reserved.</p>
+          <div className="flex items-center gap-6 text-[var(--text-muted)]">
+            <a href="#app-top" className="hover:text-[var(--text-main)] transition-colors">Privacy Policy</a>
+            <a href="#app-top" className="hover:text-[var(--text-main)] transition-colors">Terms of Service</a>
           </div>
         </div>
       </div>

@@ -45,6 +45,7 @@ CRITICAL INSTRUCTIONS:
 4. Preserve key concepts, terminology, steps, and examples directly mentioned by the speaker.
 5. Adapt the structure naturally to the topic of the video (e.g. programming, science, lecture, podcast).
 6. Do NOT invent mathematical formulas or code unless the speaker explicitly discussed them in the transcript.
+7. MATHEMATICAL FORMULAS & SCIENTIFIC NOTATION: Whenever the video discusses mathematical equations, formulas, loss functions, algorithms, or quantitative metrics (e.g. Min-Max Scaling, Normalization, Standard Deviation, physics, calculus, statistics), ALWAYS format them cleanly using standard LaTeX notation ($...$ for inline or $$...$$ for display block equations) so they render with pristine mathematical typography.
 
 OUTPUT STRUCTURE:
 # Summary
@@ -82,6 +83,7 @@ INSTRUCTIONS:
 3. Maintain logical flow and clear hierarchy.
 4. Faithfully preserve any key definitions, steps, code concepts, or terminology discussed.
 5. Do NOT hallucinate concepts, examples, or formulas not discussed in the original transcript.
+6. MATHEMATICAL FORMULAS & SCIENTIFIC NOTATION: Whenever preserving mathematical formulas or equations, format them in standard LaTeX ($...$ inline or $$...$$ display) so they are rendered with proper mathematical notation.
 
 OUTPUT STRUCTURE:
 # Video Summary

@@ -8,6 +8,39 @@ import logging
 import threading
 from typing import Dict, Any, Optional
 
+# Safe stdout/stderr wrapper to prevent [Errno 5] Input/output error on detached terminals
+class SafeStream:
+    """Safely wraps stdout/stderr to prevent [Errno 5] Input/output error on detached or closed terminals."""
+    def __init__(self, stream):
+        self._stream = stream
+    def write(self, data):
+        try:
+            return self._stream.write(data)
+        except (OSError, IOError):
+            return len(data) if data else 0
+    def flush(self):
+        try:
+            return self._stream.flush()
+        except (OSError, IOError):
+            pass
+    def isatty(self):
+        try:
+            return self._stream.isatty()
+        except (OSError, IOError):
+            return False
+    def fileno(self):
+        try:
+            return self._stream.fileno()
+        except (OSError, IOError, AttributeError):
+            raise OSError(5, "Input/output error")
+    def __getattr__(self, name):
+        return getattr(self._stream, name)
+
+if not isinstance(sys.stdout, SafeStream):
+    sys.stdout = SafeStream(sys.stdout)
+if not isinstance(sys.stderr, SafeStream):
+    sys.stderr = SafeStream(sys.stderr)
+
 import yt_dlp
 import whisper
 import torch
@@ -30,6 +63,17 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 logger = logging.getLogger("summarizer_services")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+class YTDLPSafeLogger:
+    """Custom logger for yt-dlp to avoid raw ANSI progress strings on closed ttys."""
+    def debug(self, msg):
+        pass
+    def info(self, msg):
+        pass
+    def warning(self, msg):
+        pass
+    def error(self, msg):
+        logger.error(f"[yt-dlp] {msg}")
 
 # Global model caches
 _whisper_model = None
@@ -124,13 +168,16 @@ def run_pipeline_for_url(job_id: str, url: str, mode: str = "educational"):
         
         output_template = os.path.join(DOWNLOAD_DIR, f"yt_{job_id}.%(ext)s")
         ydl_opts = {
-            "format": "bestaudio/bestvideo[height<=144]+bestaudio/best[height<=144]/best",
+            "format": "bestaudio/best",
             "outtmpl": output_template,
             "noplaylist": True,
             "quiet": True,
+            "no_warnings": True,
+            "noprogress": True,
+            "logger": YTDLPSafeLogger(),
             "extractor_args": {
                 "youtube": {
-                    "player_client": ["android", "ios"]
+                    "player_client": ["android", "web", "mweb", "ios"]
                 }
             },
             "http_headers": {
@@ -221,12 +268,45 @@ def run_pipeline_for_upload(job_id: str, uploaded_file_path: str, original_filen
                 pass
 
 
+def clean_and_deduplicate_summary(text: str) -> str:
+    """Clean hallucinated CJK characters and deduplicate repeating summary blocks while preserving full detailed content."""
+    if not text:
+        return ""
+
+    # Strip CJK characters and CJK punctuation
+    cleaned = re.sub(r'[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af\u3000-\u303f\uff00-\uffef]+', '', text)
+    cleaned = re.sub(r'\(\s*\)', '', cleaned)
+    cleaned = re.sub(r'\(\s*Section\s*\d*\s*\)', '', cleaned)
+    cleaned = re.sub(r'\*\*\s*\*\*', '', cleaned)
+    cleaned = re.sub(r'^\s*[-*]\s*[-*:\s]*$', '', cleaned, flags=re.MULTILINE)
+
+    # 1. Check if the text contains multiple '# Video Summary' or '# Summary' blocks
+    pattern = r'(?=(?:^|\n)#+\s*(?:Video\s+)?Summary)'
+    blocks = [b.strip() for b in re.split(pattern, cleaned, flags=re.IGNORECASE) if b.strip()]
+    if len(blocks) > 1:
+        # Pick the most complete/detailed block that has substantial headings and content
+        best_block = max(blocks, key=len)
+        cleaned = best_block
+
+    # 2. Check if a major section like '## Main Topic' or '## 1. Main Topic' repeats within the text
+    m = re.search(r'(##\s*(?:\d+\.\s*)?Main Topic)', cleaned, re.IGNORECASE)
+    if m:
+        first_header = m.group(1)
+        second_pos = cleaned.lower().find(first_header.lower(), m.end())
+        if second_pos != -1 and second_pos > m.end() + 100:
+            cleaned = cleaned[:second_pos].strip()
+
+    # 3. Clean any artificial trailing delimiters
+    cleaned = re.sub(r'\n\s*---\s*$', '', cleaned).strip()
+    return re.sub(r'\n{3,}', '\n\n', cleaned).strip()
+
+
 def _transcribe_and_summarize(job_id: str, audio_path: str, title: str, duration: int, mode: str):
     # Step 2: Speech to Text
     update_job(job_id, step=2, step_name="Whisper Transcription", progress=45, message="Transcribing speech with OpenAI Whisper (local)...")
     whisper_model = get_whisper_model()
 
-    transcribe_res = whisper_model.transcribe(audio_path, fp16=False, language="en")
+    transcribe_res = whisper_model.transcribe(audio_path, fp16=False, language="en", verbose=False)
     transcript = transcribe_res.get("text", "").strip()
 
     if not transcript:
@@ -251,7 +331,7 @@ def _transcribe_and_summarize(job_id: str, audio_path: str, title: str, duration
     final_chain = final_prompt | llm | parser
 
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=6000,
+        chunk_size=14000,
         chunk_overlap=500,
         separators=["\n\n", "\n", ". ", " ", ""]
     )
@@ -267,10 +347,13 @@ def _transcribe_and_summarize(job_id: str, audio_path: str, title: str, duration
     update_job(job_id, step=3, step_name="Synthesizing Final Summary", progress=95, message="Synthesizing final structured summary...")
     
     if len(summaries) == 1:
-        final_summary = summaries[0]
+        raw_final = summaries[0]
     else:
         combined_summaries = "\n\n".join(f"--- Section {i + 1} ---\n{s}" for i, s in enumerate(summaries))
-        final_summary = final_chain.invoke({"summaries": combined_summaries}).strip()
+        raw_final = final_chain.invoke({"summaries": combined_summaries}).strip()
+
+    # Deduplicate and clean to guarantee a single unified summary
+    final_summary = clean_and_deduplicate_summary(raw_final)
 
     # Save to output/summary.txt for CLI compatibility
     summary_file = os.path.join(OUTPUT_DIR, "summary.txt")

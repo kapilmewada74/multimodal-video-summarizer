@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,148 +23,232 @@
   <!-- ============================================================
        NAVBAR
        ============================================================ -->
-  <nav style="height: 56px; position: sticky; top: 0; z-index: 50; background-color: var(--card-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="28" height="28" rx="8" fill="#141512" stroke="rgba(217, 236, 149, 0.35)" stroke-width="1.2"/>
-        <path d="M8.5 8L16.5 14L8.5 20V8Z" fill="#D9EC95"/>
-        <path d="M18 9.5H21" stroke="#D9EC95" stroke-width="2" stroke-linecap="round"/>
-        <path d="M18 14H22.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
-        <path d="M18 18.5H20" stroke="#D9EC95" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase;">SUMMARIZE<span style="color: var(--brand-lime);">.AI</span></span>
-    </div>
-
-    <div style="display: flex; align-items: center; gap: 20px;">
-      <div class="desktop-nav-links" style="display: flex; align-items: center; gap: 20px; font-size: 13px; font-weight: 600; color: var(--text-muted);">
-        <a href="#features" style="color: inherit; text-decoration: none;">Features</a>
-        <a href="#how-it-works" style="color: inherit; text-decoration: none;">How It Works</a>
-        <a href="#faq" style="color: inherit; text-decoration: none;">FAQ</a>
+  <nav style="height: 60px; position: sticky; top: 0; z-index: 50; background-color: var(--card-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); padding: 0 16px;">
+    <div style="width: 100%; max-width: 1920px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 100%;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" fill="#0E0F0C" stroke="#D9EC95" stroke-width="4"/>
+          <circle cx="50" cy="50" r="34.5" fill="none" stroke="rgba(217, 236, 149, 0.4)" stroke-width="3.2"/>
+          <path d="M 31.06 22.73 L 28.79 23.67 L 27.65 25.00 L 27.08 26.52 L 27.08 73.30 L 27.84 75.19 L 28.98 76.33 L 30.68 77.08 L 32.58 77.08 L 35.04 75.95 L 73.30 53.79 L 75.00 51.89 L 75.38 49.24 L 74.62 47.35 L 72.92 45.83 L 33.90 23.30 Z" fill="#0E0F0C"/>
+          <path d="M 43.94 15.72 L 37.31 17.42 L 32.39 19.89 L 35.80 21.02 L 75.38 43.94 L 76.89 45.45 L 78.03 47.54 L 78.41 49.43 L 78.22 51.70 L 77.08 54.17 L 74.62 56.44 L 35.61 78.98 L 32.20 80.11 L 28.79 79.55 L 27.08 78.60 L 25.57 77.08 L 24.43 75.00 L 24.05 73.30 L 24.05 26.70 L 20.08 32.01 L 17.99 35.98 L 16.29 40.72 L 15.53 44.13 L 15.53 74.81 L 16.86 79.36 L 19.13 82.95 L 21.40 85.23 L 23.30 86.55 L 28.03 88.45 L 32.95 88.83 L 38.07 87.50 L 78.98 64.02 L 82.01 61.74 L 85.04 57.77 L 86.55 53.98 L 86.93 47.92 L 86.36 45.27 L 84.66 41.48 L 81.25 37.50 Z" fill="#D9EC95" stroke="#0E0F0C" stroke-width="3.4" stroke-linejoin="round"/>
+          <line x1="36.55" y1="22.73" x2="49.05" y2="30.30" stroke="#0E0F0C" stroke-width="3.2" stroke-linecap="round"/>
+          <path d="M 38.64 39.39 L 38.26 39.77 L 38.26 60.04 L 38.45 60.42 L 39.20 60.61 L 56.25 50.76 L 56.82 50.19 L 56.82 49.62 L 39.39 39.39 Z" fill="#D9EC95" stroke="#0E0F0C" stroke-width="2.8" stroke-linejoin="round"/>
+        </svg>
+        <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase;">SUMMARIZE<span style="color: var(--brand-lime);">.AI</span></span>
       </div>
-      <button id="theme-toggle-btn" class="btn-icon" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      </button>
+
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <div class="desktop-nav-links" style="display: flex; align-items: center; gap: 20px; font-size: 13px; font-weight: 600; color: var(--text-muted);">
+          <a href="#features" style="color: inherit; text-decoration: none;">Features</a>
+          <a href="#how-it-works" style="color: inherit; text-decoration: none;">How It Works</a>
+          <a href="#faq" style="color: inherit; text-decoration: none;">FAQ</a>
+        </div>
+        <button id="theme-toggle-btn" class="btn-icon" aria-label="Toggle Theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
     </div>
   </nav>
 
   <!-- ============================================================
-       MAIN CONTAINER
+       SEAMLESS HERO SECTION — AMBIENT BACKGROUND BLENDING
        ============================================================ -->
-  <main style="max-width: 1140px; margin: 0 auto; padding: 36px 16px 80px 16px;">
-
-    <!-- Hero Header -->
-    <header style="text-align: center; margin-bottom: 44px;">
-      <!-- Eyebrow Pill -->
-      <div class="pill-eyebrow">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-lime);"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
-        <span>Next-Generation Multimodal Learning Suite</span>
+  <section style="width: 100%; padding: clamp(40px, 6vw, 96px) 0 96px 0; position: relative; overflow: hidden;">
+    <div style="width: 100%; max-width: 2048px; margin: 0 auto; position: relative;">
+      <!-- Subtle Ambient Pale-Green Radial Glows -->
+      <div style="position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;" aria-hidden="true">
+        <div style="position: absolute; top: 8%; left: 50%; transform: translateX(-50%); width: 75%; max-width: 1100px; height: 55%; border-radius: 9999px; filter: blur(90px); opacity: 0.65; background: radial-gradient(ellipse at center, rgba(217, 236, 149, 0.25) 0%, rgba(217, 236, 149, 0.08) 45%, transparent 75%);"></div>
+        <div style="position: absolute; top: 20%; left: 2%; width: 38%; max-width: 520px; height: 65%; border-radius: 9999px; filter: blur(85px); opacity: 0.55; background: radial-gradient(circle at center, rgba(217, 236, 149, 0.22) 0%, rgba(217, 236, 149, 0.06) 50%, transparent 75%);"></div>
+        <div style="position: absolute; top: 18%; right: 2%; width: 40%; max-width: 560px; height: 68%; border-radius: 9999px; filter: blur(90px); opacity: 0.60; background: radial-gradient(circle at center, rgba(217, 236, 149, 0.24) 0%, rgba(217, 236, 149, 0.07) 50%, transparent 75%);"></div>
       </div>
 
-      <h1 style="font-size: clamp(32px, 5vw, 52px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 14px;">
-        Summarize Any Video in Seconds
-      </h1>
-      <p style="font-size: 16px; color: var(--text-muted); max-width: 620px; margin: 0 auto 24px auto; line-height: 1.6;">
-        Generate structured study notes, complete transcripts, active-recall flashcards, slide presentations, and interactive quizzes from any video.
-      </p>
+      <!-- Base Layer: Clean SVG Illustration — Seamlessly Blended -->
+      <img 
+        src="/static/summarize-ai-hero-illustration.svg" 
+        alt="Summarize AI Hero Illustration" 
+        style="width: 100%; height: auto; display: block; user-select: none; pointer-events: none; position: relative; z-index: 1;" 
+      />
 
-      <!-- Value Badges Strip -->
-      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-size: 12px; font-weight: 600; color: var(--text-muted);">
-        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-lime);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <span>Instant Processing</span>
+      <!-- Overlay Layer: Title, Subtitle, Tabs, Input Pill & Button -->
+      <div class="desktop-interactive-overlay" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2;">
+        <!-- 1. Header Typography: Title with Doodle Underline & Sparks -->
+        <div style="position: absolute; top: 4.5%; left: 0; width: 100%; text-align: center; padding: 0 16px;">
+          <h1 style="font-size: clamp(22px, 2.8vw, 56px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; color: var(--text-main); margin: 0 auto 6px auto; max-width: 1100px;">
+            Summarize Any Video in <span style="position: relative; display: inline-block;">
+              Seconds
+              <svg style="position: absolute; bottom: -8px; left: 0; width: 100%; height: 14px; color: var(--brand-lime); pointer-events: none;" viewBox="0 0 160 14" fill="none" preserveAspectRatio="none">
+                <path d="M3 10 C 45 3, 115 4, 157 9 C 115 12, 45 11, 3 10" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg style="position: absolute; top: -14px; right: -22px; width: 22px; height: 22px; color: var(--brand-lime); pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="12" y1="2" x2="12" y2="8" />
+                <line x1="4" y1="7" x2="9" y2="10.5" />
+                <line x1="20" y1="7" x2="15" y2="10.5" />
+              </svg>
+            </span>
+          </h1>
+          <p style="font-size: clamp(11px, 1.0vw, 17px); color: var(--text-muted); max-width: 680px; margin: 0 auto; line-height: 1.5;">
+            Generate structured study notes, complete transcripts, active-recall flashcards, slide presentations, and interactive quizzes from any video.
+          </p>
         </div>
-        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--color-success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>100% Private & Local</span>
-        </div>
-        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span>PPTX & PDF Exports</span>
-        </div>
-        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
-          <span>Active-Recall Suite</span>
-        </div>
-      </div>
-    </header>
 
-    <!-- Core Utility Card (iLovePDF Tool Pattern) -->
-    <div class="card-container" style="padding: 24px; margin-bottom: 32px;">
-      
-      <!-- Input Mode Navigation -->
-      <div class="tab-nav">
-        <button id="tab-url-btn" class="tab-btn active">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          <span>YouTube URL</span>
-        </button>
-        <button id="tab-upload-btn" class="tab-btn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <span>Upload Video / Audio</span>
-        </button>
-      </div>
-
-      <!-- Mode 1: YouTube URL Input -->
-      <div id="section-url-input">
-        <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">
-          Paste YouTube Video Link
-        </label>
-        <div style="display: flex; gap: 10px;">
-          <input 
-            type="url" 
-            id="youtube-url-input" 
-            placeholder="https://www.youtube.com/watch?v=..." 
-            style="flex: 1; height: 44px; padding: 12px 20px; font-size: 14px; border-radius: 9999px; background-color: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-main); outline: none;"
-          />
-          <button id="paste-btn" class="btn-secondary" title="Paste from clipboard" style="height: 44px; padding: 10px 20px; border-radius: 9999px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-            Paste
+        <!-- 2. Tab Navigation: YouTube URL / Upload Video -->
+        <div style="position: absolute; top: 48.0%; left: 37.5%; display: flex; align-items: center; gap: 10px;">
+          <button id="tab-url-btn" class="tab-btn active" style="border-radius: 9999px; padding: clamp(6px, 0.6vw, 10px) clamp(14px, 1.1vw, 22px); font-weight: 700; font-size: clamp(11px, 0.85vw, 14px); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span>YouTube URL</span>
+          </button>
+          <button id="tab-upload-btn" class="tab-btn" style="border-radius: 9999px; padding: clamp(6px, 0.6vw, 10px) clamp(14px, 1.1vw, 22px); font-weight: 700; font-size: clamp(11px, 0.85vw, 14px); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Upload Video / Audio</span>
           </button>
         </div>
-      </div>
 
-      <!-- Mode 2: Drag & Drop File Upload -->
-      <div id="section-upload-input" style="display: none;">
-        <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">
-          Upload Media File
-        </label>
-        
+        <!-- 3. Interactive Pill Box (Unified for both URL & Upload) -->
+        <div id="section-pill-container" style="position: absolute; top: 57.5%; left: 37.5%; width: 45.0%; height: 14.0%; display: flex; align-items: center;">
+          <!-- Mode 1: URL Input -->
+          <div id="section-url-input" style="position: relative; width: 100%; height: 100%; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border); display: flex; align-items: center; padding: 0 8px 0 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            <div style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-right: 8px; flex-shrink: 0;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+            <input 
+              type="text"
+              inputmode="url"
+              id="youtube-url-input" 
+              class="hero-input"
+              name="yt_query_link"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              data-lpignore="true"
+              data-1p-ignore="true"
+              placeholder="Paste YouTube video link here..." 
+              style="flex: 1; height: 100%; background: transparent !important; border: none !important; outline: none !important; box-shadow: none !important; font-size: clamp(12px, 0.95vw, 16px); color: var(--text-main);"
+            />
+            <div style="position: relative; flex-shrink: 0;">
+              <button id="paste-btn" class="btn-secondary" title="Paste from clipboard" style="height: clamp(32px, 3.2vw, 44px); padding: 0 clamp(12px, 1.2vw, 20px); border-radius: 9999px; font-size: clamp(11px, 0.85vw, 14px); font-weight: 700; display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                <span>Paste</span>
+              </button>
+              <!-- Sparks on Paste Button -->
+              <svg style="position: absolute; top: -11px; right: -11px; width: 17px; height: 17px; color: var(--brand-lime); pointer-events: none;" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="10" y1="2" x2="10" y2="7" />
+                <line x1="3" y1="6" x2="7" y2="9" />
+                <line x1="17" y1="6" x2="13" y2="9" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Mode 2: Upload Pill Box (Identical shape/size) -->
+          <div id="section-upload-input" style="display: none; position: relative; width: 100%; height: 100%; border-radius: 9999px; background-color: var(--card-bg); border: 1px solid var(--card-border); align-items: center; padding: 0 8px 0 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); cursor: pointer;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-right: 8px; flex-shrink: 0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div id="file-dropzone-text" style="flex: 1; height: 100%; display: flex; align-items: center; font-size: clamp(12px, 0.95vw, 16px); color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: none;">
+              Click to upload or drag &amp; drop video/audio
+            </div>
+            <div style="position: relative; flex-shrink: 0;">
+              <button id="browse-file-btn" class="btn-secondary" title="Browse media files" style="height: clamp(32px, 3.2vw, 44px); padding: 0 clamp(12px, 1.2vw, 20px); border-radius: 9999px; font-size: clamp(11px, 0.85vw, 14px); font-weight: 700; display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>Browse</span>
+              </button>
+              <button id="file-remove-btn" style="display: none; height: clamp(32px, 3.2vw, 44px); padding: 0 14px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: rgba(239, 68, 68, 0.1); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer;">
+                Remove
+              </button>
+              <!-- Sparks on Browse Button -->
+              <svg id="browse-sparks" style="position: absolute; top: -11px; right: -11px; width: 17px; height: 17px; color: var(--brand-lime); pointer-events: none;" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="10" y1="2" x2="10" y2="7" />
+                <line x1="3" y1="6" x2="7" y2="9" />
+                <line x1="17" y1="6" x2="13" y2="9" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
         <input type="file" id="file-input" accept=".mp4,.mov,.mkv,.avi,.webm,.mp3,.wav,.m4a" style="display: none;" />
-        
-        <div id="file-dropzone" style="border: 2px dashed var(--card-border); border-radius: 12px; padding: 36px 20px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
-          <div style="width: 48px; height: 48px; border-radius: 50%; background-color: rgba(217, 236, 149, 0.1); color: var(--brand-lime); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          </div>
-          <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Click to upload or drag & drop</div>
-          <div style="font-size: 12px; color: var(--text-muted);">Supports MP4, MOV, MKV, MP3, WAV, M4A</div>
-        </div>
 
-        <div id="file-selected-info" style="display: none; align-items: center; justify-content: space-between; padding: 12px 16px; background-color: var(--card-surface-elevated); border: 1px solid var(--card-border); border-radius: 10px;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-lime)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span id="file-name-display" style="font-size: 13px; font-weight: 600;"></span>
-          </div>
-          <button id="file-remove-btn" class="btn-secondary" style="padding: 4px 10px; font-size: 12px; color: var(--color-danger);">
-            Remove
+        <!-- 4. Summarize Video Button (Centered, Meeting the Curved Arrow) -->
+        <div style="position: absolute; top: 75.5%; left: 51.5%; width: 21.5%; height: 10.5%; display: flex; align-items: center; justify-content: center;">
+          <button id="start-summarize-btn" class="btn-primary" style="width: 100%; height: 100%; border-radius: 9999px; font-weight: 900; font-size: clamp(12px, 1.1vw, 18px); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span>Summarize Video</span>
+            <span>→</span>
           </button>
         </div>
       </div>
-
-      <!-- Clean Action Footer -->
-      <div style="margin-top: 20px; display: flex; align-items: center; justify-content: flex-end; border-top: 1px solid var(--card-border); padding-top: 18px;">
-        <button id="start-summarize-btn" class="btn-primary">
-          Summarize Video →
-        </button>
-      </div>
-
     </div>
+  </section>
+
+  <!-- ============================================================
+       MAIN CONTENT CONTAINER (WORKSPACES, FEATURES, FAQ)
+       ============================================================ -->
+  <main style="max-width: 1180px; width: 100%; margin: 0 auto; padding: 16px 16px 80px 16px;">
 
     <!-- ============================================================
-         MINIMAL CLEAN LOADING INDICATOR
+         INTELLIGENT 3-STAGE PROGRESS CARD
          ============================================================ -->
-    <div id="loading-container" class="card-container" style="display: none; padding: 36px 20px; margin-bottom: 32px; text-align: center;">
-      <div class="loading-spinner" style="width: 38px; height: 38px; border: 3px solid var(--card-border); border-top-color: var(--brand-lime); border-radius: 50%; margin: 0 auto 16px auto; animation: spin 0.8s linear infinite;"></div>
-      <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Generating summary...</div>
-      <div style="font-size: 13px; color: var(--text-muted);">Transcribing audio and synthesizing key takeaways locally.</div>
+    <div id="loading-container" class="card-container" style="display: none; max-width: 680px; margin: 16px auto 96px auto; padding: 36px 24px; text-align: center; border-radius: 28px; position: relative; overflow: hidden;">
+      
+      <!-- Ambient Radial Glow -->
+      <div style="position: absolute; top: 25%; left: 50%; transform: translate(-50%, -50%); width: 320px; height: 140px; background: rgba(217, 236, 149, 0.15); filter: blur(48px); border-radius: 50%; pointer-events: none; z-index: 0;"></div>
+
+      <!-- Progress Message Headline & Contextual Subtitle -->
+      <div style="margin-top: 8px; margin-bottom: 24px; position: relative; z-index: 1;">
+        <h3 style="font-size: 19px; font-weight: 800; margin: 0; color: var(--text-main); letter-spacing: -0.02em;">
+          Understanding your video...
+        </h3>
+        <p id="loading-stage-subtitle" style="font-size: 13px; color: var(--text-muted); margin: 6px auto 0 auto; max-width: 440px;">
+          Transcribing speech into high-fidelity text with local AI...
+        </p>
+      </div>
+
+      <!-- Three-Stage Progress Stepper -->
+      <div style="max-width: 500px; margin: 0 auto; position: relative; z-index: 1; padding: 0 8px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; position: relative;">
+          
+          <!-- Connecting Line 1 to 2 -->
+          <div id="static-step-line-1" style="position: absolute; top: 16px; left: 18%; right: 50%; height: 2px; background: var(--brand-lime); transform: translateY(-50%); z-index: 0; transition: background 0.4s ease;"></div>
+          
+          <!-- Connecting Line 2 to 3 -->
+          <div id="static-step-line-2" style="position: absolute; top: 16px; left: 50%; right: 18%; height: 2px; background: var(--card-border); transform: translateY(-50%); z-index: 0; transition: background 0.4s ease;"></div>
+
+          <!-- Stage 1: Transcribing Audio -->
+          <div id="static-stage-1" style="flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1;">
+            <div id="static-stage-dot-1" style="width: 32px; height: 32px; border-radius: 50%; background: var(--brand-lime); color: #0E0F0C; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; margin-bottom: 8px; box-shadow: 0 0 10px rgba(217, 236, 149, 0.4); transform: scale(1.05);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #0E0F0C; animation: pulse-dot 1.2s infinite ease-in-out;"></span>
+            </div>
+            <span id="static-stage-label-1" style="font-size: 12px; font-weight: 700; color: var(--text-main);">Transcribing audio</span>
+          </div>
+
+          <!-- Stage 2: Extracting Key Concepts -->
+          <div id="static-stage-2" style="flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1;">
+            <div id="static-stage-dot-2" style="width: 32px; height: 32px; border-radius: 50%; background: var(--card-elevated); border: 1px solid var(--card-border); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; margin-bottom: 8px; transition: all 0.3s ease;">
+              2
+            </div>
+            <span id="static-stage-label-2" style="font-size: 12px; font-weight: 500; color: var(--text-muted); opacity: 0.65;">Extracting key concepts</span>
+          </div>
+
+          <!-- Stage 3: Generating Summary -->
+          <div id="static-stage-3" style="flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1;">
+            <div id="static-stage-dot-3" style="width: 32px; height: 32px; border-radius: 50%; background: var(--card-elevated); border: 1px solid var(--card-border); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; margin-bottom: 8px; transition: all 0.3s ease;">
+              3
+            </div>
+            <span id="static-stage-label-3" style="font-size: 12px; font-weight: 500; color: var(--text-muted); opacity: 0.65;">Generating summary</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Slim Progress Shimmer Line -->
+      <div style="max-width: 500px; margin: 24px auto 0 auto; padding-top: 16px; border-top: 1px solid rgba(14, 15, 12, 0.08);">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">
+          <span style="font-weight: 600; color: var(--text-main);">Processing</span>
+          <span id="static-progress-pct" style="font-weight: 800; font-family: monospace; color: var(--text-main);">15%</span>
+        </div>
+        <div style="width: 100%; height: 5px; background: rgba(14, 15, 12, 0.1); border-radius: 9999px; overflow: hidden;">
+          <div id="static-progress-bar-fill" class="animate-shimmer" style="width: 15%; height: 100%; background: var(--brand-lime); border-radius: 9999px; transition: width 0.7s ease;"></div>
+        </div>
+      </div>
+
     </div>
     
     <div id="error-container" class="card-container" style="display: none; padding: 16px; margin-bottom: 32px; text-align: center; border-color: rgba(220, 38, 38, 0.3); background-color: rgba(220, 38, 38, 0.08); color: var(--color-danger); font-size: 14px; font-weight: 600;"></div>
@@ -172,29 +256,11 @@
     <!-- ============================================================
          OUTPUT WORKSPACE (TABS & EXPORT TOOLS)
          ============================================================ -->
-    <div id="workspace-container" class="card-container" style="display: none; padding: 28px; margin-bottom: 40px;">
+    <div id="workspace-container" class="card-container" style="display: none; padding: 28px; margin-bottom: 96px;">
       
       <!-- Video Metadata Header -->
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--card-border); padding-bottom: 18px; min-height: 42px;">
-        <div style="flex: 1; min-width: 0;">
-          <h2 id="video-title-heading" style="font-size: 20px; font-weight: 800; margin: 0; color: var(--text-main); word-break: break-word;">Video Summary</h2>
-        </div>
-
-        <!-- Export Toolbar (AI Summary only) -->
-        <div id="summary-export-toolbar" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-          <button id="copy-summary-btn" class="btn-secondary" title="Copy to Clipboard">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy Summary
-          </button>
-          <button id="export-pdf-btn" class="btn-secondary" title="Print or save as PDF">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            PDF
-          </button>
-          <button id="download-txt-summary-btn" class="btn-secondary" title="Download .txt file">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            .TXT
-          </button>
-        </div>
+      <div style="margin-bottom: 24px; border-bottom: 1px solid var(--card-border); padding-bottom: 18px;">
+        <h2 id="video-title-heading" style="font-size: 20px; font-weight: 800; margin: 0; color: var(--text-main); word-break: break-word;">Video</h2>
       </div>
 
       <!-- Workspace Tabs -->
@@ -216,13 +282,30 @@
           <span>Presentation (PPT)</span>
         </button>
         <button id="tab-quiz-view" class="tab-btn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <span>Quiz</span>
         </button>
       </div>
 
       <!-- View 1: Summary Pane -->
       <div id="view-summary-pane">
+        <!-- Summary Header with Actions on Rightmost Side -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--card-border); padding-bottom: 14px;">
+          <h3 style="font-size: 20px; font-weight: 800; margin: 0; color: var(--text-main);">Video Summary</h3>
+          <div id="summary-export-toolbar" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+            <button id="copy-summary-btn" class="btn-secondary" title="Copy to Clipboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Summary
+            </button>
+            <button id="export-pdf-btn" class="btn-secondary" title="Print or save as PDF">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              PDF
+            </button>
+            <button id="download-txt-summary-btn" class="btn-secondary" title="Download .txt file">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              .TXT
+            </button>
+          </div>
+        </div>
         <div id="summary-content" class="markdown-body" style="min-height: 200px;"></div>
       </div>
 
@@ -262,98 +345,78 @@
     <!-- ============================================================
          LANDING PAGE: WORK YOUR WAY (Interactive 3-Card Scroll Stack)
          ============================================================ -->
-    <section id="features" style="margin-top: 80px;">
+    <section id="features" style="margin-top: 96px;">
       <div class="section-header">
         <div class="pill-eyebrow">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-lime);"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          <span>Interactive Card Stack</span>
+          <span>Core Capabilities</span>
         </div>
         <h2 style="font-size: clamp(28px, 4.5vw, 42px); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 12px;">
-          Work your way
+          Three Pillars of Accelerated Learning
         </h2>
-        <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6;">
-          Scroll or use controls to stack our 3 core study superpowers into an active deck.
-        </p>
       </div>
 
-      <!-- Framing Stage -->
-      <div style="border-radius: 32px; background-color: var(--card-bg); border: 1px solid var(--card-border); padding: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); margin-bottom: 60px;">
-        <!-- Top Control Strip -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; border-radius: 16px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--brand-lime);"></span>
-            <span id="static-stack-label" style="font-weight: 900; color: var(--text-main);">Card 1 of 3</span>
-            <span style="opacity: 0.6;">• Scroll inside or use arrows to stack</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <button id="static-stack-prev" style="width: 28px; height: 28px; border-radius: 8px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-            </button>
-            <button id="static-stack-next" style="width: 28px; height: 28px; border-radius: 8px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- 600px Height ScrollStack Track -->
-        <div id="static-stack-track" style="height: 560px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; position: relative; padding: 0 10px;">
-          <div style="display: flex; flex-direction: column; gap: 24px; padding-bottom: 80px;">
-            <!-- Card 1: Local Multimodal AI (Dark) -->
-            <div class="static-stack-card" style="position: sticky; top: 30px; height: 360px; background-color: #0C0D0A; color: #FFFFFF; border: 1px solid rgba(255,255,255,0.12); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; z-index: 1;">
+      <!-- ScrollStack Track flowing naturally with main page scroll -->
+      <div id="static-stack-track" style="position: relative; padding: 0 4px; margin-bottom: 60px;">
+        <div style="display: flex; flex-direction: column; gap: 48px; padding-bottom: 40px;">
+            <!-- Card 1: Structured AI Notes (Pure Space Black) -->
+            <div class="static-stack-card" style="position: sticky; top: 90px; min-height: 360px; background-color: #0E0F0C; color: #FFFFFF; border: 1px solid rgba(255,255,255,0.12); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; z-index: 1;">
               <div>
-                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: var(--brand-lime);">LOCAL MULTIMODAL AI</span>
-                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em;">2.0 Multimodal AI: Structured Summaries & Transcripts</h3>
-                <p style="font-size: 14px; color: rgba(255,255,255,0.7); max-width: 680px; line-height: 1.6;">Condense hours of lectures and recordings into crisp, executive-level summaries with timestamps and key takeaways — completely local and private.</p>
+                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: var(--brand-lime);">STRUCTURED AI NOTES</span>
+                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em;">Turn Any Video into Structured Notes</h3>
+                <p style="font-size: 14px; color: rgba(255,255,255,0.7); max-width: 680px; line-height: 1.6;">Transcribe and summarize YouTube videos or uploaded files into organized study notes with timestamps, key takeaways, and mathematical formulas.</p>
                 <div style="display: flex; gap: 10px; margin-top: 18px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); flex-wrap: wrap;">
-                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Fast Inference</span>
-                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">100% Private</span>
-                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Whisper AI</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">YouTube & File Upload</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Local Whisper AI</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Timestamp references</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">KaTeX Math Formulas</span>
                 </div>
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
-                <div><span style="font-size: 11px; opacity: 0.6; display: block;">Pricing</span><span style="font-size: 14px; font-weight: 900;">Free & Unlimited</span></div>
+                <div><span style="font-size: 11px; opacity: 0.6; display: block;">Output Format</span><span style="font-size: 14px; font-weight: 900;">Markdown • Plain Text • PDF</span></div>
                 <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 8px 20px; border-radius: 9999px; background: #FFFFFF; color: #000000; font-weight: 900; font-size: 12px; border: none; cursor: pointer;">Summarize Video →</button>
               </div>
             </div>
 
-            <!-- Card 2: Active-Recall Desk Notes (Terracotta) -->
-            <div class="static-stack-card" style="position: sticky; top: 52px; height: 360px; background-color: #DE5428; color: #FFFFFF; border: 1px solid rgba(0,0,0,0.12); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; z-index: 2;">
+            <!-- Card 2: Active Recall & Learning (Lime Green) -->
+            <div class="static-stack-card" style="position: sticky; top: 114px; min-height: 360px; background-color: var(--brand-lime); color: #0E0F0C; border: 1px solid rgba(0,0,0,0.12); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.15); display: flex; flex-direction: column; justify-content: space-between; z-index: 2;">
               <div>
-                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: #FFF8B8;">ACTIVE RECALL</span>
-                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em;">Active-Recall Study Suite: 3D Desk Notes & Quizzes</h3>
-                <p style="font-size: 14px; color: rgba(255,255,255,0.9); max-width: 680px; line-height: 1.6;">Turn lecture concepts into tactile 3D sticky notes with paper-flip physics and adaptive practice quizzes scaled from Easy to Hard.</p>
-                <div style="display: flex; gap: 10px; margin-top: 18px; font-size: 12px; font-weight: 600; color: #FFFFFF; flex-wrap: wrap;">
-                  <span style="background: rgba(0,0,0,0.18); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.2);">3D Desk Notes</span>
-                  <span style="background: rgba(0,0,0,0.18); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.2);">Adaptive Quizzes</span>
-                  <span style="background: rgba(0,0,0,0.18); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.2);">Instant Explanations</span>
+                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.12); color: #0E0F0C;">ACTIVE RECALL & LEARNING</span>
+                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em; color: #0E0F0C;">Learn Smarter with Active Recall</h3>
+                <p style="font-size: 14px; color: rgba(14,15,12,0.8); max-width: 680px; line-height: 1.6;">Convert video content into interactive flashcards and adaptive quizzes to strengthen understanding and improve long-term retention.</p>
+                <div style="display: flex; gap: 10px; margin-top: 18px; font-size: 12px; font-weight: 700; color: #0E0F0C; flex-wrap: wrap;">
+                  <span style="background: rgba(0,0,0,0.06); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(0,0,0,0.1);">Interactive flashcards</span>
+                  <span style="background: rgba(0,0,0,0.06); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(0,0,0,0.1);">AI-generated quizzes</span>
+                  <span style="background: rgba(0,0,0,0.06); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(0,0,0,0.1);">Multiple difficulty levels</span>
+                  <span style="background: rgba(0,0,0,0.06); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(0,0,0,0.1);">Instant explanations</span>
                 </div>
               </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 14px;">
-                <div><span style="font-size: 11px; opacity: 0.8; display: block;">Retention</span><span style="font-size: 14px; font-weight: 900;">Active Recall</span></div>
-                <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 8px 20px; border-radius: 9999px; background: #FFFFFF; color: #DE5428; font-weight: 900; font-size: 12px; border: none; cursor: pointer;">Practice Flashcards →</button>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 14px;">
+                <div><span style="font-size: 11px; opacity: 0.7; color: #0E0F0C; display: block;">Study Engine</span><span style="font-size: 14px; font-weight: 900; color: #0E0F0C;">Spaced Repetition & Quizzes</span></div>
+                <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 8px 20px; border-radius: 9999px; background: #0E0F0C; color: #FFFFFF; font-weight: 900; font-size: 12px; border: none; cursor: pointer; transition: all 0.2s ease;">Practice Flashcards →</button>
               </div>
             </div>
 
-            <!-- Card 3: Keynote Slide Presentations (Graphite/Lime) -->
-            <div class="static-stack-card" style="position: sticky; top: 74px; height: 360px; background-color: #161814; color: #FFFFFF; border: 1px solid rgba(217,236,149,0.3); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; z-index: 3;">
+            <!-- Card 3: Presentation Generation (Pure Space Black & Lime) -->
+            <div class="static-stack-card" style="position: sticky; top: 138px; min-height: 360px; background-color: #0E0F0C; color: #FFFFFF; border: 1px solid rgba(255,255,255,0.12); border-radius: 28px; padding: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; z-index: 3;">
               <div>
-                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(217,236,149,0.15); border: 1px solid rgba(217,236,149,0.3); color: var(--brand-lime);">KEYNOTE SLIDE DECKS</span>
-                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em;">Keynote Slide Decks & Native PowerPoint Exports</h3>
-                <p style="font-size: 14px; color: rgba(255,255,255,0.7); max-width: 680px; line-height: 1.6;">Generate presentation-ready 16:9 widescreen slides with presenter speaker notes and direct .pptx, printable PDF, and raw text downloads.</p>
+                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 9999px; background: rgba(217,236,149,0.15); border: 1px solid rgba(217,236,149,0.3); color: var(--brand-lime);">PRESENTATION GENERATION</span>
+                <h3 style="font-size: 26px; font-weight: 900; margin: 14px 0 8px 0; letter-spacing: -0.02em;">From Video to Presentation</h3>
+                <p style="font-size: 14px; color: rgba(255,255,255,0.7); max-width: 680px; line-height: 1.6;">Turn video lectures into polished presentation slides with structured content and presenter notes.</p>
                 <div style="display: flex; gap: 10px; margin-top: 18px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); flex-wrap: wrap;">
-                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">16:9 Widescreen</span>
-                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Native .PPTX</span>
-                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Speaker Notes</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Auto-generated slides</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">16:9 layout</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Presenter notes</span>
+                  <span style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1);">Native PPTX export</span>
                 </div>
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
-                <div><span style="font-size: 11px; opacity: 0.6; display: block;">Formats</span><span style="font-size: 14px; font-weight: 900;">.pptx • .pdf • .txt</span></div>
+                <div><span style="font-size: 11px; opacity: 0.6; display: block;">Formats</span><span style="font-size: 14px; font-weight: 900;">.pptx • .pdf • Presentation</span></div>
                 <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 8px 20px; border-radius: 9999px; background: var(--brand-lime); color: #0E0F0C; font-weight: 900; font-size: 12px; border: none; cursor: pointer;">Create Slide Deck →</button>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
       <!-- How It Works -->
       <div id="how-it-works" style="margin-top: 60px;">
@@ -367,118 +430,223 @@
           </p>
         </div>
 
-        <div class="step-grid">
-          <div class="step-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <div style="width: 36px; height: 36px; border-radius: 10px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+          <!-- Card 1: Paste URL or Upload -->
+          <div class="how-it-works-card" style="border-radius: 28px; overflow: hidden; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: 0 4px 16px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="background: #FBF1EC; height: 210px; width: 100%; display: flex; align-items: flex-end; justify-content: center; padding: 20px 16px 0; border-bottom: 1px solid var(--card-border); overflow: hidden;">
+              <div style="width: 100%; max-width: 250px; background: #FFFFFF; border-radius: 12px 12px 0 0; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.08); padding: 12px 12px 24px; transform: translateY(12px);">
+                <div style="display: flex; gap: 4px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                  <span style="width: 8px; height: 8px; border-radius: 50%; background: #FF5F56;"></span>
+                  <span style="width: 8px; height: 8px; border-radius: 50%; background: #FFBD2E;"></span>
+                  <span style="width: 8px; height: 8px; border-radius: 50%; background: #27C93F;"></span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 8px; padding-top: 8px; font-size: 8px; color: #1F1E1B;">
+                  <div style="border-right: 1px solid rgba(0,0,0,0.06); padding-right: 4px; line-height: 1.8; opacity: 0.6;">
+                    <div>Recent</div>
+                    <div style="background: #FDE2D6; color: #DE5428; border-radius: 4px; font-weight: 700; padding: 1px 4px;">Tools</div>
+                    <div>History</div>
+                  </div>
+                  <div>
+                    <div style="font-weight: 800; font-size: 9px; margin-bottom: 4px;">Lecture Pipeline</div>
+                    <div style="background: #FFF8B8; padding: 3px 6px; border-radius: 4px; font-family: monospace; font-size: 7px; font-weight: 700;">youtube.com/watch?v=...</div>
+                  </div>
+                </div>
               </div>
-              <span style="font-size: 12px; font-weight: 900; color: var(--brand-lime);">01</span>
             </div>
-            <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Paste URL or Upload</h4>
-            <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Provide any YouTube link or upload audio/video files directly from your machine.</p>
+            <div style="padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+              <div>
+                <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Paste URL or Upload</h3>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">Provide any YouTube link or upload audio/video files directly from your machine with no limits.</p>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <span class="how-it-works-arrow" style="width: 32px; height: 32px; border-radius: 50%; color: var(--text-main);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div class="step-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <div style="width: 36px; height: 36px; border-radius: 10px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+          <!-- Card 2: Local Multimodal Analysis -->
+          <div class="how-it-works-card" style="border-radius: 28px; overflow: hidden; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: 0 4px 16px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="background: #FBF1EC; height: 210px; width: 100%; display: flex; align-items: flex-end; justify-content: center; padding: 16px 16px 0; border-bottom: 1px solid var(--card-border); overflow: hidden;">
+              <div style="width: 150px; background: #FFFFFF; border-radius: 16px 16px 0 0; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.08); padding: 10px 10px 24px; transform: translateY(12px); position: relative;">
+                <div style="display: flex; justify-content: space-between; font-size: 7px; font-weight: 700; color: #1F1E1B; padding-bottom: 6px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                  <span>9:41</span>
+                  <div style="width: 32px; height: 4px; background: rgba(0,0,0,0.15); border-radius: 4px;"></div>
+                </div>
+                <div style="padding-top: 8px;">
+                  <span style="font-size: 8px; font-weight: 800; background: #FDE2D6; color: #DE5428; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 6px;">Local Whisper AI</span>
+                  <div style="background: #F5F5F5; padding: 6px; border-radius: 6px; display: flex; align-items: center; gap: 3px;">
+                    <span style="width: 3px; height: 12px; background: #DE5428; border-radius: 2px;"></span>
+                    <span style="width: 3px; height: 18px; background: #DE5428; border-radius: 2px;"></span>
+                    <span style="width: 3px; height: 10px; background: #DE5428; border-radius: 2px;"></span>
+                    <span style="font-size: 7px; color: #666; font-family: monospace; margin-left: 4px;">100% Private</span>
+                  </div>
+                </div>
               </div>
-              <span style="font-size: 12px; font-weight: 900; color: var(--brand-lime);">02</span>
             </div>
-            <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Multimodal Analysis</h4>
-            <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Whisper extracts clean audio while advanced LLMs synthesize notes, slides, and quizzes.</p>
+            <div style="padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+              <div>
+                <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Local Multimodal Analysis</h3>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">Whisper extracts clean audio while advanced LLMs synthesize notes, slides, and quizzes locally with total privacy.</p>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <span class="how-it-works-arrow" style="width: 32px; height: 32px; border-radius: 50%; color: var(--text-main);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div class="step-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <div style="width: 36px; height: 36px; border-radius: 10px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <!-- Card 3: Study, Test & Export -->
+          <div class="how-it-works-card" style="border-radius: 28px; overflow: hidden; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: 0 4px 16px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="background: #FBF1EC; height: 210px; width: 100%; display: flex; align-items: flex-end; justify-content: center; padding: 16px 16px 0; border-bottom: 1px solid var(--card-border); overflow: hidden;">
+              <div style="width: 100%; max-width: 250px; background: #FFFFFF; border-radius: 12px 12px 0 0; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.08); padding: 12px 12px 24px; transform: translateY(12px); position: relative;">
+                <div style="display: flex; gap: 4px; padding-bottom: 6px;">
+                  <span style="width: 16px; height: 16px; border-radius: 50%; background: #6C5CE7; color: #FFF; font-size: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700;">R</span>
+                  <span style="width: 16px; height: 16px; border-radius: 50%; background: #00CEC9; color: #FFF; font-size: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700;">G</span>
+                  <span style="width: 16px; height: 16px; border-radius: 50%; background: #FF7675; color: #FFF; font-size: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700;">+</span>
+                </div>
+                <div style="font-size: 9px; font-weight: 800; color: #1F1E1B;">STUDY SUITE</div>
+                <div style="position: absolute; right: 10px; bottom: 8px; background: #2B2D31; color: #FFF; padding: 6px 10px; border-radius: 6px; font-family: monospace; font-size: 7px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+                  <div style="opacity: 0.5;">/* EXPORT */</div>
+                  <div>format: <span style="color: #DE5428;">"pptx"</span></div>
+                  <div>notes: <span style="color: #8ED081;">true</span></div>
+                </div>
               </div>
-              <span style="font-size: 12px; font-weight: 900; color: var(--brand-lime);">03</span>
             </div>
-            <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Study & Export</h4>
-            <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Practice with flashcards, test your memory with quizzes, and download PPTX or PDF files.</p>
+            <div style="padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+              <div>
+                <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Study, Test &amp; Export</h3>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">Practice with active recall flashcards, test your memory with quizzes, and download PPTX or PDF files.</p>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <span class="how-it-works-arrow" style="width: 32px; height: 32px; border-radius: 50%; color: var(--text-main);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ============================================================
-         FAQ SECTION
+         FAQ SECTION (Modern Split Two-Column Design)
          ============================================================ -->
-    <section id="faq" style="margin-top: 80px;">
-      <div class="section-header">
-        <div class="pill-eyebrow">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--brand-lime);"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span>Frequently Asked Questions</span>
-        </div>
-        <h2 style="font-size: clamp(22px, 3.5vw, 32px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px;">
-          Got Questions? We Have Answers.
-        </h2>
-        <p style="font-size: 13.5px; color: var(--text-muted);">
-          Everything you need to know about video processing, supported formats, privacy, and exports.
-        </p>
-      </div>
+    <section id="faq" style="margin-top: 100px;">
+      <div class="faq-split-grid">
+        <!-- Left Column: Header & Help Card -->
+        <div>
+          <!-- Eyebrow Pill -->
+          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--card-border); font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 20px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-lime);"><path d="M12 2v20M4.93 4.93l14.14 14.14M2 12h20M4.93 19.07l14.14-14.14"/></svg>
+            <span>FAQ</span>
+          </div>
 
-      <div class="faq-container">
-        <div class="faq-item open">
-          <button class="faq-btn" type="button">
-            <span>What video formats and platforms are supported?</span>
-            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-content">
-            <p style="padding-top: 12px;">You can summarize YouTube links (including youtube.com, youtu.be, and Shorts) or upload local video and audio recordings in MP4, MKV, WebM, MOV, MP3, WAV, and M4A formats up to 500MB.</p>
+          <h2 style="font-size: clamp(32px, 4.5vw, 48px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 16px;">
+            Have more questions?
+          </h2>
+
+          <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6; max-width: 380px; margin-bottom: 36px;">
+            Our app is designed to make learning from video easy and stress-free. With intuitive multimodal AI, you can generate notes, flashcards, slides, and quizzes effortlessly.
+          </p>
+
+          <!-- Contact / Help Card with Elegant Hover Effect -->
+          <div class="faq-contact-card">
+            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px; position: relative; z-index: 1;">Can't find answers?</h3>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1;">We're here to help you out whenever you need! Get in touch with our dedicated support team for personalized assistance anytime.</p>
+            <a href="mailto:support@summarize.ai" class="faq-contact-btn">
+              <span>Contact us</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
           </div>
         </div>
 
-        <div class="faq-item">
-          <button class="faq-btn" type="button">
-            <span>How does data privacy and processing work?</span>
-            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-content">
-            <p style="padding-top: 12px;">All media extraction and transcription occurs within your local environment. Your content remains completely private and is never stored on third-party public databases or used for public model training.</p>
+        <!-- Right Column: FAQ Modern Accordion Items -->
+        <div>
+          <!-- Item 1 -->
+          <div class="faq-card-modern">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+              <span style="font-size: 15px; font-weight: 700;">What is this app, and how can it help me?</span>
+              <div class="faq-arrow-box">
+                <svg class="arrow-down-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                <svg class="arrow-up-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </div>
+            </div>
+            <div class="faq-modern-answer">
+              SUMMARIZE.AI is an AI-powered study platform that transforms lengthy YouTube videos and local recordings into structured notes, interactive flashcards, 16:9 presentation slides, and quizzes in seconds.
+            </div>
           </div>
-        </div>
 
-        <div class="faq-item">
-          <button class="faq-btn" type="button">
-            <span>Can I export presentations and study notes offline?</span>
-            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-content">
-            <p style="padding-top: 12px;">Yes. You can export complete 16:9 presentation slide decks directly as native PowerPoint (.pptx) files, download notes as formatted PDFs or plain text (.txt), and copy the full timestamped transcript at any time.</p>
+          <!-- Item 2 -->
+          <div class="faq-card-modern">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+              <span style="font-size: 15px; font-weight: 700;">Is there a free trial available or upload limits?</span>
+              <div class="faq-arrow-box">
+                <svg class="arrow-down-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                <svg class="arrow-up-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </div>
+            </div>
+            <div class="faq-modern-answer">
+              Yes, our local processing pipeline is completely free to use. You can summarize YouTube links (standard, Shorts, youtu.be) and upload local video or audio files up to 500MB with zero subscription limits or hidden paywalls.
+            </div>
           </div>
-        </div>
 
-        <div class="faq-item">
-          <button class="faq-btn" type="button">
-            <span>How are the flashcards and practice quizzes generated?</span>
-            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-content">
-            <p style="padding-top: 12px;">Our pipeline analyzes the transcript for core terms, definitions, formulas, and conceptual relationships. It synthesizes 3D flip flashcards for active recall and constructs multi-tier quizzes with instant explanations.</p>
+          <!-- Item 3 -->
+          <div class="faq-card-modern">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+              <span style="font-size: 15px; font-weight: 700;">How does the app keep my data secure and private?</span>
+              <div class="faq-arrow-box">
+                <svg class="arrow-down-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                <svg class="arrow-up-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </div>
+            </div>
+            <div class="faq-modern-answer">
+              All media extraction, local Whisper speech-to-text, and generative synthesis occur within your private session environment. Your videos and files are never stored on third-party public databases or used for public AI model training.
+            </div>
           </div>
-        </div>
 
-        <div class="faq-item">
-          <button class="faq-btn" type="button">
-            <span>How do the quiz difficulty levels work?</span>
-            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-content">
-            <p style="padding-top: 12px;">You can choose Easy (definition and fact recall), Medium (conceptual understanding and practical deduction), or Hard (synthesis and scenario analysis). You can also configure 3, 5, or 10 questions per quiz session.</p>
+          <!-- Item 4 -->
+          <div class="faq-card-modern">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+              <span style="font-size: 15px; font-weight: 700;">Which video and audio formats do you accept?</span>
+              <div class="faq-arrow-box">
+                <svg class="arrow-down-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                <svg class="arrow-up-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </div>
+            </div>
+            <div class="faq-modern-answer">
+              We support YouTube URLs as well as local file uploads in MP4, MKV, WebM, MOV, MP3, WAV, and M4A formats. Both high-definition video and raw audio lectures are processed seamlessly.
+            </div>
           </div>
-        </div>
 
-        <div class="faq-item">
-          <button class="faq-btn" type="button">
-            <span>How long does it take to summarize a video?</span>
-            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="faq-content">
-            <p style="padding-top: 12px;">Typical 10-to-30-minute videos are processed in under 20 seconds. The pipeline utilizes lightweight audio streaming and fast inference engines to deliver immediate results without long queue times.</p>
+          <!-- Item 5 -->
+          <div class="faq-card-modern">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+              <span style="font-size: 15px; font-weight: 700;">Can I export presentations (.pptx) and study notes offline?</span>
+              <div class="faq-arrow-box">
+                <svg class="arrow-down-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                <svg class="arrow-up-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </div>
+            </div>
+            <div class="faq-modern-answer">
+              Yes! You can export complete 16:9 presentation slide decks directly as native PowerPoint (.pptx) files, download structured study notes as formatted PDFs or plain text (.txt), and copy the full timestamped transcript at any time.
+            </div>
+          </div>
+
+          <!-- Item 6 -->
+          <div class="faq-card-modern">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+              <span style="font-size: 15px; font-weight: 700;">I need help with the app. How can I contact support?</span>
+              <div class="faq-arrow-box">
+                <svg class="arrow-down-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                <svg class="arrow-up-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </div>
+            </div>
+            <div class="faq-modern-answer">
+              We are here to assist! Reach out directly via our contact button, open an issue on our GitHub repository, or email our developer team for immediate assistance and feature requests.
+            </div>
           </div>
         </div>
       </div>
@@ -495,22 +663,19 @@
         <!-- Brand Info -->
         <div>
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-            <svg width="26" height="26" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="28" height="28" rx="8" fill="#141512" stroke="rgba(217, 236, 149, 0.35)" stroke-width="1.2"/>
-              <path d="M8.5 8L16.5 14L8.5 20V8Z" fill="#D9EC95"/>
-              <path d="M18 9.5H21" stroke="#D9EC95" stroke-width="2" stroke-linecap="round"/>
-              <path d="M18 14H22.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
-              <path d="M18 18.5H20" stroke="#D9EC95" stroke-width="2" stroke-linecap="round"/>
+            <svg width="26" height="26" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="46" fill="#0E0F0C" stroke="#D9EC95" stroke-width="4"/>
+              <circle cx="50" cy="50" r="34.5" fill="none" stroke="rgba(217, 236, 149, 0.4)" stroke-width="3.2"/>
+              <path d="M 31.06 22.73 L 28.79 23.67 L 27.65 25.00 L 27.08 26.52 L 27.08 73.30 L 27.84 75.19 L 28.98 76.33 L 30.68 77.08 L 32.58 77.08 L 35.04 75.95 L 73.30 53.79 L 75.00 51.89 L 75.38 49.24 L 74.62 47.35 L 72.92 45.83 L 33.90 23.30 Z" fill="#0E0F0C"/>
+              <path d="M 43.94 15.72 L 37.31 17.42 L 32.39 19.89 L 35.80 21.02 L 75.38 43.94 L 76.89 45.45 L 78.03 47.54 L 78.41 49.43 L 78.22 51.70 L 77.08 54.17 L 74.62 56.44 L 35.61 78.98 L 32.20 80.11 L 28.79 79.55 L 27.08 78.60 L 25.57 77.08 L 24.43 75.00 L 24.05 73.30 L 24.05 26.70 L 20.08 32.01 L 17.99 35.98 L 16.29 40.72 L 15.53 44.13 L 15.53 74.81 L 16.86 79.36 L 19.13 82.95 L 21.40 85.23 L 23.30 86.55 L 28.03 88.45 L 32.95 88.83 L 38.07 87.50 L 78.98 64.02 L 82.01 61.74 L 85.04 57.77 L 86.55 53.98 L 86.93 47.92 L 86.36 45.27 L 84.66 41.48 L 81.25 37.50 Z" fill="#D9EC95" stroke="#0E0F0C" stroke-width="3.4" stroke-linejoin="round"/>
+              <line x1="36.55" y1="22.73" x2="49.05" y2="30.30" stroke="#0E0F0C" stroke-width="3.2" stroke-linecap="round"/>
+              <path d="M 38.64 39.39 L 38.26 39.77 L 38.26 60.04 L 38.45 60.42 L 39.20 60.61 L 56.25 50.76 L 56.82 50.19 L 56.82 49.62 L 39.39 39.39 Z" fill="#D9EC95" stroke="#0E0F0C" stroke-width="2.8" stroke-linejoin="round"/>
             </svg>
             <span style="font-size: 14px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-main);">SUMMARIZE<span style="color: var(--brand-lime);">.AI</span></span>
           </div>
-          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px;">
-            Local-first multimodal study workspace. Transform hours of video lectures into structured knowledge, flashcards, slides, and quizzes.
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            Transform hours of video lectures, meetings, and podcasts into structured notes, active-recall flashcards, slide presentations, and quizzes.
           </p>
-          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background-color: var(--btn-secondary-bg); border: 1px solid var(--card-border); font-size: 10px; font-weight: 700; color: var(--text-muted);">
-            <span style="width: 6px; height: 6px; border-radius: 9999px; background-color: var(--color-success);"></span>
-            <span>Local Inference Ready</span>
-          </div>
         </div>
 
         <!-- Study Tools -->
@@ -529,11 +694,10 @@
         <div>
           <h4 style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-main); margin-bottom: 12px;">Export Formats</h4>
           <ul style="list-style: none; font-size: 12.5px; line-height: 2; color: var(--text-muted);">
-            <li>PowerPoint (.pptx)</li>
-            <li>Printable PDF</li>
+            <li>PowerPoint Presentation (.pptx)</li>
+            <li>Printable PDF (.pdf)</li>
             <li>Plain Text (.txt)</li>
-            <li>Markdown Clipboard</li>
-            <li>Auto-clean PPT Cache</li>
+            <li>Markdown Notes (.md)</li>
           </ul>
         </div>
 
@@ -544,19 +708,15 @@
             <li><a href="#features" style="color: inherit; text-decoration: none;">Features</a></li>
             <li><a href="#how-it-works" style="color: inherit; text-decoration: none;">How It Works</a></li>
             <li><a href="#faq" style="color: inherit; text-decoration: none;">FAQ</a></li>
-            <li style="padding-top: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px;">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--color-success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span>100% Private Processing</span>
-            </li>
           </ul>
         </div>
       </div>
 
       <div style="padding-top: 24px; border-top: 1px solid var(--card-border); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted);">
-        <p>&copy; 2026 SUMMARIZE.AI. Built for high-efficiency learning.</p>
-        <div style="display: flex; gap: 20px; font-family: monospace; font-size: 11px;">
-          <span>v2.4.0 (Local)</span>
-          <span>Private & Unlimited</span>
+        <p>&copy; 2026 SUMMARIZE.AI. All rights reserved.</p>
+        <div style="display: flex; gap: 20px;">
+          <a href="#features" style="color: inherit; text-decoration: none;">Privacy Policy</a>
+          <a href="#features" style="color: inherit; text-decoration: none;">Terms of Service</a>
         </div>
       </div>
     </div>

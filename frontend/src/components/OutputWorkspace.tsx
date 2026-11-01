@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { marked } from "marked";
-import katex from "katex";
-import "katex/dist/katex.min.css";
+import { renderMarkdownWithMath } from "../lib/mathUtils";
 import {
   Copy,
   Download,
@@ -12,7 +10,6 @@ import {
   Check,
   Layers,
   Presentation as PresentationIcon,
-  HelpCircle,
   Sparkles,
   ArrowRight,
   AlignLeft
@@ -22,12 +19,123 @@ import { FlashcardsView, Flashcard } from "./FlashcardsView";
 import { PresentationView, PresentationData } from "./PresentationView";
 import { QuizView, QuizQuestion } from "./QuizView";
 
+function cleanAndDeduplicateSummary(rawText: string): string {
+  if (!rawText) return "";
+
+  // 1. Remove hallucinated CJK characters and punctuation
+  let cleaned = rawText.replace(/[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af\u3000-\u303f\uff00-\uffef]+/g, "");
+  cleaned = cleaned.replace(/\(\s*\)/g, "");
+  cleaned = cleaned.replace(/\(\s*Section\s*\d*\s*\)/gi, "");
+  cleaned = cleaned.replace(/\*\*\s*\*\*/g, "");
+  cleaned = cleaned.replace(/^\s*[-*]\s*[-*:\s]*$/gm, "");
+
+  // 2. Check for duplicate blocks separated by --- or repeated # Video Summary / ## Main Topic
+  let parts = cleaned.split(/\n\s*---\s*\n/);
+  if (parts.length <= 1) {
+    const summaryHeaderMatches = [...cleaned.matchAll(/(?:^|\n)#+\s*Video Summary/gi)];
+    if (summaryHeaderMatches.length > 1) {
+      parts = [cleaned.slice(0, summaryHeaderMatches[1].index), cleaned.slice(summaryHeaderMatches[1].index)];
+    }
+  }
+
+  if (parts.length <= 1) {
+    const mainTopicMatches = [...cleaned.matchAll(/(?:^|\n)##\s*Main Topic/gi)];
+    if (mainTopicMatches.length > 1) {
+      parts = [cleaned.slice(0, mainTopicMatches[1].index), cleaned.slice(mainTopicMatches[1].index)];
+    }
+  }
+
+  if (parts.length <= 1) {
+    // Strip leading # Video Summary or # Summary heading since we have a dedicated UI header row
+    return cleaned.replace(/^\s*#+\s*(?:Video\s+)?Summary\s*\n+/i, "").trim();
+  }
+
+  // Multiple blocks detected - merge them
+  const mainTopics: string[] = [];
+  const keyConcepts: string[] = [];
+  const detailedBreakdowns: string[] = [];
+  const keyTakeaways: string[] = [];
+
+  for (const part of parts) {
+    const mtMatch = part.match(/##\s*Main Topic\s*\n+([\s\S]*?)(?=\n##|$)/i);
+    if (mtMatch) {
+      const mt = mtMatch[1].trim();
+      if (mt && !mainTopics.includes(mt)) mainTopics.push(mt);
+    }
+
+    const kcMatch = part.match(/##\s*Key Concepts\s*\n+([\s\S]*?)(?=\n##|$)/i);
+    if (kcMatch) {
+      const lines = kcMatch[1].trim().split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+          const item = trimmed.replace(/^[-*]\s*/, "").replace(/^[-:\s]+/, "").trim();
+          if (item && !keyConcepts.some((e) => e.toLowerCase() === item.toLowerCase())) {
+            keyConcepts.push(item);
+          }
+        }
+      }
+    }
+
+    const dbMatch = part.match(/##\s*Detailed Breakdown\s*\n+([\s\S]*?)(?=\n##|$)/i);
+    if (dbMatch) {
+      const lines = dbMatch[1].trim().split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+          const item = trimmed.replace(/^[-*]\s*/, "").replace(/^[-:\s]+/, "").trim();
+          if (item && !detailedBreakdowns.some((e) => e.toLowerCase() === item.toLowerCase())) {
+            detailedBreakdowns.push(item);
+          }
+        }
+      }
+    }
+
+    const ktMatch = part.match(/##\s*Key Takeaways\s*\n+([\s\S]*?)(?=\n##|$)/i);
+    if (ktMatch) {
+      const lines = ktMatch[1].trim().split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+          const item = trimmed.replace(/^[-*]\s*/, "").replace(/^[-:\s]+/, "").trim();
+          if (item && !keyTakeaways.some((e) => e.toLowerCase() === item.toLowerCase())) {
+            keyTakeaways.push(item);
+          }
+        } else if (trimmed && !trimmed.startsWith("#") && trimmed.length > 3) {
+          if (!keyTakeaways.includes(trimmed)) keyTakeaways.push(trimmed);
+        }
+      }
+    }
+  }
+
+  const out: string[] = [];
+  if (mainTopics.length) {
+    out.push("## Main Topic\n" + mainTopics.join(" ") + "\n");
+  }
+  if (keyConcepts.length) {
+    out.push("## Key Concepts\n" + keyConcepts.map((c) => `- ${c}`).join("\n") + "\n");
+  }
+  if (detailedBreakdowns.length) {
+    out.push("## Detailed Breakdown\n" + detailedBreakdowns.map((b) => `- ${b}`).join("\n") + "\n");
+  }
+  if (keyTakeaways.length) {
+    out.push("## Key Takeaways\n" + keyTakeaways.map((t) => (t.startsWith("-") ? t : `- ${t}`)).join("\n") + "\n");
+  }
+
+  return out.join("\n").trim();
+}
+
 interface OutputWorkspaceProps {
   result: JobResult;
   onToast: (msg: string, type?: "success" | "info" | "error") => void;
+  onRegenerateSummary?: () => void;
+  isRegeneratingSummary?: boolean;
 }
 
-export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
+export function OutputWorkspace({
+  result,
+  onToast,
+}: OutputWorkspaceProps) {
   const [activeTab, setActiveTab] = useState<"summary" | "transcript" | "flashcards" | "presentation" | "quiz">("summary");
   const [copiedSummary, setCopiedSummary] = useState(false);
   const [copiedTranscript, setCopiedTranscript] = useState(false);
@@ -44,37 +152,23 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   const [quizProvider, setQuizProvider] = useState<string>("");
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
 
+  const cleanedSummary = useMemo(() => {
+    return cleanAndDeduplicateSummary(result.summary || "");
+  }, [result.summary]);
+
+  const fullSummaryForExport = useMemo(() => {
+    return `# Video Summary\n\n${cleanedSummary}`;
+  }, [cleanedSummary]);
+
   // Render markdown with KaTeX math formula rendering
   const renderedSummaryHtml = useMemo(() => {
-    if (!result.summary) return "";
-    let raw = result.summary;
-
-    // Render Display Math Blocks: \[ ... \] or $$ ... $$
-    raw = raw.replace(/\\\[([\s\S]*?)\\\]|\$\$([\s\S]*?)\$\$/g, (_, eq1, eq2) => {
-      const eq = (eq1 || eq2 || "").trim();
-      try {
-        return katex.renderToString(eq, { displayMode: true, throwOnError: false });
-      } catch {
-        return `<pre class="katex-error">${eq}</pre>`;
-      }
-    });
-
-    // Render Inline Math: \( ... \) or $ ... $
-    raw = raw.replace(/\\\(([\s\S]*?)\\\)|\$([^\$\n]+?)\$/g, (_, eq1, eq2) => {
-      const eq = (eq1 || eq2 || "").trim();
-      try {
-        return katex.renderToString(eq, { displayMode: false, throwOnError: false });
-      } catch {
-        return `<code>${eq}</code>`;
-      }
-    });
-
-    return (marked.parse(raw) as string) || "";
-  }, [result.summary]);
+    if (!cleanedSummary) return "";
+    return renderMarkdownWithMath(cleanedSummary);
+  }, [cleanedSummary]);
 
   const handleCopySummary = async () => {
     try {
-      await navigator.clipboard.writeText(result.summary);
+      await navigator.clipboard.writeText(fullSummaryForExport);
       setCopiedSummary(true);
       setTimeout(() => setCopiedSummary(false), 2000);
       onToast("Summary copied to clipboard!", "success");
@@ -196,7 +290,7 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   };
 
   // --- Generation Handlers ---
-  const handleGenerateFlashcards = async () => {
+  const handleGenerateFlashcards = async (forceRefresh: boolean = false) => {
     setIsLoadingFlashcards(true);
     try {
       const res = await fetch("/api/generate/flashcards", {
@@ -206,6 +300,8 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
           title: result.title,
           summary: result.summary,
           transcript: result.transcript,
+          force_refresh: forceRefresh,
+          forceRefresh: forceRefresh,
         }),
       });
 
@@ -284,43 +380,12 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
   const safeFilename = (result.title || "video").toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 40);
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 sm:p-8 shadow-xl mb-8 print-content transition-colors">
-      {/* Title & Actions Bar */}
-      <div className="flex items-center justify-between gap-4 border-b border-[var(--card-border)] pb-5 mb-6 no-print min-h-[42px]">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-xl sm:text-2xl font-black text-[var(--text-main)] truncate sm:whitespace-normal">
-            {result.title || "Video Summary"}
-          </h2>
-        </div>
-
-        {/* Export Toolbar (at rightmost part of video summary title) */}
-        {activeTab === "summary" && (
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={handleCopySummary}
-              className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
-            >
-              {copiedSummary ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>Copy Summary</span>
-            </button>
-
-            <button
-              onClick={() => printCleanPdf(result.title || "Video Summary", renderedSummaryHtml)}
-              className="px-3.5 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>PDF</span>
-            </button>
-
-            <button
-              onClick={() => handleDownloadFile(result.summary, `${safeFilename}_summary.txt`, "text/plain")}
-              className="px-3.5 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>.TXT</span>
-            </button>
-          </div>
-        )}
+    <div id="workspace-container" className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-[18px] p-6 sm:p-8 shadow-xl mt-2 sm:mt-4 mb-20 sm:mb-28 lg:mb-32 print-content transition-colors">
+      {/* Video Title Header */}
+      <div className="border-b border-[var(--card-border)] pb-5 mb-6 no-print">
+        <h2 className="text-xl sm:text-2xl font-black text-[var(--text-main)] truncate sm:whitespace-normal">
+          {result.title || "Video"}
+        </h2>
       </div>
 
       {/* 5 High Contrast Navigation Tabs */}
@@ -362,11 +427,6 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
         >
           <Layers className="w-4 h-4" />
           <span>Flashcards</span>
-          {flashcards.length > 0 && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-white/10 font-mono">
-              {flashcards.length}
-            </span>
-          )}
         </button>
 
         <button
@@ -382,11 +442,6 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
         >
           <PresentationIcon className="w-4 h-4" />
           <span>Presentation (PPT)</span>
-          {presentation?.slides && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-white/10 font-mono">
-              {presentation.slides.length}
-            </span>
-          )}
         </button>
 
         <button
@@ -397,22 +452,50 @@ export function OutputWorkspace({ result, onToast }: OutputWorkspaceProps) {
               : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--btn-secondary-bg)]"
           }`}
         >
-          <HelpCircle className="w-4 h-4" />
           <span>Quiz</span>
-          {quiz.length > 0 && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-white/10 font-mono">
-              {quiz.length}
-            </span>
-          )}
         </button>
       </div>
 
       {/* Tab 1: AI Summary Content Pane */}
       {activeTab === "summary" && (
-        <div
-          className="markdown-content text-sm sm:text-base leading-relaxed text-[var(--text-main)]"
-          dangerouslySetInnerHTML={{ __html: renderedSummaryHtml }}
-        />
+        <div>
+          {/* Summary Header: "Video Summary" on left, [Copy Summary] [PDF] [.TXT] on right-most side */}
+          <div className="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--card-border)] no-print">
+            <h3 className="text-xl sm:text-2xl font-black text-[var(--text-main)] tracking-tight">
+              Video Summary
+            </h3>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={handleCopySummary}
+                className="px-4 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+              >
+                {copiedSummary ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>Copy Summary</span>
+              </button>
+
+              <button
+                onClick={() => printCleanPdf(result.title || "Video Summary", renderedSummaryHtml)}
+                className="px-3.5 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>PDF</span>
+              </button>
+
+              <button
+                onClick={() => handleDownloadFile(fullSummaryForExport, `${safeFilename}_summary.txt`, "text/plain")}
+                className="px-3.5 py-1.5 rounded-full bg-[var(--btn-secondary-bg)] hover:bg-[var(--btn-secondary-hover)] text-[var(--btn-secondary-text)] border border-[var(--card-border)] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>.TXT</span>
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="markdown-content text-sm sm:text-base leading-relaxed text-[var(--text-main)]"
+            dangerouslySetInnerHTML={{ __html: renderedSummaryHtml }}
+          />
+        </div>
       )}
 
       {/* Tab 2: Full Transcript Content Pane */}
