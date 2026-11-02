@@ -1,6 +1,6 @@
 /**
  * Multimodal Video Summarizer — Client Application
- * Tool-first UX with BYAMN Design Tokens & Live Pipeline Stepper
+ * Tool-first UX with Modern Design Tokens & Live Pipeline Stepper
  */
 
 function escapeHtml(str) {
