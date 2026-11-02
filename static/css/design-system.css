@@ -449,19 +449,10 @@ html.dark .tab-btn:hover:not(.active) {
 }
 
 .tab-btn.active {
-  color: #FFFFFF !important;
-  background-color: rgb(214, 87, 69) !important;
+  color: #0E0F0C !important;
+  background-color: var(--brand-lime) !important;
   font-weight: 700 !important;
-  box-shadow: 0 2px 8px rgba(214, 87, 69, 0.25) !important;
-}
-
-#start-summarize-btn {
-  background-color: rgb(214, 87, 69) !important;
-  color: #FFFFFF !important;
-}
-
-#start-summarize-btn:hover:not(:disabled) {
-  background-color: rgb(196, 75, 58) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
 }
 
 /* ============================================================
