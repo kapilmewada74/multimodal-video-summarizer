@@ -148,7 +148,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
               onClick={() => setActiveTab("url")}
               className={`flex items-center gap-1.5 px-3.5 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer active:scale-95 ${
                 activeTab === "url"
-                  ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-xs"
+                  ? "bg-[rgb(214,87,69)] text-white shadow-xs"
                   : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
               }`}
             >
@@ -161,7 +161,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
               onClick={() => setActiveTab("upload")}
               className={`flex items-center gap-1.5 px-3 sm:px-3.5 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer active:scale-95 ${
                 activeTab === "upload"
-                  ? "bg-[var(--brand-lime)] text-[#0E0F0C] shadow-xs"
+                  ? "bg-[rgb(214,87,69)] text-white shadow-xs"
                   : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
               }`}
             >
@@ -360,12 +360,12 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
               type="button"
               onClick={() => handleSubmit()}
               disabled={isProcessing}
-              className="w-full h-full rounded-full bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] active:scale-[0.97] text-[#0E0F0C] font-extrabold text-[clamp(0.75rem,1.0vw,1.15rem)] flex items-center justify-center gap-2 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full h-full rounded-full bg-[rgb(214,87,69)] hover:bg-[rgb(196,75,58)] active:scale-[0.97] text-white font-extrabold text-[clamp(0.75rem,1.0vw,1.15rem)] flex items-center justify-center gap-2 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               title="Summarize Video"
             >
               {isProcessing ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0E0F0C]" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
                   <span>{activeTab === "upload" ? "Uploading..." : "Processing..."}</span>
                 </>
               ) : (
@@ -404,7 +404,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
             onClick={() => setActiveTab("url")}
             className={`flex-1 py-2 rounded-full text-xs font-bold transition-all text-center ${
               activeTab === "url"
-                ? "bg-[var(--brand-lime)] text-[#0E0F0C]"
+                ? "bg-[rgb(214,87,69)] text-white"
                 : "bg-black/5 dark:bg-white/5 text-[var(--text-muted)]"
             }`}
           >
@@ -415,7 +415,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
             onClick={() => setActiveTab("upload")}
             className={`flex-1 py-2 rounded-full text-xs font-bold transition-all text-center ${
               activeTab === "upload"
-                ? "bg-[var(--brand-lime)] text-[#0E0F0C]"
+                ? "bg-[rgb(214,87,69)] text-white"
                 : "bg-black/5 dark:bg-white/5 text-[var(--text-muted)]"
             }`}
           >
@@ -438,7 +438,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
                 autoCapitalize="off"
                 spellCheck={false}
                 name="mobile_yt_link"
-                className="w-full h-11 pl-4 pr-20 text-xs rounded-full bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-lime)]"
+                className="w-full h-11 pl-4 pr-20 text-xs rounded-full bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[rgb(214,87,69)]"
               />
               <button
                 type="button"
@@ -454,7 +454,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
               type="button"
               onClick={() => handleSubmit()}
               disabled={isProcessing}
-              className="w-full h-11 rounded-full bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] font-black text-xs flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-full bg-[rgb(214,87,69)] hover:bg-[rgb(196,75,58)] text-white font-black text-xs flex items-center justify-center gap-2"
             >
               {isProcessing ? "Processing..." : "Summarize Video →"}
             </button>
@@ -497,7 +497,7 @@ export function ToolCard({ isProcessing, onSubmitUrl, onSubmitUpload, onError }:
               type="button"
               onClick={() => handleSubmit()}
               disabled={isProcessing}
-              className="w-full h-11 rounded-full bg-[var(--brand-lime)] hover:bg-[var(--brand-lime-hover)] text-[#0E0F0C] font-black text-xs flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-full bg-[rgb(214,87,69)] hover:bg-[rgb(196,75,58)] text-white font-black text-xs flex items-center justify-center gap-2"
             >
               {isProcessing ? "Uploading..." : "Summarize Video →"}
             </button>
