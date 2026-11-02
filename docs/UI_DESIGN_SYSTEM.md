@@ -2,17 +2,17 @@
 
 **Version:** 1.0  
 **Application Type:** Utility-First AI Video Summarization & RAG Platform  
-**Design Reference:** Adapted from BYAMN Design System v1.0 & iLovePDF Tool-First Architecture  
+**Design Reference:** Modern Utility-First Architecture & Tool-Centric UX  
 **Stack Target:** Next.js 15 / React 19 · Tailwind CSS v4 · Radix UI · Lucide React · KaTeX  
 **Last Updated:** October 2026  
 
 ---
 
-## 1. Product Analysis & Adaptation Matrix
+## 1. Product & Design Architecture
 
-To build a **market-level, scalable, and professional** video summarization tool (resembling the clean, instantaneous utility of **iLovePDF** combined with the modern dark-first elegance of **Linear / Perplexity**), we analyzed the provided **BYAMN Design System** and strictly extracted the relevant tokens while discarding LMS-specific bloat.
+To build a **market-level, scalable, and professional** video summarization tool (resembling the clean, instantaneous utility of **iLovePDF** combined with the modern dark-first elegance of **Linear / Perplexity**), the user interface is structured around a utility-first design system with high-contrast organic tokens.
 
-### 1.1 What We Kept from BYAMN (High Value)
+### 1.1 Core Design Foundations & Tokens
 * **Invariant Signature Color Palette:** Brand Lime (`#D9EC95`) for CTAs, active states, and focus rings; Brand Black (`#0E0F0C`) and Brand Ivory (`#F2F2F0`) for warm, organic backgrounds.
 * **Dark-First Layered Surfaces:** Background (`#0E0F0C`) ↔ Elevated Card (`oklch(0.22 0 0)`) with subtle ring borders (`rgba(242,242,240, 0.1)`).
 * **Eyebrow Header Pattern:** Distinctive pill badge with brand-lime dot for section context (`● AI VIDEO SUMMARIZER`).
@@ -20,14 +20,8 @@ To build a **market-level, scalable, and professional** video summarization tool
 * **Shimmer Progress Bar:** Animated progress bar with lime glow shadow for 15–30s generation phases.
 * **Component Primitives:** Button variant/size hierarchy, card anatomy, custom scrollbars, and Sonner toast notifications.
 
-### 1.2 What We Discarded (LMS-Specific / Irrelevant)
-* ❌ *Classroom, code sandboxes, and code editor components* (irrelevant for a video summarizer).
-* ❌ *Leaderboard podiums (gold/silver/bronze) and daily streak trackers* (gamification bloat).
-* ❌ *Verifiable certificate tokens* (not applicable to a media processing tool).
-* ❌ *Admin course management sidebars* (unnecessary for a focused consumer/pro utility).
-
-### 1.3 What We Added for Video Summarization (Market-Level Utility)
-* ✨ **iLovePDF-Style Tool Card:** Central input card offering dual modes: instant YouTube URL paste input and drag-and-drop video/audio upload box (`.mp4`, `.mov`, `.mp3`, `.wav`).
+### 1.2 Video Summarization Features & Utility Architecture
+* ✨ **Tool-First Action Card:** Central input card offering dual modes: instant YouTube URL paste input and drag-and-drop video/audio upload box (`.mp4`, `.mov`, `.mp3`, `.wav`).
 * ✨ **Multi-Stage Processing Stepper:** Clear 3-step live pipeline visualization:
   1. Extraction (`yt-dlp` / `ffmpeg`)
   2. Speech-to-Text (`whisper`)
