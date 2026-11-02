@@ -942,13 +942,6 @@ def build_pptx_file(presentation_data: Dict[str, Any], output_path: Optional[str
                     cp.font.color.rgb = COLOR_WHITE
 
                 add_editorial_footer(s, title_text, page_num_str)
-                    cp.text = f"{b_idx+1:02d}   {bullet}"
-                    cp.font.name = "Arial"
-                    cp.font.size = Pt(12.5)
-                    cp.font.bold = True
-                    cp.font.color.rgb = COLOR_WHITE
-
-                add_editorial_footer(s, title_text, page_num_str)
 
             notes_text = slide_info.get("notes", "")
             if notes_text:
