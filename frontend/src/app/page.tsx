@@ -197,11 +197,10 @@ export default function Home() {
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
       {/* ============================================================
-           HERO & TOOL SECTION — SEAMLESS EDGE-TO-EDGE BLENDED ON APP BACKGROUND
+           HERO & TOOL SECTION — CLEAN & CENTERED
            ============================================================ */}
-      <section className="w-full px-0 pt-10 sm:pt-16 md:pt-20 lg:pt-24 pb-16 sm:pb-24 lg:pb-32 no-print">
-        <div className="w-full max-w-[2048px] mx-auto">
-          <HeroSection />
+      <section className="w-full px-4 sm:px-6 pt-10 sm:pt-14 md:pt-18 pb-12 sm:pb-16 no-print">
+        <div className="w-full max-w-5xl mx-auto">
           <ToolCard
             isProcessing={job?.status === "processing" || job?.status === "queued"}
             onSubmitUrl={handleUrlSubmit}
