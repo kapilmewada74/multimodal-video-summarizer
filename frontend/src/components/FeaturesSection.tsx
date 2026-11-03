@@ -19,6 +19,7 @@ import {
   ArrowUpRight,
   Link2,
   Cpu,
+  Zap,
 } from "lucide-react";
 
 export function FeaturesSection() {
@@ -102,8 +103,8 @@ export function FeaturesSection() {
 
                       {/* Key Takeaway Callout with KaTeX math symbol */}
                       <div className="p-2 rounded-lg bg-[var(--brand-lime)]/10 border-l-2 border-[var(--brand-lime)] text-[8.5px] text-white/85 leading-relaxed">
-                        <span className="font-bold text-[var(--brand-lime)] block text-[7.5px] uppercase tracking-wider mb-0.5">
-                          ⚡ Key Takeaway
+                        <span className="font-bold text-[var(--brand-lime)] flex items-center text-[7.5px] uppercase tracking-wider mb-0.5">
+                          <Zap className="w-2.5 h-2.5 inline mr-1 text-[var(--brand-lime)]" /> Key Takeaway
                         </span>
                         Backpropagation computes loss gradients via chain rule: ∇_w L(θ) to update network weights.
                       </div>

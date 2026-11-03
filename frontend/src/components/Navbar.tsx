@@ -22,8 +22,15 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
         </div>
 
         {/* Nav Links & Actions */}
-        <div className="flex items-center gap-4 sm:gap-6">
-          <div className="hidden md:flex items-center gap-5 text-xs font-semibold text-[var(--text-muted)]">
+        <div className="flex items-center gap-6 sm:gap-8">
+          <div 
+            className="hidden md:flex items-center gap-6 font-medium text-[var(--text-muted)]"
+            style={{ 
+              fontFamily: 'var(--font-ibm-plex-sans), "IBM Plex Sans", sans-serif', 
+              fontSize: '16px',
+              letterSpacing: '-0.01em'
+            }}
+          >
             <a href="#features" className="hover:text-[var(--text-main)] transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-[var(--text-main)] transition-colors">How It Works</a>
             <a href="#faq" className="hover:text-[var(--text-main)] transition-colors">FAQ</a>
