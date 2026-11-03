@@ -420,7 +420,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (loadingContainer) loadingContainer.style.display = "none";
       if (errorContainer) {
         errorContainer.style.display = "block";
-        errorContainer.textContent = err.message;
+        const msgEl = document.getElementById("error-message-text");
+        if (msgEl) msgEl.textContent = err.message;
+        else errorContainer.textContent = err.message;
       }
     }
   }
@@ -452,7 +454,9 @@ document.addEventListener("DOMContentLoaded", () => {
           startSummarizeBtn.textContent = "Summarize Video →";
           if (errorContainer) {
             errorContainer.style.display = "block";
-            errorContainer.textContent = job.error || "An error occurred.";
+            const msgEl = document.getElementById("error-message-text");
+            if (msgEl) msgEl.textContent = job.error || "An error occurred.";
+            else errorContainer.textContent = job.error || "An error occurred.";
           }
           showToast(job.error || "Summarization failed", "error");
         }
@@ -1084,11 +1088,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 </button>
                 <div id="download-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 6px; width: 175px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 100; padding: 6px;">
                   <button id="menu-download-pptx" style="width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; border: none; background: transparent; color: var(--text-main); font-size: 12px; font-weight: 700; cursor: pointer; text-align: left;">
-                    <span style="color: #E2552B;">📊</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E2552B" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                     <span>PowerPoint (.PPTX)</span>
                   </button>
                   <button id="menu-download-pdf" style="width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; border: none; background: transparent; color: var(--text-main); font-size: 12px; font-weight: 700; cursor: pointer; text-align: left;">
-                    <span style="color: #1B395D;">📄</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B395D" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                     <span>PDF Document (.PDF)</span>
                   </button>
                 </div>
