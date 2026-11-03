@@ -449,10 +449,17 @@ html.dark .tab-btn:hover:not(.active) {
 }
 
 .tab-btn.active {
-  color: #0E0F0C !important;
-  background-color: var(--brand-lime) !important;
+  color: #FFFFFF !important;
+  background-color: #0E0F0C !important;
   font-weight: 700 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+html.dark .tab-btn.active {
+  color: #0E0F0C !important;
+  background-color: #F2F2F0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 /* ============================================================

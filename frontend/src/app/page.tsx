@@ -6,6 +6,7 @@ import { HeroSection } from "../components/HeroSection";
 import { ToolCard } from "../components/ToolCard";
 import { OutputWorkspace } from "../components/OutputWorkspace";
 import { GeneratingProgressCard } from "../components/GeneratingProgressCard";
+import { ErrorCard } from "../components/ErrorCard";
 import { FeaturesSection } from "../components/FeaturesSection";
 import { FaqSection } from "../components/FaqSection";
 import { Footer } from "../components/Footer";
@@ -219,14 +220,16 @@ export default function Home() {
           <GeneratingProgressCard job={job} />
         )}
 
-        {/* Failure Alert */}
+        {/* Redesigned Error State Card */}
         {job && job.status === "failed" && (
-          <div className="p-4 my-6 bg-red-500/10 border border-red-500/20 rounded-xl text-center text-sm font-semibold text-[var(--color-danger)] no-print">
-            {job.error || "An error occurred while generating the summary."}
-          </div>
+          <ErrorCard
+            error={job.error}
+            onRetry={handleRegenerateSummary}
+            onDismiss={() => setJob(null)}
+          />
         )}
 
-        {/* Output Workspace */}
+        {/* Output Workspace (When Summary is Ready) */}
         {result && (
           <OutputWorkspace
             result={result}
