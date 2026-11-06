@@ -1,35 +1,100 @@
-# dependencies
-/node_modules
-/.pnp
+
+# ==========================================
+# NODE.JS / NEXT.JS FRONTEND
+# ==========================================
+node_modules/
+.pnp
 .pnp.js
 .yarn/install-state.gz
 
-# testing
-/coverage
+# Next.js
+.next/
+out/
+build/
+.vercel/
 
-# next.js
-/.next/
-/out/
+# Testing
+coverage/
 
-# production
-/build
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
 
-# misc
-.DS_Store
+# ==========================================
+# PYTHON BACKEND
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python virtual environments
+venv/
+.venv/
+env/
+myvenv/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==========================================
+# CUDA / cuDNN
+# ==========================================
+cuda-libs/
+*.dll
+
+# ==========================================
+# VIDEO / AUDIO / MODEL FILES
+# ==========================================
+downloads/
+audio/
+*.mp3
+*.wav
+*.mp4
+*.mkv
+*.webm
+
+# Model weights
+*.pt
+*.pth
+*.onnx
+*.bin
+*.safetensors
+models/
+
+# ==========================================
+# ENVIRONMENT / SECRETS
+# ==========================================
+.env
+.env.*
+!.env.example
 *.pem
 
-# debug
+# ==========================================
+# LOGS / DEBUG
+# ==========================================
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
-.env
+# ==========================================
+# OUTPUT / TEMPORARY FILES
+# ==========================================
+temp/
+tmp/
+.DS_Store
+Thumbs.db
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# ==========================================
+# IDE
+# ==========================================
+.vscode/
+.idea/

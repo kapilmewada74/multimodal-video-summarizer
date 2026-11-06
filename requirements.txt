@@ -1,0 +1,23 @@
+# Web Framework & API Server
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic>=2
+
+# Audio Processing & Transcription
+yt-dlp
+youtube-transcript-api
+faster-whisper
+openai-whisper
+indic-transliteration
+
+# AI & Cloud API Clients
+groq
+httpx
+requests
+python-dotenv
+
+# Text Processing & Export Generators
+langchain-core
+langchain-text-splitters
+python-pptx

@@ -29,8 +29,8 @@ def _clean_xai_key(key: Optional[str] = None) -> Optional[str]:
     return k
 
 def _get_gemini_models():
-    configured = os.getenv("GEMINI_MODEL", "gemini-flash-lite-latest").strip()
-    models = ["gemini-flash-lite-latest", "gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-2.5-flash"]
+    configured = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite").strip()
+    models = ["gemini-3.5-flash-lite", "gemini-2.5-flash-lite", "gemini-flash-latest"]
     if configured not in models:
         models.insert(0, configured)
     return models

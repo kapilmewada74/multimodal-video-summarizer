@@ -14,6 +14,8 @@ import sys
 import time
 import subprocess
 import requests
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 BASE_URL = "http://127.0.0.1:8000"
 

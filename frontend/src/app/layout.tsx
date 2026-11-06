@@ -21,8 +21,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light">
-      <body className={`${ibmPlexSans.variable} antialiased`}>{children}</body>
+    <html lang="en" className="light" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const observer = new MutationObserver(function(mutations) {
+                  for (let i = 0; i < mutations.length; i++) {
+                    const m = mutations[i];
+                    if (m.type === 'attributes') {
+                      const name = m.attributeName;
+                      if (name === 'bis_skin_checked' || name === 'bis_register' || (name && name.indexOf('__processed_') === 0)) {
+                        m.target.removeAttribute(name);
+                      }
+                    }
+                  }
+                });
+                observer.observe(document.documentElement, {
+                  attributes: true,
+                  subtree: true,
+                  attributeFilter: ['bis_skin_checked', 'bis_register']
+                });
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className={`${ibmPlexSans.variable} antialiased`} suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

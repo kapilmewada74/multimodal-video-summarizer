@@ -194,7 +194,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-app)] text-[var(--text-main)] transition-colors">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-app)] text-[var(--text-main)] transition-colors" suppressHydrationWarning>
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
       {/* ============================================================

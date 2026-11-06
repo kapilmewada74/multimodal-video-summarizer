@@ -195,6 +195,7 @@ async def summarize_upload(
 
 
 @app.get("/api/job/{job_id}")
+@app.get("/api/jobs/{job_id}")
 async def job_status(job_id: str):
     job = get_job(job_id)
     if not job:
