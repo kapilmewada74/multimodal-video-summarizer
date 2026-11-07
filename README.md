@@ -286,9 +286,7 @@ Please refer to the repository's license file for licensing information.
 
 ---
 
-<p align="center">
-  <b>Built with AI to make learning smarter, faster, and more accessible.</b>
-</p>
+
 
 <p align="center">
    If you find this project useful, consider giving it a star!
