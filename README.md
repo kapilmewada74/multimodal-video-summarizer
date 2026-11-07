@@ -275,6 +275,9 @@ Please read the [**Contributing Guide**](https://github.com/kapilmewada74/multim
 - GitHub: [@kapilmewada74](https://github.com/kapilmewada74)
 - Project Repository: [Multimodal Video Summarizer](https://github.com/kapilmewada74/multimodal-video-summarizer)
 
+**Rahul Dhakad**
+
+- GitHub: (https://github.com/RahulDhakad01)
 ---
 
 ##  License
